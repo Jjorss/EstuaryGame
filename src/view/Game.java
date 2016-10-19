@@ -1,10 +1,8 @@
 package view;
 
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -17,10 +15,12 @@ public class Game extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	GameLoopController glc = new GameLoopController();
+	static Scale scale = new Scale(800, 600, 10);
 	
 	public static void main(String[] args) {
 		
 		Game game = new Game();
+		
 		EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -32,7 +32,7 @@ public class Game extends JPanel{
 
                 JFrame frame = new JFrame("Game");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(800, 600);
+                frame.setSize(scale.getWidth(), scale.getHeight());
                 frame.setFocusable(true);
                 frame.getContentPane().add(game);
                 frame.setVisible(true);
@@ -45,7 +45,7 @@ public class Game extends JPanel{
 	}
 	
 	public void start() {
-		for (int i = 0; i < 1000; i++) {
+		while(true) {
 			repaint();
 			glc.loop();
 			try {
@@ -59,7 +59,8 @@ public class Game extends JPanel{
 	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        glc.render(g);
+        glc.render(g, scale.getGridSize());
+        scale.render(g);
 	}
 	
 }

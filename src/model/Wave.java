@@ -15,7 +15,7 @@ public class Wave {
 	}
 	
 	public void move() {
-		this.setX((this.getX() + 1)*this.getSpeed());
+		this.setX((this.getX() - 1)*this.getSpeed());
 	}
 	
 	public void tic() {

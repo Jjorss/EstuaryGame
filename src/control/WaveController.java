@@ -15,9 +15,11 @@ public class WaveController extends Wave {
 		super.tic();
 	}
 	
-	public void render(Graphics g) {
+	public void render(Graphics g, int scale) {
 		g.setColor(Color.BLUE);
-		g.fillRect(this.getX(), this.getY(), 50, 50);
+		g.fillRect(this.getX()*scale, this.getY()*scale, 50, 50);
+		System.out.println(this.getX()*scale);
+		
 	}
 
 }
