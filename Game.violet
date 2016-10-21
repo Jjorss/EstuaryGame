@@ -609,8 +609,7 @@ public void handleControls()</string>
     </void>
     <void property="methods">
      <void property="text">
-      <string>public void tic()
-public void changePhLevels(int newPhLevel)
+      <string>public void changePhLevels(int newPhLevel)
 public void changeMood(newMood)
 public void changeSize(newSize)</string>
      </void>
