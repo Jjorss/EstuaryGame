@@ -9,22 +9,22 @@ package model;
  *
  */
 
-public class Wave {
+public class Wave extends Entity{
 
 	private int speed;
 	private int x;
 	private int y;
-	private boolean collided;
+	
 	
 	public Wave(int speed, int x, int y, boolean collided) {
 		this.speed = speed;
 		this.x = x;
 		this.y = y;
-		this.collided = collided;
 	}
 	/**
 	 * Decreases the x value of the object on the grid by 1 * speed
 	 */
+	@Override
 	public void move() {
 		this.setX((this.getX() - 1)*this.getSpeed());
 	}

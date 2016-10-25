@@ -3,7 +3,7 @@ package view;
 import java.awt.Color;
 import java.awt.Graphics;
 
-<<<<<<< HEAD
+
 /**
  * 
  * @author Jackson Jorss
@@ -14,16 +14,12 @@ import java.awt.Graphics;
  *
  */
 
-=======
->>>>>>> 3edddabc4187178835a585eb4d0450cc10da5c55
+
 public class Scale {
 
 	private int width;
 	private int height;
-<<<<<<< HEAD
-=======
-	
->>>>>>> 3edddabc4187178835a585eb4d0450cc10da5c55
+
 	private int gridSize;
 	
 	public Scale(int width, int height, int gridSize) {
@@ -32,14 +28,7 @@ public class Scale {
 		this.gridSize = gridSize;
 		
 	}
-<<<<<<< HEAD
-	/**
-	 * Temporary method that displays an easily viewable grid
-	 * 
-	 * @param g Graphics object that is needed to render shapes on screen.
-	 */
-=======
->>>>>>> 3edddabc4187178835a585eb4d0450cc10da5c55
+
 	
 	public void render(Graphics g) {
 		g.setColor(Color.red);
@@ -48,7 +37,7 @@ public class Scale {
 			g.drawLine(0, i, this.getWidth(), i);
 		}
 	}
-<<<<<<< HEAD
+
 	/**
 	 * Getter
 	 * @return the current instance width
@@ -67,17 +56,7 @@ public class Scale {
 	 * Getter
 	 * @return the current instance gridsize
 	 */
-=======
-	
-	public int getWidth() {
-		return this.width;
-	}
-	
-	public int getHeight() {
-		return this. height;
-	}
-	
->>>>>>> 3edddabc4187178835a585eb4d0450cc10da5c55
+
 	public int getGridSize() {
 		return gridSize;
 	}
