@@ -30,4 +30,12 @@ public class GameLoopController {
 		
 	}
 	
+	public void collision() {
+		
+	}
+	
+	public void handleControls(){
+		
+	}
+	
 }

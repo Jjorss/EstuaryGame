@@ -12,7 +12,16 @@ public class Shore extends Entity {
 		throw new UnsupportedOperationException();
 		
 	}
-	
+	public void errode(int newHealth){
+		
+	}
+	public void grow(int newhealth){
+		
+	}
+	public void spawnHorseshewCrab(){
+		
+	}
+
 	
 	
 }

@@ -19,7 +19,6 @@ public class Scale {
 
 	private int width;
 	private int height;
-
 	private int gridSize;
 	
 	public Scale(int width, int height, int gridSize) {
@@ -29,6 +28,10 @@ public class Scale {
 		
 	}
 
+	/**
+	 *  Method for testing purposes only, helps us visualize grid
+	 * @param g Graphics object that is needed to render shapes on screen.
+	 */
 	
 	public void render(Graphics g) {
 		g.setColor(Color.red);
