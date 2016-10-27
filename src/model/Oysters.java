@@ -2,6 +2,11 @@ package model;
 
 public class Oysters extends Entity{
 
+	public Oysters(int x, int y) {
+		super(x, y);
+		// TODO Auto-generated constructor stub
+	}
+
 	int x;
 	int y;
 	int numberOfOysters;
@@ -12,7 +17,7 @@ public class Oysters extends Entity{
 		throw new UnsupportedOperationException();
 	}
 	
-	public void spawn() {
+	public void amountSpawned() {
 		
 	}
 

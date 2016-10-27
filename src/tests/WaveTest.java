@@ -8,27 +8,30 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import model.Wave;
+
 public class WaveTest {
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
+	Wave w;
 
 	@Before
 	public void setUp() throws Exception {
+		w = new Wave(1, 5, 5);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
 
 	@Test
-	public void test() {
-		fail("Not yet implemented");
+	public void MoveTest() {
+		int previousX = w.getX();
+		int previousY = w.getY();
+		w.move();
+		// wave moved in a direction
+		assertTrue(w.getX()*w.getSpeed() != previousX);
+		//wave moved in the correct direction
+		assertTrue(w.getX()*w.getSpeed() < previousX);
+		//wave isn't moving vertically
+		assertTrue(w.getY() == previousY);
+		
 	}
 
 }
