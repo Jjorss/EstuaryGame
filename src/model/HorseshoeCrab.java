@@ -1,7 +1,6 @@
 package model;
 
 public class HorseshoeCrab extends Entity {
-
 	int x;
 	int y;
 	
@@ -10,6 +9,5 @@ public class HorseshoeCrab extends Entity {
 		// TODO Auto-generated method stub
 		
 	}
-
 	
 }
