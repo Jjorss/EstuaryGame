@@ -11,6 +11,6 @@ public class HorseshoeCrabTest {
 		int oldX = tester.getX();
 		int oldY = tester.getY();
 		tester.move();
-		assertTrue(tester.getX()!=oldX || tester.getY()!=oldY);
+		assertTrue(tester.getX()!= oldX || tester.getY()!= oldY);
 	}
 }

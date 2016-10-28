@@ -7,11 +7,6 @@ import model.Gabion;
 // I think build should be in GabionBuilder only, because it just adds to the collection
 public class GabionTest {
 	@Test
-	public void buildTest() {
-		Gabion tester = new Gabion();
-		tester.build();
-//		assertEquals();
-	}
 	public void changeHealthTest() {
 		Gabion tester = new Gabion();
 		int oldHealth = tester.getHealth();
