@@ -2,10 +2,16 @@ package model;
 
 public class Shore extends Entity {
 
-	int health;
-	int numberOfHorseshoeCrabs;
-	int x;
-	int y;
+	private int health = 100;
+	private int numberOfHorseshoeCrabs = 0;
+	private int x;
+	private int y;
+	
+	public Shore(int x, int y) {
+		super(x, y);
+		// TODO Auto-generated constructor stub
+	}
+	
 	
 	@Override
 	public void move() {
@@ -15,11 +21,51 @@ public class Shore extends Entity {
 	public void errode(int newHealth){
 		
 	}
-	public void grow(int newhealth){
+	public void grow(){
 		
 	}
-	public void spawnHorseshewCrab(){
+	public void spawnHorseshoeCrab(){
 		
+	}
+
+
+	public int getHealth() {
+		return health;
+	}
+
+
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
+
+	public int getNumberOfHorseshoeCrabs() {
+		return numberOfHorseshoeCrabs;
+	}
+
+
+	public void setNumberOfHorseshoeCrabs(int numberOfHorseshoeCrabs) {
+		this.numberOfHorseshoeCrabs = numberOfHorseshoeCrabs;
+	}
+
+
+	public int getX() {
+		return x;
+	}
+
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+
+	public int getY() {
+		return y;
+	}
+
+
+	public void setY(int y) {
+		this.y = y;
 	}
 
 	

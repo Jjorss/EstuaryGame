@@ -16,10 +16,9 @@ public class Wave extends Entity{
 	private int y;
 	
 	
-	public Wave(int speed, int x, int y, boolean collided) {
+	public Wave(int speed, int x, int y) {
+		super(x,y);
 		this.speed = speed;
-		this.x = x;
-		this.y = y;
 	}
 	/**
 	 * Decreases the x value of the object on the grid by 1 * speed
@@ -27,12 +26,6 @@ public class Wave extends Entity{
 	@Override
 	public void move() {
 		this.setX((this.getX() - 1)*this.getSpeed());
-	}
-	/**
-	 * Calls all logical methods every tic of the game
-	 */
-	public void tic() {
-		this.move();
 	}
 	
 	/**

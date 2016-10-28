@@ -2,6 +2,11 @@ package model;
 
 public class ClumpOfOysters extends Entity{
 
+	public ClumpOfOysters(int x, int y) {
+		super(x, y);
+		// TODO Auto-generated constructor stub
+	}
+
 	int x;
 	public int getX() {
 		return x;
