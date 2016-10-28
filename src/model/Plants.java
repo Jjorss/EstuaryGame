@@ -2,9 +2,9 @@ package model;
 
 public class Plants extends Wall{
 
-	int x;
-	int y;
-	int health;
+	private int x;
+	private int y;
+	private int health;
 	@Override
 	public void build() {
 		// TODO Auto-generated method stub
@@ -14,6 +14,24 @@ public class Plants extends Wall{
 	public void changeHealth(int newHealth) {
 		// TODO Auto-generated method stub
 		
+	}
+	public int getHealth() {
+		return health;
+	}
+	public void setHealth(int health) {
+		this.health = health;
+	}
+	public int getY() {
+		return y;
+	}
+	public void setY(int y) {
+		this.y = y;
+	}
+	public int getX() {
+		return x;
+	}
+	public void setX(int x) {
+		this.x = x;
 	}
 	
 	
