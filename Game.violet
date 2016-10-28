@@ -196,7 +196,7 @@ public void handleControls()</string>
    <object class="com.horstmann.violet.ClassNode" id="ClassNode5">
     <void property="attributes">
      <void property="text">
-      <string>-int numberOfOysters
+      <string>-int numOfOystersinClump
 </string>
      </void>
     </void>
@@ -208,7 +208,7 @@ public void handleControls()</string>
     </void>
     <void property="name">
      <void property="text">
-      <string>Oysters</string>
+      <string>ClumpOfOysters</string>
      </void>
     </void>
    </object>
