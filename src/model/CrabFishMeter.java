@@ -2,9 +2,28 @@ package model;
 
 public class CrabFishMeter {
 
-	int mood;
-	int phLevels;
-	int size;
+	private int mood;
+	private int phLevels;
+	private int size;
+	
+	public int getPhLevels() {
+		return phLevels;
+	}
+	public void setPhLevels(int phLevels) {
+		this.phLevels = phLevels;
+	}
+	public int getMood() {
+		return mood;
+	}
+	public void setMood(int mood) {
+		this.mood = mood;
+	}
+	public int getSize() {
+		return size;
+	}
+	public void setSize(int size) {
+		this.size = size;
+	}
 	
 	public void changePhLevels(int newPhLevel){
 		

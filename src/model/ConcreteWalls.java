@@ -3,11 +3,14 @@ package model;
 public class ConcreteWalls extends Wall {
 	int x;
 	int y;
-	int health;
+	private int health;
 	
-	@Override
-	public void build(){
-		
+	public int getHealth() {
+		return health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
 	}
 
 	@Override
@@ -15,4 +18,5 @@ public class ConcreteWalls extends Wall {
 		// TODO Auto-generated method stub
 		
 	}
+
 }
