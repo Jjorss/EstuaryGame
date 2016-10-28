@@ -5,14 +5,13 @@ public class ConcreteWalls extends Wall {
 	int y;
 	int health;
 	
-	@Override
-	public void build(){
-		
-	}
+	
 
 	@Override
 	public void changeHealth(int newHealth) {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
 }
