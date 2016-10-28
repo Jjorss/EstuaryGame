@@ -5,14 +5,40 @@ import java.util.Collection;
 
 public class GabionBuilder extends Builder {
 
-	int numberOfGabions;
-	Collection<Gabion> gabions = new ArrayList<Gabion>();
-	int numberOfLayers;
+	private int numberOfGabions;
+	private Collection<Gabion> gabions = new ArrayList<Gabion>();
+	private int numberOfLayers;
 	
 	@Override
 	public void build() {
-		// TODO Auto-generated method stub
+		
 		
 	}
+
+	public int getNumberOfGabions() {
+		return numberOfGabions;
+	}
+
+	public void setNumberOfGabions(int numberOfGabions) {
+		this.numberOfGabions = numberOfGabions;
+	}
+
+	public Collection<Gabion> getGabions() {
+		return gabions;
+	}
+
+	public void setGabions(Collection<Gabion> gabions) {
+		this.gabions = gabions;
+	}
+
+	public int getNumberOfLayers() {
+		return numberOfLayers;
+	}
+
+	public void setNumberOfLayers(int numberOfLayers) {
+		this.numberOfLayers = numberOfLayers;
+	}
+	
+	
 
 }
