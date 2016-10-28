@@ -15,5 +15,20 @@ public class HorseshoeCrab extends Entity {
 		super.x = 2;
 		
 	}
+	
+	public int getX() {
+		return super.x;
+	}
+	
+	public void setX(int x) {
+		super.x = x;
+	}
+	
+	public int getY() {
+		return super.y;
+	}
 
+	public void setY(int y) {
+		super.y = y;
+	}
 }

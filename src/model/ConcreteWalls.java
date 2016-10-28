@@ -8,5 +8,13 @@ public class ConcreteWalls extends Wall {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public int getHealth() {
+		return super.health;
+	}
+	
+	public void setHealth(int health) {
+		super.health = health;
+	}
 
 }

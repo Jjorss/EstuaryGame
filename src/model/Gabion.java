@@ -12,4 +12,8 @@ public class Gabion extends Wall {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public int getHealth() {
+		return this.health;
+	}
 }
