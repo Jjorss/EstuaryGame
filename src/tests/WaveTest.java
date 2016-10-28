@@ -19,6 +19,7 @@ public class WaveTest {
 		w = new Wave(1, 5, 5);
 	}
 
+	
 
 	@Test
 	public void MoveTest() {
