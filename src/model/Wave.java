@@ -15,6 +15,7 @@ import java.awt.geom.Rectangle2D;
 public class Wave extends Entity{
 
 	private int speed;
+	private boolean isVisable = true;
 
 	
 	public Wave(int speed, int x, int y) {
@@ -70,6 +71,12 @@ public class Wave extends Entity{
 	 */
 	public void setY(int y) {
 		this.y = y;
+	}
+	public boolean isVisable() {
+		return isVisable;
+	}
+	public void setVisable(boolean isVisable) {
+		this.isVisable = isVisable;
 	}
 
 	

@@ -35,7 +35,7 @@ public class Game extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	GameLoopController glc = new GameLoopController(this);
-	static Scale scale = new Scale(800, 600, 10);
+	static Scale scale = new Scale(1280, 720, 8);
 	private Point click = new Point(0,0);
 	
 	public static void main(String[] args) {
@@ -63,17 +63,21 @@ public class Game extends JPanel{
             }
         });
 		// loop
-		game.addMouseListener(new MouseAdapter() {
-			@Override
-            public void mouseClicked(MouseEvent e) {
-                game.click = e.getPoint();
-            }
-
-		});
+		game.mouseClick(game);
 		
 		game.start();
 	}
 	
+	public void mouseClick(Game game) {
+		game.addMouseListener(new MouseAdapter() {
+			@Override
+            public void mouseClicked(MouseEvent e) {
+                //game.click = e.getPoint();
+                glc.handlePlaceGabion(e.getPoint());
+            }
+		
+		});
+	}
 	
 	
 	
