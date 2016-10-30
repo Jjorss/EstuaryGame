@@ -29,7 +29,8 @@ public class GameLoopController {
 	private ArrayList<Wave> waves = new ArrayList<Wave>();
 	private ArrayList<Gabion> gabions = new ArrayList<Gabion>();
 	//list of rectangles
-	private ArrayList<Rectangle2D> waveects = new ArrayList<Rectangle2D>();
+	private ArrayList<Rectangle2D> waveRects = new ArrayList<Rectangle2D>();
+	private ArrayList<Rectangle2D> gabionRects = new ArrayList<Rectangle2D>();
 
 	private Shore shore = new Shore(0,0);
 	// must be initialized so collision does throw a null pointer exception
@@ -42,8 +43,8 @@ public class GameLoopController {
 		
 		waves.add(new Wave(1, 75, 10));
 		waves.add(new Wave(1, 75, 20));
-		waveects.add(new Rectangle2D.Double(0,0,0,0));
-		waveects.add(new Rectangle2D.Double(0,0,0,0));
+		waveRects.add(new Rectangle2D.Double(0,0,0,0));
+		waveRects.add(new Rectangle2D.Double(0,0,0,0));
 	}
 	
 	
@@ -66,14 +67,20 @@ public class GameLoopController {
 		Graphics2D g2 = (Graphics2D) g;
 		//wave1 = new Rectangle2D.Double(wave.getX()* scale,wave.getY()* scale, 50, 50);
 		// creating new rectangles and tieing them to waves
-		for (int i = 0; i < waveects.size(); i++) {
-			waveects.set(i, new Rectangle2D.Double(waves.get(i).getX()*scale,waves.get(i).getY()*scale,50,50));
+		for (int i = 0; i < waveRects.size(); i++) {
+			waveRects.set(i, new Rectangle2D.Double(waves.get(i).getX()*scale,waves.get(i).getY()*scale,50,50));
 		}
 		// abstract way
 		g2.setColor(Color.BLUE);
-		for (Rectangle2D rect : waveects) {
+		for (Rectangle2D rect : waveRects) {
 			g2.draw(rect);
 			g2.fill(rect);
+		}
+		
+		g2.setColor(Color.BLACK);
+		for (Rectangle2D gabions : gabionRects) {
+			g2.draw(gabions);
+			g2.fill(gabions);
 		}
 		
 		// single way
@@ -84,13 +91,13 @@ public class GameLoopController {
 	}
 	
 	public void collision() {
-		for (int i = 0 ; i < waveects.size(); i++) {
-			if (waveects.get(i).intersects(shore1.getX(), shore1.getY(), shore1.getWidth(), shore1.getHeight())) {
+		for (int i = 0 ; i < waveRects.size(); i++) {
+			if (waveRects.get(i).intersects(shore1.getX(), shore1.getY(), shore1.getWidth(), shore1.getHeight())) {
 				// wave hit shore
 				// erode shore
 				shore.erode();
 				// remove waves hitBox
-				waveects.remove(i);
+				waveRects.remove(i);
 				// remove wave object
 				waves.remove(i);
 			}
@@ -101,6 +108,8 @@ public class GameLoopController {
 		System.out.println(game.getClick().getX() + ", " + game.getClick().getY());
 		// spawn gabion
 		gabions.add(new Gabion((int)game.getClick().getX(), (int)game.getClick().getY()));
+		gabionRects.add(new Rectangle.Double(game.getClick().getX(), game.getClick().getY(),
+				50, 50));
 		
 	}
 	
