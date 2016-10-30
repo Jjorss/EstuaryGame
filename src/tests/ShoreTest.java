@@ -24,7 +24,7 @@ public class ShoreTest {
 		int prevHealth = shore.getHealth();
 		// collision happened
 		// shore.errode was called
-		shore.errode(90);
+		shore.erode();
 		// shore moved back
 		assertTrue(shore.getX() < prevX);
 		//shore didn't move vertical

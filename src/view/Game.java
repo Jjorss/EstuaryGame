@@ -2,6 +2,9 @@ package view;
 
 import java.awt.EventQueue;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -31,8 +34,9 @@ import control.GameLoopController;
 public class Game extends JPanel{
 
 	private static final long serialVersionUID = 1L;
-	GameLoopController glc = new GameLoopController();
+	GameLoopController glc = new GameLoopController(this);
 	static Scale scale = new Scale(800, 600, 10);
+	private Point click = new Point(0,0);
 	
 	public static void main(String[] args) {
 		
@@ -53,13 +57,26 @@ public class Game extends JPanel{
                 frame.setFocusable(true);
                 frame.getContentPane().add(game);
                 frame.setVisible(true);
-                            
+                
+                
                 
             }
         });
 		// loop
+		game.addMouseListener(new MouseAdapter() {
+			@Override
+            public void mouseClicked(MouseEvent e) {
+                game.click = e.getPoint();
+            }
+
+		});
+		
 		game.start();
 	}
+	
+	
+	
+	
 	/**
 	 * Main game loop. Calls repaint ever tic and the game loop
 	 * controller loop function to start all of the models logic methods
@@ -88,6 +105,10 @@ public class Game extends JPanel{
         super.paintComponent(g);
         glc.render(g, scale.getGridSize());
         scale.render(g);
+	}
+	
+	public Point getClick() {
+		return this.click;
 	}
 	
 }

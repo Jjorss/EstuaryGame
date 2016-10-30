@@ -1,19 +1,20 @@
 package model;
 
 public class Gabion extends Wall {
-
-	int x;
-	int y;
-	int health;
 	
+	
+	public Gabion(int x, int y) {
+		super(x, y);
+		
+	}
 	
 	@Override
 	public void changeHealth(int newHealth) {
 		// TODO Auto-generated method stub
-		
+		super.health = newHealth;		
 	}
 	
 	public int getHealth() {
-		return this.health;
+		return super.health;
 	}
 }

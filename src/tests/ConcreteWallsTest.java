@@ -11,7 +11,7 @@ public class ConcreteWallsTest {
 	
 	@Test
 	public void test(){
-		ConcreteWalls tester = new ConcreteWalls();
+		ConcreteWalls tester = new ConcreteWalls(0, 0);
 		
 		tester.setHealth(0);
 		int health1 = tester.getHealth();

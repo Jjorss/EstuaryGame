@@ -3,6 +3,10 @@ package model;
 public class Plants extends Wall{
 
 
+	public Plants(int x, int y) {
+		super(x, y);
+		// TODO Auto-generated constructor stub
+	}
 	int x;
 	int y;
 	int health;

@@ -1,4 +1,7 @@
 package model;
+
+import java.awt.geom.Rectangle2D;
+
 /**
  * 
  * @author Jackson Jorss
@@ -12,9 +15,7 @@ package model;
 public class Wave extends Entity{
 
 	private int speed;
-	private int x;
-	private int y;
-	
+
 	
 	public Wave(int speed, int x, int y) {
 		super(x,y);
@@ -25,7 +26,7 @@ public class Wave extends Entity{
 	 */
 	@Override
 	public void move() {
-		this.setX((this.getX() - 1)*this.getSpeed());
+		this.setX(this.getX() - this.getSpeed());
 	}
 	
 	/**
