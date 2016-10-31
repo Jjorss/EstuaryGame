@@ -5,16 +5,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Random;
 
+import model.ClumpOfOysters;
 import model.Gabion;
+import model.Oysters;
 import model.Shore;
 import model.Wave;
 import view.Game;
+import view.Scale;
 
 /**
  * 
@@ -27,23 +28,35 @@ import view.Game;
  */
 
 public class GameLoopController {
+	private Game game;
+	private Scale scale;
+	private Point click;
+	
+	
 	// list of entities
 	private ArrayList<Wave> waves = new ArrayList<Wave>();
 	private ArrayList<Gabion> gabions = new ArrayList<Gabion>();
+	private ArrayList<ClumpOfOysters> oysters = new ArrayList<ClumpOfOysters>();
 	// list of rectangles
 	private ArrayList<Rectangle2D> waveRects = new ArrayList<Rectangle2D>();
 	private ArrayList<Rectangle2D> gabionRects = new ArrayList<Rectangle2D>();
+	private ArrayList<Rectangle2D> oysterRects = new ArrayList<Rectangle2D>();
 
 	private Shore shore = new Shore(0, 0);
 	// must be initialized so collision does throw a null pointer exception
 	private Rectangle2D shore1 = new Rectangle2D.Double(0, 0, 0, 0);
+	private Rectangle2D builder;
+	private Rectangle2D gabionBuilder;
+	private Rectangle2D plantBuilder;
 
-	private Game game;
-	private Point click;
+	
 
-	public GameLoopController(Game game) {
+	public GameLoopController(Game game, Scale scale) {
 		this.game = game;
-
+		this.scale = scale;
+		builder = new Rectangle2D.Double(120 *scale.getGridSize(),58 *scale.getGridSize(),300,200);
+		gabionBuilder = new Rectangle2D.Double(130 * scale.getGridSize(), 58*scale.getGridSize(), 218,200);
+		plantBuilder = new Rectangle2D.Double(120*scale.getGridSize(), 58*scale.getGridSize(), 100, 200);
 		waves.add(new Wave(1, 75, 10));
 		waves.add(new Wave(1, 75, 20));
 		waveRects.add(new Rectangle2D.Double(0, 0, 0, 0));
@@ -63,9 +76,21 @@ public class GameLoopController {
 				waveRects.remove(i);
 			}
 		}
+		// oyster logic
+		if (oysters.size() <= 3) {
+			Random rand = new Random(); 		
+			int x = (int) ((int) ((rand.nextInt(100))* scale.getGridSize()) + shore1.getWidth());
+			int y = (rand.nextInt(50)+ 10) * scale.getGridSize();
+			oysters.add(new ClumpOfOysters(x, y));
+			oysterRects.add(new Rectangle2D.Double(x,y,10,10));
+			System.out.println("X:" + x + "\t" + "Y: " + y);
+		}
+		
+		
+		// collision detections
 		collision();
 		
-		System.out.println("I'm looping");
+		//System.out.println("I'm looping");
 	}
 
 	/**
@@ -93,12 +118,33 @@ public class GameLoopController {
 			g2.draw(gabions);
 			g2.fill(gabions);
 		}
+		g2.setColor(Color.GRAY);
+		for (Rectangle2D oyster : oysterRects) {
+			g2.draw(oyster);
+			g2.fill(oyster);
+		}
 
 		// single way
 		shore1 = new Rectangle2D.Double(shore.getX() * scale, shore.getY() * scale, 300, 800);
 		g2.setColor(Color.YELLOW);
 		g2.fill(shore1);
 		g2.draw(shore1);
+		
+		// UI
+		//---------------------------
+		// Gabion builder/Plant builder
+		g2.setColor(Color.BLACK);
+		g2.draw(builder);
+		
+		g2.setColor(Color.GRAY);
+		g2.fill(gabionBuilder);
+		g2.draw(gabionBuilder);
+		
+		g2.setColor(Color.GREEN);
+		g2.fill(plantBuilder);
+		g2.draw(plantBuilder);
+		
+		
 	}
 
 	public void collision() {

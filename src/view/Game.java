@@ -34,8 +34,8 @@ import control.GameLoopController;
 public class Game extends JPanel{
 
 	private static final long serialVersionUID = 1L;
-	GameLoopController glc = new GameLoopController(this);
 	static Scale scale = new Scale(1280, 720, 8);
+	GameLoopController glc = new GameLoopController(this, scale);
 	private Point click = new Point(0,0);
 	
 	public static void main(String[] args) {
@@ -108,7 +108,7 @@ public class Game extends JPanel{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         glc.render(g, scale.getGridSize());
-        scale.render(g);
+        //scale.render(g);
 	}
 	
 	public Point getClick() {
