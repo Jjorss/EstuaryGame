@@ -11,6 +11,7 @@ import java.util.Random;
 
 import model.ClumpOfOysters;
 import model.Gabion;
+import model.GabionBuilder;
 import model.Oysters;
 import model.Shore;
 import model.Wave;
@@ -31,6 +32,7 @@ public class GameLoopController {
 	private Game game;
 	private Scale scale;
 	private Point click;
+	private GabionBuilder gb = new GabionBuilder();
 	
 	
 	// list of entities
@@ -44,7 +46,7 @@ public class GameLoopController {
 
 	private Shore shore = new Shore(0, 0);
 	// must be initialized so collision does throw a null pointer exception
-	private Rectangle2D shore1 = new Rectangle2D.Double(0, 0, 0, 0);
+	private Rectangle2D shore1;
 	private Rectangle2D builder;
 	private Rectangle2D gabionBuilder;
 	private Rectangle2D plantBuilder;
@@ -54,11 +56,12 @@ public class GameLoopController {
 	public GameLoopController(Game game, Scale scale) {
 		this.game = game;
 		this.scale = scale;
+		shore1 = new Rectangle2D.Double(shore.getX() * scale.getGridSize(), shore.getY() * scale.getGridSize(), 300, 800);
 		builder = new Rectangle2D.Double(120 *scale.getGridSize(),58 *scale.getGridSize(),300,200);
 		gabionBuilder = new Rectangle2D.Double(130 * scale.getGridSize(), 58*scale.getGridSize(), 218,200);
 		plantBuilder = new Rectangle2D.Double(120*scale.getGridSize(), 58*scale.getGridSize(), 100, 200);
-		waves.add(new Wave(1, 75, 10));
-		waves.add(new Wave(1, 75, 20));
+		waves.add(new Wave(1, 120, 10));
+		waves.add(new Wave(1, 120, 20));
 		waveRects.add(new Rectangle2D.Double(0, 0, 0, 0));
 		waveRects.add(new Rectangle2D.Double(0, 0, 0, 0));
 	}
@@ -77,13 +80,22 @@ public class GameLoopController {
 			}
 		}
 		// oyster logic
-		if (oysters.size() <= 3) {
-			Random rand = new Random(); 		
-			int x = (int) ((int) ((rand.nextInt(100))* scale.getGridSize()) + shore1.getWidth());
+		if (oysters.size() < 4) {
+			Random rand = new Random(); 
+			int shore = (int)shore1.getWidth() / scale.getGridSize();
+			System.out.println(shore);
+			int x = rand.nextInt(100) + shore;
+			x = x*scale.getGridSize() + (int)(shore1.getWidth() / scale.getGridSize());
 			int y = (rand.nextInt(50)+ 10) * scale.getGridSize();
 			oysters.add(new ClumpOfOysters(x, y));
 			oysterRects.add(new Rectangle2D.Double(x,y,10,10));
 			System.out.println("X:" + x + "\t" + "Y: " + y);
+		}
+		for (int i = 0; i < oysters.size(); i++) {
+			if (!oysters.get(i).isVisiable()) {
+				oysters.remove(i);
+				oysterRects.remove(i);
+			}
 		}
 		
 		
@@ -180,6 +192,30 @@ public class GameLoopController {
 		// spawn gabion
 		gabions.add(new Gabion((int) p.getX(), (int) p.getY()));
 		gabionRects.add(new Rectangle.Double(p.getX(), p.getY(), 50, 50));
+	}
+	
+	public void handleCollectOyster(Point p) {
+		int numOfCluster;
+		for (int i = 0; i < oysterRects.size(); i++) {
+			if (oysterRects.get(i).getX() == p.getX() && oysterRects.get(i).getY() == p.getY()) {
+				numOfCluster = oysters.get(i).getNumOfOystersInClump();
+				oysters.get(i).setVisiable(false);
+				break;
+			}
+		}
+		// adding GB stuff		
+		 
+	}
+	
+	public void handleClick(Point p) {
+		for (Rectangle2D oyster : oysterRects) {
+			if (oyster.contains(p)) {
+				handleCollectOyster(p);
+				return;
+			}
+		}
+		handlePlaceGabion(p);
+		return;
 	}
 
 }

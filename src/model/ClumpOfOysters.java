@@ -2,6 +2,8 @@ package model;
 
 public class ClumpOfOysters extends Entity{
 
+	private boolean isVisiable = true;
+	
 	public ClumpOfOysters(int x, int y) {
 		super(x, y);
 		// TODO Auto-generated constructor stub
@@ -43,6 +45,14 @@ public class ClumpOfOysters extends Entity{
 	
 	public void spawn() {
 		
+	}
+
+	public boolean isVisiable() {
+		return isVisiable;
+	}
+
+	public void setVisiable(boolean isVisiable) {
+		this.isVisiable = isVisiable;
 	}
 
 	

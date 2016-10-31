@@ -73,7 +73,8 @@ public class Game extends JPanel{
 			@Override
             public void mouseClicked(MouseEvent e) {
                 //game.click = e.getPoint();
-                glc.handlePlaceGabion(e.getPoint());
+                //glc.handlePlaceGabion(e.getPoint());
+                glc.handleClick(e.getPoint());
             }
 		
 		});
