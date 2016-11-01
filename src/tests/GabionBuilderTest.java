@@ -15,13 +15,13 @@ public class GabionBuilderTest {
 		
 		int prevNumLayers = gabion.getNumberOfLayers();
 		int prevNumGabions = gabion.getNumberOfGabions();
-		int prevCollectionSize = gabion.getGabions().size();
+		int prevCollectionSize = gabion.getGabions();
 		
 		gabion.build();
 		
 		Assert.assertTrue(gabion.getNumberOfGabions() > prevNumGabions);
 		Assert.assertTrue(prevNumLayers > gabion.getNumberOfLayers());
-		Assert.assertTrue(gabion.getGabions().size() > prevCollectionSize);
+		Assert.assertTrue(gabion.getGabions() > prevCollectionSize);
 	}
 
 }

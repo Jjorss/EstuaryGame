@@ -18,8 +18,11 @@ public class Shore extends Entity {
 		throw new UnsupportedOperationException();
 		
 	}
-	public void errode(int newHealth){
-		
+	public void erode(){
+		// amount to decrement health by
+		this.health = health - 10;
+		// erode shore
+		this.setX(this.getX() - 10);		
 	}
 	public void grow(){
 		

@@ -1,13 +1,31 @@
 package model;
 
+import java.util.Random;
+
 public class ClumpOfOysters extends Entity{
 
+	private boolean isVisible = true;
+	private int numOfOystersInClump= 0;
+	private int minimum = 3;
+	private int maximum = 5;
+	
 	public ClumpOfOysters(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
+		this.spawn();
 	}
 
-	int x;
+	@Override
+	public void move() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+	}
+	
+	public void spawn() {
+		Random rand = new Random();
+		this.numOfOystersInClump = rand.nextInt((maximum - minimum) + 1) + minimum;
+	}
+	
+	
 	public int getX() {
 		return x;
 	}
@@ -32,17 +50,13 @@ public class ClumpOfOysters extends Entity{
 		this.numOfOystersInClump = numOfOystersInClump;
 	}
 
-	int y;
-	int numOfOystersInClump;
-	
-	@Override
-	public void move() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
+
+	public boolean isVisible() {
+		return isVisible;
 	}
-	
-	public void spawn() {
-		
+
+	public void setVisible(boolean isVisiable) {
+		this.isVisible = isVisiable;
 	}
 
 	
