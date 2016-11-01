@@ -3,15 +3,23 @@ package model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class GabionBuilder extends Builder {
+public class GabionBuilder /*extends Builder*/ {
 
 	private int numberOfGabions;
-	private Collection<Gabion> gabions = new ArrayList<Gabion>();
-	private int numberOfLayers;
+	private int gabions;
+	private int numOfOysters;
+	private int maxGabionCapacity;
 	
-	@Override
-	public void build() {
+	
+	public void build(int numOfOystersCollected) {
+		this.numOfOysters += numOfOystersCollected;
 		
+		if(this.numOfOysters >= this.maxGabionCapacity){
+			this.numOfOysters -= this.maxGabionCapacity;
+			this.gabions += 1;
+		}else{
+			this.numOfOysters += numOfOystersCollected;
+		}
 		
 	}
 
@@ -23,20 +31,26 @@ public class GabionBuilder extends Builder {
 		this.numberOfGabions = numberOfGabions;
 	}
 
-	public Collection<Gabion> getGabions() {
+	public int getGabions() {
 		return gabions;
 	}
 
-	public void setGabions(Collection<Gabion> gabions) {
+	public void setGabions(int gabions) {
 		this.gabions = gabions;
 	}
 
 	public int getNumberOfLayers() {
-		return numberOfLayers;
+		return numOfOysters;
 	}
 
 	public void setNumberOfLayers(int numberOfLayers) {
-		this.numberOfLayers = numberOfLayers;
+		this.numOfOysters = numberOfLayers;
+	}
+
+	@Override
+	public void build() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

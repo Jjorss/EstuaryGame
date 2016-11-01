@@ -47,11 +47,11 @@ public class ClumpOfOysters extends Entity{
 		
 	}
 
-	public boolean isVisiable() {
+	public boolean isVisible() {
 		return isVisiable;
 	}
 
-	public void setVisiable(boolean isVisiable) {
+	public void setVisible(boolean isVisiable) {
 		this.isVisiable = isVisiable;
 	}
 

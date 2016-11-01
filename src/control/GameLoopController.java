@@ -92,7 +92,7 @@ public class GameLoopController {
 			System.out.println("X:" + x + "\t" + "Y: " + y);
 		}
 		for (int i = 0; i < oysters.size(); i++) {
-			if (!oysters.get(i).isVisiable()) {
+			if (!oysters.get(i).isVisible()) {
 				oysters.remove(i);
 				oysterRects.remove(i);
 			}
@@ -195,15 +195,16 @@ public class GameLoopController {
 	}
 	
 	public void handleCollectOyster(Point p) {
-		int numOfCluster;
+		int numOfClusters = 0;
 		for (int i = 0; i < oysterRects.size(); i++) {
 			if (oysterRects.get(i).getX() == p.getX() && oysterRects.get(i).getY() == p.getY()) {
-				numOfCluster = oysters.get(i).getNumOfOystersInClump();
-				oysters.get(i).setVisiable(false);
+				numOfClusters = oysters.get(i).getNumOfOystersInClump();
+				oysters.get(i).setVisible(false);
 				break;
 			}
 		}
 		// adding GB stuff		
+		gb.build(numOfClusters);
 		 
 	}
 	
