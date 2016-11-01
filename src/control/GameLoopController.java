@@ -66,8 +66,10 @@ public class GameLoopController {
 		plantBuilder = new Rectangle2D.Double(120*scale.getGridSize(), 58*scale.getGridSize(), 100, 200);
 		waves.add(new Wave(1, 120, 10));
 		waves.add(new Wave(1, 120, 20));
+		waves.add(new Wave(1, 130, 10));
 		waveRects.add(new Rectangle2D.Double(0, 0, 0, 0));
 		waveRects.add(new Rectangle2D.Double(0, 0, 0, 0));
+		waveRects.add(new Rectangle2D.Double(0,0,0,0));
 		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), 0));
 		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)shore1.getHeight()/4));
 		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(2*(shore1.getHeight()/4))));
