@@ -1,2 +1,2 @@
 # EstuaryGame
-CISC275 Game. Estuaries. Let's get it!!!
+CISC275 Game. Estuaries ^_^
