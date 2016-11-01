@@ -8,7 +8,7 @@ public class GabionBuilder extends Builder {
 	private int numberOfGabions;
 	private int gabions;
 	private int numOfOysters;
-	private int maxGabionCapacity;
+	private int maxGabionCapacity = 20;
 	
 	@Override
 	public void build(){
@@ -20,9 +20,10 @@ public class GabionBuilder extends Builder {
 		if(this.numOfOysters >= this.maxGabionCapacity){
 			this.numOfOysters -= this.maxGabionCapacity;
 			this.gabions += 1;
-		}else{
-			this.numOfOysters += numOfOystersCollected;
 		}
+		System.out.println("Num of Gabions: " + this.gabions);
+		System.out.println("Num of Oysters Collected: " + numOfOystersCollected);
+		System.out.println("Num of Oysters TOTAL: " + this.numOfOysters);
 		
 	}
 
