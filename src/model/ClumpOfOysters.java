@@ -2,7 +2,7 @@ package model;
 
 public class ClumpOfOysters extends Entity{
 
-	private boolean isVisiable = true;
+	private boolean isVisible = true;
 	
 	public ClumpOfOysters(int x, int y) {
 		super(x, y);
@@ -48,11 +48,11 @@ public class ClumpOfOysters extends Entity{
 	}
 
 	public boolean isVisible() {
-		return isVisiable;
+		return isVisible;
 	}
 
 	public void setVisible(boolean isVisiable) {
-		this.isVisiable = isVisiable;
+		this.isVisible = isVisiable;
 	}
 
 	

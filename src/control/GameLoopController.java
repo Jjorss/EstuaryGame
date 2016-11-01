@@ -67,7 +67,7 @@ public class GameLoopController {
 	}
 
 	/**
-	 * The main loop for the game were all the instantiated object's tic methods
+	 * The main loop for the game where all the instantiated object's tick methods
 	 * get called.
 	 */
 	public void loop() {
@@ -194,24 +194,20 @@ public class GameLoopController {
 		gabionRects.add(new Rectangle.Double(p.getX(), p.getY(), 50, 50));
 	}
 	
-	public void handleCollectOyster(Point p) {
+	public void handleCollectOyster(Point p, int i) {
 		int numOfClusters = 0;
-		for (int i = 0; i < oysterRects.size(); i++) {
-			if (oysterRects.get(i).getX() == p.getX() && oysterRects.get(i).getY() == p.getY()) {
-				numOfClusters = oysters.get(i).getNumOfOystersInClump();
-				oysters.get(i).setVisible(false);
-				break;
-			}
-		}
+		
+		numOfClusters = oysters.get(i).getNumOfOystersInClump();
+		oysters.get(i).setVisible(false);
 		// adding GB stuff		
 		gb.build(numOfClusters);
-		 
+		System.out.println(p);
 	}
 	
 	public void handleClick(Point p) {
-		for (Rectangle2D oyster : oysterRects) {
-			if (oyster.contains(p)) {
-				handleCollectOyster(p);
+		for (int i = 0; i < oysterRects.size(); i++) {
+			if (oysterRects.get(i).contains(p)) {
+				handleCollectOyster(p, i);
 				return;
 			}
 		}

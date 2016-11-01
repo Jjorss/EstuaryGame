@@ -3,13 +3,16 @@ package model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class GabionBuilder /*extends Builder*/ {
+public class GabionBuilder extends Builder {
 
 	private int numberOfGabions;
 	private int gabions;
 	private int numOfOysters;
 	private int maxGabionCapacity;
 	
+	@Override
+	public void build(){
+	}
 	
 	public void build(int numOfOystersCollected) {
 		this.numOfOysters += numOfOystersCollected;
@@ -47,11 +50,6 @@ public class GabionBuilder /*extends Builder*/ {
 		this.numOfOysters = numberOfLayers;
 	}
 
-	@Override
-	public void build() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	
 
