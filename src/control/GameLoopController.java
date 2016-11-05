@@ -54,15 +54,22 @@ public class GameLoopController {
 	private Rectangle2D builder;
 	private Rectangle2D gabionBuilder;
 	private Rectangle2D plantBuilder;
+	
+	private double gX ;
+	private double gY;
 
 	
 
 	public GameLoopController(Game game, Scale scale) {
 		this.game = game;
 		this.scale = scale;
+		gX = scale.getWidth() - 27*scale.getGridSize();
+		gY = scale.getHeight() - 26*scale.getGridSize();
+		
+		
 		shore1 = new Rectangle2D.Double(shore.getX() * scale.getGridSize(), shore.getY() * scale.getGridSize(), 300, 800);
 		builder = new Rectangle2D.Double(120 *scale.getGridSize(),58 *scale.getGridSize(),300,200);
-		gabionBuilder = new Rectangle2D.Double(130 * scale.getGridSize(),58*scale.getGridSize() , 218,200);
+		gabionBuilder = new Rectangle2D.Double(gX,gY , 27 * scale.getGridSize(), 26*scale.getGridSize());
 		plantBuilder = new Rectangle2D.Double(120*scale.getGridSize(), 58*scale.getGridSize(), 100, 200);
 		waves.add(new Wave(1, 120, 10));
 		waves.add(new Wave(1, 120, 20));

@@ -3,6 +3,7 @@ package view;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -34,14 +35,17 @@ import control.GameLoopController;
 public class Game extends JPanel{
 
 	private static final long serialVersionUID = 1L;
-	static Scale scale = new Scale(1280, 720, 8);
+	private static final int WIDTH = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+	private static final int HEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()-80;
+	
+	static Scale scale = new Scale(WIDTH, HEIGHT, 8);
 	GameLoopController glc = new GameLoopController(this, scale);
 	private Point click = new Point(0,0);
 	
 	public static void main(String[] args) {
 		
 		Game game = new Game();
-		
+		System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getWidth());
 		EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -53,10 +57,11 @@ public class Game extends JPanel{
 
                 JFrame frame = new JFrame("Game");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(scale.getWidth(), scale.getHeight());
+                frame.setSize(WIDTH, HEIGHT);
                 frame.setFocusable(true);
                 frame.getContentPane().add(game);
                 frame.setVisible(true);
+                
                 
                 
                 
@@ -109,7 +114,7 @@ public class Game extends JPanel{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         glc.render(g, scale.getGridSize());
-        //scale.render(g);
+        scale.render(g);
 	}
 	
 	public Point getClick() {
