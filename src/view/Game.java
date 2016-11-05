@@ -38,8 +38,9 @@ public class Game extends JPanel{
 	private static final int WIDTH = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 	private static final int HEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()-80;
 	
-	static Scale scale = new Scale(WIDTH, HEIGHT, 8);
-	GameLoopController glc = new GameLoopController(this, scale);
+	
+	static Scale scale;
+	 GameLoopController glc;
 	private Point click = new Point(0,0);
 	
 	public static void main(String[] args) {
@@ -61,17 +62,21 @@ public class Game extends JPanel{
                 frame.setFocusable(true);
                 frame.getContentPane().add(game);
                 frame.setVisible(true);
-                
+               
+                scale =  new Scale( (int)game.getBounds().getWidth(), (int)game.getBounds().getHeight(), 8);
+        		game.glc = new GameLoopController(game, scale);
                 
                 
                 
             }
         });
 		// loop
+		
 		game.mouseClick(game);
 		
 		game.start();
 	}
+	
 	
 	public void mouseClick(Game game) {
 		game.addMouseListener(new MouseAdapter() {
