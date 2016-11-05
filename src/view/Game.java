@@ -36,12 +36,15 @@ public class Game extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	private static final int WIDTH = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-	private static final int HEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()-80;
+	private static final int HEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+	
+	boolean started = false;
+	boolean init = false;
 	
 	
-	static Scale scale;
-	 GameLoopController glc;
-	private Point click = new Point(0,0);
+	static Scale scale = new Scale(WIDTH, HEIGHT, 8);
+	GameLoopController glc = new GameLoopController(this, scale);
+	
 	
 	public static void main(String[] args) {
 		
@@ -62,10 +65,9 @@ public class Game extends JPanel{
                 frame.setFocusable(true);
                 frame.getContentPane().add(game);
                 frame.setVisible(true);
-               
-                scale =  new Scale( (int)game.getBounds().getWidth(), (int)game.getBounds().getHeight(), 8);
-        		game.glc = new GameLoopController(game, scale);
-                
+                scale = new Scale((int)game.getBounds().getWidth(), (int)game.getBounds().getHeight(), 8);
+                game.started = true;
+                System.out.println("started");
                 
                 
             }
@@ -73,10 +75,9 @@ public class Game extends JPanel{
 		// loop
 		
 		game.mouseClick(game);
-		
+		System.out.println("called first");
 		game.start();
 	}
-	
 	
 	public void mouseClick(Game game) {
 		game.addMouseListener(new MouseAdapter() {
@@ -99,12 +100,15 @@ public class Game extends JPanel{
 	
 	public void start() {
 		while(true) {
-			repaint();
-			glc.loop();
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if (this.started) {
+				this.setInit(true);
+				repaint();
+				glc.loop();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -122,8 +126,16 @@ public class Game extends JPanel{
         scale.render(g);
 	}
 	
-	public Point getClick() {
-		return this.click;
+	public Scale getScale() {
+		return this.scale;
+	}
+	
+	public void setInit(boolean newInit) {
+		if (newInit != this.init) {
+			this.init = newInit;
+			glc.init();
+			System.out.println("this is happening");
+		}
 	}
 	
 }

@@ -63,29 +63,40 @@ public class GameLoopController {
 	public GameLoopController(Game game, Scale scale) {
 		this.game = game;
 		this.scale = scale;
-		gX = scale.getWidth() - 27*scale.getGridSize();
-		gY = scale.getHeight() - 26*scale.getGridSize();
+		System.out.println(game.getBounds().getWidth());
 		
 		
-		shore1 = new Rectangle2D.Double(shore.getX() * scale.getGridSize(), shore.getY() * scale.getGridSize(), 300, 800);
-		builder = new Rectangle2D.Double(120 *scale.getGridSize(),58 *scale.getGridSize(),300,200);
-		gabionBuilder = new Rectangle2D.Double(gX,gY , 27 * scale.getGridSize(), 26*scale.getGridSize());
-		plantBuilder = new Rectangle2D.Double(120*scale.getGridSize(), 58*scale.getGridSize(), 100, 200);
+//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), 0));
+//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)shore1.getHeight()/4));
+//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(2*(shore1.getHeight()/4))));
+//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(3*(shore1.getHeight()/4))));
+//		for (int i = 0; i < concreteWalls.size(); i++) {
+//			concreteRects.add(new Rectangle2D.Double((double)concreteWalls.get(i).getX(),(double)concreteWalls.get(i).getY(),
+//					20, (double)shore1.getHeight()/4));
+//		}
+	}
+	public void init() {
 		waves.add(new Wave(1, 120, 10));
 		waves.add(new Wave(1, 120, 20));
 		waves.add(new Wave(1, 130, 10));
 		waveRects.add(new Rectangle2D.Double(0, 0, 0, 0));
 		waveRects.add(new Rectangle2D.Double(0, 0, 0, 0));
 		waveRects.add(new Rectangle2D.Double(0,0,0,0));
-		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), 0));
-		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)shore1.getHeight()/4));
-		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(2*(shore1.getHeight()/4))));
-		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(3*(shore1.getHeight()/4))));
-		for (int i = 0; i < concreteWalls.size(); i++) {
-			concreteRects.add(new Rectangle2D.Double((double)concreteWalls.get(i).getX(),(double)concreteWalls.get(i).getY(),
-					20, (double)shore1.getHeight()/4));
-		}
+		
+		//shore1 = new Rectangle2D.Double(shore.getX() * game.getScale().getGridSize(), shore.getY() * game.getScale().getGridSize(), 300, 800);
+		gX = game.getScale().getWidth() - 27*game.getScale().getGridSize();
+		gY = game.getScale().getHeight() - 26*game.getScale().getGridSize();
+		
+		shore1 = new Rectangle2D.Double(shore.getX() * game.getScale().getGridSize(), shore.getY() * game.getScale().getGridSize(),
+				60*game.getScale().getGridSize(), game.getScale().getHeight());
+		
+		//shore = new Shore((int)shore1.getWidth(), (int)shore1.getHeight());
+		builder = new Rectangle2D.Double(120 *game.getScale().getGridSize(),58 *game.getScale().getGridSize(),300,200);
+		gabionBuilder = new Rectangle2D.Double(gX,gY , 27 * game.getScale().getGridSize(), 26*game.getScale().getGridSize());
+		plantBuilder = new Rectangle2D.Double(120*game.getScale().getGridSize(), 58*game.getScale().getGridSize(), 100, 200);
 	}
+	
+	
 
 	/**
 	 * The main loop for the game where all the instantiated object's tick methods
@@ -100,6 +111,7 @@ public class GameLoopController {
 				waveRects.remove(i);
 			}
 		}
+		//System.out.println(waves.size());
 		for (int i = 0; i < oysters.size(); i++) {
 			if (!oysters.get(i).isVisible()) {
 				oysters.remove(i);
@@ -170,7 +182,8 @@ public class GameLoopController {
 		}
 
 		// single way
-		shore1 = new Rectangle2D.Double(shore.getX() * scale, shore.getY() * scale, 300, 800);
+		shore1 = new Rectangle2D.Double(shore.getX() * game.getScale().getGridSize(), shore.getY() * game.getScale().getGridSize(),
+				60*game.getScale().getGridSize(), game.getScale().getHeight());
 		g2.setColor(Color.YELLOW);
 		g2.fill(shore1);
 		g2.draw(shore1);
@@ -179,6 +192,9 @@ public class GameLoopController {
 		// UI
 		//---------------------------
 		// Gabion builder/Plant builder
+		
+		
+		
 		
 		g2.setColor(Color.BLACK);
 		g2.draw(builder);
@@ -208,6 +224,7 @@ public class GameLoopController {
 				// erode shore
 				shore.erode();
 				// set wave to not visible to get deleted in logic
+				System.out.println("Wave Hit Shore");
 				waves.get(i).setVisable(false);
 			}
 
@@ -218,7 +235,7 @@ public class GameLoopController {
 			// PUT CHANGE OF HEALTH HERE IF WE DECIDE TO GO WITH HEALTH FOR
 			// GABIONS
 			for (int j = 0; j < gabionRects.size(); j++) {
-				System.out.println("index: " + j + "\t" + "Size: " + gabionRects.size());
+				
 				if (gabionRects.get(j).intersects(waveRects.get(i).getX(), waveRects.get(i).getY(),
 						waveRects.get(i).getWidth(), waveRects.get(i).getHeight())) {
 					// set wave to not visible to get deleted in logic
