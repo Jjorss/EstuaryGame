@@ -6,7 +6,7 @@ import java.util.Collection;
 public class GabionBuilder extends Builder {
 
 	private int numberOfGabions;
-	private int gabions = 3;
+	private int gabions = 300;
 	private int numOfOysters;
 	private int maxGabionCapacity = 20;
 	

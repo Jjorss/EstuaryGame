@@ -25,7 +25,7 @@ import view.Scale;
  * @author Jackson Jorss
  * @author Jael Flaquer
  * @author Ben Clark
- * @author Robert Lee
+ * @author Robert Ley
  * 
  *
  */
@@ -36,6 +36,7 @@ public class GameLoopController {
 	private Point click;
 	private GabionBuilder gb = new GabionBuilder();
 	
+	private ArrayList<Integer> numOfGabionsInRow = new ArrayList<Integer>();
 	
 	// list of entities
 	private ArrayList<Wave> waves = new ArrayList<Wave>();
@@ -47,6 +48,7 @@ public class GameLoopController {
 	private ArrayList<Rectangle2D> gabionRects = new ArrayList<Rectangle2D>();
 	private ArrayList<Rectangle2D> oysterRects = new ArrayList<Rectangle2D>();
 	private ArrayList<Rectangle2D> concreteRects = new ArrayList<Rectangle2D>();
+	private ArrayList<Rectangle2D> rows = new ArrayList<Rectangle2D>();
 
 	private Shore shore = new Shore(0, 0);
 	
@@ -72,9 +74,23 @@ public class GameLoopController {
 	public void init() {
 		int scale = game.getScale().getGridSize();
 		double gameboxHeight = game.getScale().getHeight() - (game.getScale().getHeight() * 0.2);
+		double shoreWidth = game.getScale().getWidth() * 0.35;
+		
 		GAMEBOX = new Rectangle2D.Double(0,0,game.getScale().getWidth(), (int)gameboxHeight);
 		UIBOX = new Rectangle2D.Double(0,GAMEBOX.getHeight(),game.getScale().getWidth(),
 				game.getScale().getHeight() - GAMEBOX.getHeight());
+		
+		shore1 = new Rectangle2D.Double(shore.getX() * scale, shore.getY() * scale,
+				(int)shoreWidth, GAMEBOX.getHeight());
+		
+		for (int i = 0; i < 7; i++) {
+			
+			rows.add(new Rectangle2D.Double(shore1.getWidth(),(GAMEBOX.getHeight()/7)*i,
+					GAMEBOX.getWidth()-shore1.getWidth(),GAMEBOX.getHeight()/7));
+			this.numOfGabionsInRow.add(0);
+		}
+		
+		
 		
 		waves.add(new Wave(1, 120, 10));
 		waves.add(new Wave(1, 120, 20));
@@ -87,22 +103,21 @@ public class GameLoopController {
 		gX = UIBOX.getWidth() - 27*game.getScale().getGridSize();
 		gY = UIBOX.getY();
 		
-		shore1 = new Rectangle2D.Double(shore.getX() * scale, shore.getY() * scale,
-				60*game.getScale().getGridSize(), GAMEBOX.getHeight());
+		
 		
 		
 
 		gabionBuilder = new Rectangle2D.Double(gX,gY , 27 * game.getScale().getGridSize(), UIBOX.getHeight());
 		plantBuilder = new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), 100, UIBOX.getHeight());
 		
-		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), 0));
-		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)shore1.getHeight()/4));
-		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(2*(shore1.getHeight()/4))));
-		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(3*(shore1.getHeight()/4))));
-		for (int i = 0; i < concreteWalls.size(); i++) {
-			concreteRects.add(new Rectangle2D.Double((double)concreteWalls.get(i).getX(),(double)concreteWalls.get(i).getY(),
-					20, (double)shore1.getHeight()/4));
-		}
+//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), 0));
+//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)shore1.getHeight()/4));
+//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(2*(shore1.getHeight()/4))));
+//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(3*(shore1.getHeight()/4))));
+//		for (int i = 0; i < concreteWalls.size(); i++) {
+//			concreteRects.add(new Rectangle2D.Double((double)concreteWalls.get(i).getX(),(double)concreteWalls.get(i).getY(),
+//					20, (double)shore1.getHeight()/4));
+//		}
 	}
 	
 	
@@ -205,6 +220,12 @@ public class GameLoopController {
 		//---------------------------
 		// Gabion builder/Plant builder
 		
+		g2.setColor(Color.gray);
+		for(Rectangle2D row : rows) {
+			g2.draw(row);
+//			g2.fill(row);
+		}
+		
 		g2.setColor(Color.GRAY);
 		g2.fill(gabionBuilder);
 		g2.draw(gabionBuilder);
@@ -258,12 +279,24 @@ public class GameLoopController {
 
 	public void handlePlaceGabion(Point p) {
 		System.out.println(p.getX() + ", " + p.getY());
+		int padding = 35;
+		double gabionWidth = rows.get(0).getHeight() - padding;
+		double gabionHeight = rows.get(0).getHeight() - padding;
 		// spawn gabion
 		if (gb.getGabions() != 0) {
-			gabions.add(new Gabion((int) p.getX(), (int) p.getY()));
-			gabionRects.add(new Rectangle.Double(p.getX(), p.getY(), 50, 50));
-			gb.setGabions(gb.getGabions() - 1);
+			for (int i = 0; i < rows.size(); i++) {
+				Rectangle2D row = rows.get(i);
+				if (row.contains(p) && this.numOfGabionsInRow.get(i) < 5) {
+					double y = row.getCenterY() - ((gabionHeight)/2);
+					double x = ((gabionWidth + padding) *this.numOfGabionsInRow.get(i)) + row.getX();
+					gabions.add(new Gabion((int) p.getX(), (int) p.getY()));
+					gabionRects.add(new Rectangle.Double(x,y, gabionWidth, gabionHeight));
+					gb.setGabions(gb.getGabions() - 1);
+					this.numOfGabionsInRow.set(i, this.numOfGabionsInRow.get(i)+1);
+				}
+			}
 		}
+		
 	}
 	
 	public void handleCollectOyster(Point p, int i) {
