@@ -50,8 +50,9 @@ public class GameLoopController {
 
 	private Shore shore = new Shore(0, 0);
 	// must be initialized so collision does throw a null pointer exception
+	private Rectangle2D GAMEBOX;
+	private Rectangle2D UIBOX;
 	private Rectangle2D shore1;
-	private Rectangle2D builder;
 	private Rectangle2D gabionBuilder;
 	private Rectangle2D plantBuilder;
 	
@@ -66,16 +67,14 @@ public class GameLoopController {
 		System.out.println(game.getBounds().getWidth());
 		
 		
-//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), 0));
-//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)shore1.getHeight()/4));
-//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(2*(shore1.getHeight()/4))));
-//		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(3*(shore1.getHeight()/4))));
-//		for (int i = 0; i < concreteWalls.size(); i++) {
-//			concreteRects.add(new Rectangle2D.Double((double)concreteWalls.get(i).getX(),(double)concreteWalls.get(i).getY(),
-//					20, (double)shore1.getHeight()/4));
-//		}
+
 	}
 	public void init() {
+		int scale = game.getScale().getGridSize();
+		GAMEBOX = new Rectangle2D.Double(0,0,game.getScale().getWidth(), game.getScale().getHeight() - (30*game.getScale().getGridSize()));
+		UIBOX = new Rectangle2D.Double(0,GAMEBOX.getHeight(),game.getScale().getWidth(),
+				game.getScale().getHeight() - GAMEBOX.getHeight());
+		
 		waves.add(new Wave(1, 120, 10));
 		waves.add(new Wave(1, 120, 20));
 		waves.add(new Wave(1, 130, 10));
@@ -83,17 +82,26 @@ public class GameLoopController {
 		waveRects.add(new Rectangle2D.Double(0, 0, 0, 0));
 		waveRects.add(new Rectangle2D.Double(0,0,0,0));
 		
-		//shore1 = new Rectangle2D.Double(shore.getX() * game.getScale().getGridSize(), shore.getY() * game.getScale().getGridSize(), 300, 800);
-		gX = game.getScale().getWidth() - 27*game.getScale().getGridSize();
-		gY = game.getScale().getHeight() - 26*game.getScale().getGridSize();
 		
-		shore1 = new Rectangle2D.Double(shore.getX() * game.getScale().getGridSize(), shore.getY() * game.getScale().getGridSize(),
-				60*game.getScale().getGridSize(), game.getScale().getHeight());
+		gX = UIBOX.getWidth() - 27*game.getScale().getGridSize();
+		gY = UIBOX.getY();
 		
-		//shore = new Shore((int)shore1.getWidth(), (int)shore1.getHeight());
-		builder = new Rectangle2D.Double(120 *game.getScale().getGridSize(),58 *game.getScale().getGridSize(),300,200);
-		gabionBuilder = new Rectangle2D.Double(gX,gY , 27 * game.getScale().getGridSize(), 26*game.getScale().getGridSize());
-		plantBuilder = new Rectangle2D.Double(120*game.getScale().getGridSize(), 58*game.getScale().getGridSize(), 100, 200);
+		shore1 = new Rectangle2D.Double(shore.getX() * scale, shore.getY() * scale,
+				60*game.getScale().getGridSize(), GAMEBOX.getHeight());
+		
+		
+
+		gabionBuilder = new Rectangle2D.Double(gX,gY , 27 * game.getScale().getGridSize(), UIBOX.getHeight());
+		plantBuilder = new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), 100, UIBOX.getHeight());
+		
+		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), 0));
+		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)shore1.getHeight()/4));
+		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(2*(shore1.getHeight()/4))));
+		concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), (int)(3*(shore1.getHeight()/4))));
+		for (int i = 0; i < concreteWalls.size(); i++) {
+			concreteRects.add(new Rectangle2D.Double((double)concreteWalls.get(i).getX(),(double)concreteWalls.get(i).getY(),
+					20, (double)shore1.getHeight()/4));
+		}
 	}
 	
 	
@@ -152,9 +160,14 @@ public class GameLoopController {
 
 	public void render(Graphics g, int scale) {
 		Graphics2D g2 = (Graphics2D) g;
-		// wave1 = new Rectangle2D.Double(wave.getX()* scale,wave.getY()* scale,
-		// 50, 50);
-		// creating new rectangles and tieing them to waves
+		g2.setColor(Color.cyan);
+		g2.draw(GAMEBOX);
+		g2.fill(GAMEBOX);
+		
+		g2.setColor(Color.WHITE);
+		g2.draw(UIBOX);
+		g2.fill(UIBOX);
+		
 		for (int i = 0; i < waveRects.size(); i++) {
 			waveRects.set(i, new Rectangle2D.Double(waves.get(i).getX() * scale, waves.get(i).getY() * scale, 50, 50));
 		}
@@ -182,8 +195,6 @@ public class GameLoopController {
 		}
 
 		// single way
-		shore1 = new Rectangle2D.Double(shore.getX() * game.getScale().getGridSize(), shore.getY() * game.getScale().getGridSize(),
-				60*game.getScale().getGridSize(), game.getScale().getHeight());
 		g2.setColor(Color.YELLOW);
 		g2.fill(shore1);
 		g2.draw(shore1);
@@ -193,23 +204,10 @@ public class GameLoopController {
 		//---------------------------
 		// Gabion builder/Plant builder
 		
-		
-		
-		
-		g2.setColor(Color.BLACK);
-		g2.draw(builder);
-		
 		g2.setColor(Color.GRAY);
 		g2.fill(gabionBuilder);
 		g2.draw(gabionBuilder);
-		
-		Font f1 = new Font("Arial", 50, 100);
-		g2.setFont(f1);
-		g2.setColor(Color.CYAN);
-		g2.drawString("" + gb.getNumberOfOysters(), 135 * scale,80*scale);
-		g2.setColor(Color.WHITE);
-		g2.drawString("" + gb.getGabions(), 150 * scale,80*scale);
-		
+
 		g2.setColor(Color.GREEN);
 		g2.fill(plantBuilder);
 		g2.draw(plantBuilder);
@@ -223,6 +221,7 @@ public class GameLoopController {
 				// wave hit shore
 				// erode shore
 				shore.erode();
+				shore1.setRect(shore1.getX(), shore1.getY(), shore1.getWidth() - (10*game.getScale().getGridSize()), shore1.getHeight());
 				// set wave to not visible to get deleted in logic
 				System.out.println("Wave Hit Shore");
 				waves.get(i).setVisable(false);
