@@ -49,12 +49,12 @@ public class GameLoopController {
 	private ArrayList<Rectangle2D> concreteRects = new ArrayList<Rectangle2D>();
 
 	private Shore shore = new Shore(0, 0);
-	// must be initialized so collision does throw a null pointer exception
-	private Rectangle2D GAMEBOX;
-	private Rectangle2D UIBOX;
-	private Rectangle2D shore1;
-	private Rectangle2D gabionBuilder;
-	private Rectangle2D plantBuilder;
+	
+	private Rectangle2D GAMEBOX = new Rectangle2D.Double(0,0,0,0);
+	private Rectangle2D UIBOX = new Rectangle2D.Double(0,0,0,0);
+	private Rectangle2D shore1 = new Rectangle2D.Double(0,0,0,0);
+	private Rectangle2D gabionBuilder = new Rectangle2D.Double(0,0,0,0);
+	private Rectangle2D plantBuilder = new Rectangle2D.Double(0,0,0,0);
 	
 	private double gX ;
 	private double gY;
