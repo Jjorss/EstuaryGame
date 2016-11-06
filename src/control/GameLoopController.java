@@ -16,6 +16,7 @@ import model.Gabion;
 import model.GabionBuilder;
 import model.Oysters;
 import model.Shore;
+import model.Timer;
 import model.Wave;
 import view.Game;
 import view.Scale;
@@ -35,6 +36,8 @@ public class GameLoopController {
 	private Scale scale;
 	private Point click;
 	private GabionBuilder gb = new GabionBuilder();
+	Timer timer = new Timer();
+	private String time = "" + timer.getTime();
 	
 	private ArrayList<Integer> numOfGabionsInRow = new ArrayList<Integer>();
 	
@@ -127,6 +130,7 @@ public class GameLoopController {
 	 * get called.
 	 */
 	public void loop() {
+		timer.countDown();
 		for (int i = 0; i < waves.size(); i++) {
 			if (waves.get(i).isVisable()) {
 				waves.get(i).move();
@@ -225,6 +229,10 @@ public class GameLoopController {
 			g2.draw(row);
 //			g2.fill(row);
 		}
+		Font f1 = new Font("Arial", 50,100);
+		g2.setFont(f1);
+		g2.setColor(Color.BLACK);
+		g2.drawString(timer.getTime()+ "", (int)UIBOX.getCenterX(), (int)UIBOX.getCenterY());
 		
 		g2.setColor(Color.GRAY);
 		g2.fill(gabionBuilder);
