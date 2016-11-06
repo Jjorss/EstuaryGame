@@ -49,6 +49,7 @@ public class Game extends JPanel{
 	public static void main(String[] args) {
 		
 		Game game = new Game();
+		game.started = true;
 		System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getWidth());
 		EventQueue.invokeLater(new Runnable() {
             @Override
@@ -58,7 +59,7 @@ public class Game extends JPanel{
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                     ex.printStackTrace();
                 }
-
+                
                 JFrame frame = new JFrame("Game");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setSize(WIDTH, HEIGHT);
@@ -66,7 +67,7 @@ public class Game extends JPanel{
                 frame.getContentPane().add(game);
                 frame.setVisible(true);
                 scale = new Scale((int)game.getBounds().getWidth(), (int)game.getBounds().getHeight(), 8);
-                game.started = true;
+                
                 System.out.println("started");
                 
                 
@@ -122,8 +123,11 @@ public class Game extends JPanel{
 	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        glc.render(g, scale.getGridSize());
-        scale.render(g);
+        if (this.init) {
+        	glc.render(g, scale.getGridSize());
+        }
+        
+        //scale.render(g);
 	}
 	
 	public Scale getScale() {

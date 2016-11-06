@@ -71,7 +71,8 @@ public class GameLoopController {
 	}
 	public void init() {
 		int scale = game.getScale().getGridSize();
-		GAMEBOX = new Rectangle2D.Double(0,0,game.getScale().getWidth(), game.getScale().getHeight() - (30*game.getScale().getGridSize()));
+		double gameboxHeight = game.getScale().getHeight() - (game.getScale().getHeight() * 0.2);
+		GAMEBOX = new Rectangle2D.Double(0,0,game.getScale().getWidth(), (int)gameboxHeight);
 		UIBOX = new Rectangle2D.Double(0,GAMEBOX.getHeight(),game.getScale().getWidth(),
 				game.getScale().getHeight() - GAMEBOX.getHeight());
 		
