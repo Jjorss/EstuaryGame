@@ -1,20 +1,33 @@
 package model;
 
 public class Gabion extends Wall {
-	
-	
-	public Gabion(int x, int y) {
+	private boolean isVisible = true;
+	private int health = 3;
+	private int rowNum;
+	public Gabion(int x, int y, int rowNum) {
 		super(x, y);
+		this.rowNum = rowNum;
 		
 	}
 	
 	@Override
 	public void changeHealth(int newHealth) {
 		// TODO Auto-generated method stub
-		super.health = newHealth;		
+		this.health = newHealth;
 	}
 	
 	public int getHealth() {
-		return super.health;
+		return this.health;
+	}
+
+	public boolean isVisible() {
+		return isVisible;
+	}
+
+	public void setVisible(boolean isVisible) {
+		this.isVisible = isVisible;
+	}
+	public int getRowNum() {
+		return this.rowNum;
 	}
 }

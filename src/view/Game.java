@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -46,12 +47,12 @@ public class Game extends JPanel{
 	GameLoopController glc = new GameLoopController(this, scale);
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InvocationTargetException, InterruptedException {
 		
 		Game game = new Game();
 		game.started = true;
 		System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getWidth());
-		EventQueue.invokeLater(new Runnable() {
+		EventQueue.invokeAndWait(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -72,12 +73,14 @@ public class Game extends JPanel{
                 
                 
             }
+            
         });
 		// loop
 		
 		game.mouseClick(game);
 		System.out.println("called first");
 		game.start();
+		
 	}
 	
 	public void mouseClick(Game game) {
@@ -106,7 +109,7 @@ public class Game extends JPanel{
 				repaint();
 				glc.loop();
 				try {
-					Thread.sleep(100);
+					Thread.sleep(50);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
