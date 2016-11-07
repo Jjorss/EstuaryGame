@@ -84,7 +84,7 @@ public class GameLoopController {
 		spawner = new Spawner(this, this.game);
 		UIBOX = new Rectangle2D.Double(0,0, width, uiBoxHeight);
 		GAMEBOX = new Rectangle2D.Double(0, this.UIBOX.getHeight(), width, 
-				this.game.getBounds().getHeight() - this.UIBOX.getHeight());
+				height - this.UIBOX.getHeight());
 		
 		this.shore = new Shore((int)this.GAMEBOX.getX(), (int)this.GAMEBOX.getY());
 		shore1 = new Rectangle2D.Double(shore.getX(), shore.getY(), (int) shoreWidth,
@@ -93,6 +93,11 @@ public class GameLoopController {
 		for (int i = 0; i < 7; i++) {
 			rows.add(new Rectangle2D.Double(shore1.getWidth(), (UIBOX.getHeight() + (GAMEBOX.getHeight()/ 7) * i),
 					GAMEBOX.getWidth() - shore1.getWidth(), GAMEBOX.getHeight() / 7));
+			
+			concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(),(int)(GAMEBOX.getHeight()/ 7) * i));
+			concreteRects.add(new Rectangle2D.Double(shore1.getWidth(), (UIBOX.getHeight() + (GAMEBOX.getHeight()/ 7) * i),
+					20, GAMEBOX.getHeight() / 7));
+			
 			// in initializing row araylist
 			this.numOfGabionsInRow.add(0);
 		}
@@ -103,18 +108,6 @@ public class GameLoopController {
 		gabionBuilder = new Rectangle2D.Double(gX, gY, 27 * scale, UIBOX.getHeight());
 		plantBuilder = new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), 100, UIBOX.getHeight());
 
-//		 concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(), 0));
-//		 concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(),
-//		 (int)shore1.getHeight()/4));
-//		 concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(),
-//		 (int)(2*(shore1.getHeight()/4))));
-//		 concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(),
-//		 (int)(3*(shore1.getHeight()/4))));
-//		 for (int i = 0; i < concreteWalls.size(); i++) {
-//		 concreteRects.add(new
-//		 Rectangle2D.Double((double)concreteWalls.get(i).getX(),(double)concreteWalls.get(i).getY(),
-//		 20, (double)shore1.getHeight()/4));
-//		 }
 	}
 
 	/**
