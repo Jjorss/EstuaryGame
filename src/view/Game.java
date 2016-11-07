@@ -133,6 +133,7 @@ public class Game extends JPanel{
         //scale.render(g);
 	}
 	
+	@SuppressWarnings("static-access")
 	public Scale getScale() {
 		return this.scale;
 	}

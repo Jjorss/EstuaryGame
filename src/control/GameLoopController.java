@@ -75,20 +75,28 @@ public class GameLoopController {
 
 	public void init() {
 		int scale = game.getScale().getGridSize();
-		double gameboxHeight = game.getScale().getHeight() - (game.getScale().getHeight() * 0.2);
+		double uiBoxHeight = game.getScale().getHeight() * 0.2;
+		//double gameboxHeight = game.getScale().getHeight() - (game.getScale().getHeight() * 0.2);
 		double shoreWidth = game.getScale().getWidth() * 0.35;
 		spawner = new Spawner(this, this.game);
+		UIBOX = new Rectangle2D.Double(0,0, this.game.getScale().getWidth(), uiBoxHeight);
+		GAMEBOX = new Rectangle2D.Double(0, this.UIBOX.getHeight(), game.getScale().getWidth(), 
+				this.game.getScale().getHeight() - this.UIBOX.getHeight());
+		
+		System.out.println("GAMEBOX y: " + (this.game.getScale().getHeight() - this.UIBOX.getHeight()));
+		this.shore = new Shore((int)this.GAMEBOX.getX(), (int)this.GAMEBOX.getY());
+		System.out.println("SHORE: " + this.shore.getY());
+		
+//		GAMEBOX = new Rectangle2D.Double(0, 0, game.getScale().getWidth(), (int) gameboxHeight);
+//		UIBOX = new Rectangle2D.Double(0, GAMEBOX.getHeight(), game.getScale().getWidth(),
+//				game.getScale().getHeight() - GAMEBOX.getHeight());
 
-		GAMEBOX = new Rectangle2D.Double(0, 0, game.getScale().getWidth(), (int) gameboxHeight);
-		UIBOX = new Rectangle2D.Double(0, GAMEBOX.getHeight(), game.getScale().getWidth(),
-				game.getScale().getHeight() - GAMEBOX.getHeight());
-
-		shore1 = new Rectangle2D.Double(shore.getX() * scale, shore.getY() * scale, (int) shoreWidth,
+		shore1 = new Rectangle2D.Double(shore.getX(), shore.getY(), (int) shoreWidth,
 				GAMEBOX.getHeight());
 
 		for (int i = 0; i < 7; i++) {
 
-			rows.add(new Rectangle2D.Double(shore1.getWidth(), (GAMEBOX.getHeight() / 7) * i,
+			rows.add(new Rectangle2D.Double(shore1.getWidth(), (UIBOX.getHeight() + (GAMEBOX.getHeight()/ 7) * i),
 					GAMEBOX.getWidth() - shore1.getWidth(), GAMEBOX.getHeight() / 7));
 			this.numOfGabionsInRow.add(0);
 		}
@@ -128,38 +136,21 @@ public class GameLoopController {
 		spawner.spawn();
 		timer.countDown();
 		for (int i = 0; i < waves.size(); i++) {
-			if (waves.get(i).isVisable()) {
-				waves.get(i).move();
-				waveRects.get(i).setRect(waves.get(i).getX(), waveRects.get(i).getY(), waveRects.get(i).getWidth(),
-						waveRects.get(i).getHeight());
+			
+			waves.get(i).move();
+			waveRects.get(i).setRect(waves.get(i).getX(), waveRects.get(i).getY(), waveRects.get(i).getWidth(),
+					waveRects.get(i).getHeight());
 				
+		}	
+	
+		// System.out.println(waves.size());
+		for (int i = 0; i < oysters.size(); i++) {
+			if (!oysters.get(i).isVisible()) {
+				oysters.remove(i);
+				oysterRects.remove(i);
 			}
-			//else {
-//				waves.remove(i);
-//				waveRects.remove(i);
-//			}
 		}
-//		for (int i = 0; i < gabions.size(); i++) {
-//			if (!gabions.get(i).isVisible()) {
-//				gabions.remove(i);
-//				gabionRects.remove(i);
-//				
-//			}
-//		}
-//		
-//		// System.out.println(waves.size());
-//		for (int i = 0; i < oysters.size(); i++) {
-//			if (!oysters.get(i).isVisible()) {
-//				oysters.remove(i);
-//				oysterRects.remove(i);
-//			}
-//		}
-//		for (int i = 0; i < concreteWalls.size(); i++) {
-//			if (!concreteWalls.get(i).isVisible()) {
-//				concreteWalls.remove(i);
-//				concreteRects.remove(i);
-//			}
-//		}
+
 		// oyster logic
 		if (oysters.size() < 4) {
 			Random rand = new Random();
@@ -185,13 +176,14 @@ public class GameLoopController {
 
 	public void render(Graphics g, int scale) {
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setColor(Color.cyan);
-		g2.draw(GAMEBOX);
-		g2.fill(GAMEBOX);
-
+		
 		g2.setColor(Color.WHITE);
 		g2.draw(UIBOX);
 		g2.fill(UIBOX);
+		
+		g2.setColor(Color.cyan);
+		g2.draw(GAMEBOX);
+		g2.fill(GAMEBOX);
 
 		// for (int i = 0; i < waveRects.size(); i++) {
 		// waveRects.set(i, new Rectangle2D.Double(waves.get(i).getX() * scale,
@@ -270,9 +262,8 @@ public class GameLoopController {
 				shore.erode();
 				shore1.setRect(shore1.getX(), shore1.getY(), shore1.getWidth() - (10 * game.getScale().getGridSize()),
 						shore1.getHeight());
-				// set wave to not visible to get deleted in logic
+				
 				System.out.println("Wave Hit Shore");
-				waves.get(i).setVisable(false);
 				whatToRemove.add(new EntityStruct(i, "wave"));
 
 			}
@@ -283,16 +274,19 @@ public class GameLoopController {
 
 				if (gabionRects.get(j).intersects(waveRects.get(i).getX(), waveRects.get(i).getY(),
 						waveRects.get(i).getWidth(), waveRects.get(i).getHeight())) {
-					// set wave to not visible to get deleted in logic
-					waves.get(i).setVisable(false);
+					
 					whatToRemove.add(new EntityStruct(i, "wave"));
 					gabions.get(j).changeHealth(gabions.get(j).getHealth() - 1);
 					System.out.println("wave hit gabion");
 					if (gabions.get(j).getHealth() <=0) {
-						gabions.get(j).setVisible(false);
 						whatToRemove.add(new EntityStruct(j, "gabion"));
-						
-						this.numOfGabionsInRow.set(gabions.get(j).getRowNum(), this.numOfGabionsInRow.get(gabions.get(j).getRowNum())-1);
+						// debugging only
+						try {
+							this.numOfGabionsInRow.set(gabions.get(j).getRowNum(), this.numOfGabionsInRow.get(gabions.get(j).getRowNum())-1);
+						} catch(IndexOutOfBoundsException e) {
+							System.out.println(gabions.get(j).getRowNum());
+							e.printStackTrace();
+						}
 						System.out.println("row: " + j + " " + this.numOfGabionsInRow.get(i) );
 					}
 				}
@@ -300,9 +294,9 @@ public class GameLoopController {
 			for (int j = 0; j < concreteRects.size(); j++) {
 				if (concreteRects.get(j).intersects(waveRects.get(i).getX(), waveRects.get(i).getY(),
 						waveRects.get(i).getWidth(), waveRects.get(i).getHeight())) {
-					waves.get(i).setVisable(false);
+					
 					whatToRemove.add(new EntityStruct(i,"wave"));
-					concreteWalls.get(j).setVisible(false);
+					
 					whatToRemove.add(new EntityStruct(j, "concrete"));
 				}
 			}
@@ -338,7 +332,7 @@ public class GameLoopController {
 				if (row.contains(p) && this.numOfGabionsInRow.get(i) < 5) {
 					double y = row.getCenterY() - ((gabionHeight) / 2);
 					double x = ((gabionWidth + padding) * this.numOfGabionsInRow.get(i)) + row.getX();
-					gabions.add(new Gabion((int) x, (int) y, (int) (y/rows.get(0).getHeight())));
+					gabions.add(new Gabion((int) x, (int) y, i));
 					gabionRects.add(new Rectangle.Double(x, y, gabionWidth, gabionHeight));
 					gb.setGabions(gb.getGabions() - 1);
 					this.numOfGabionsInRow.set(i, this.numOfGabionsInRow.get(i) + 1);

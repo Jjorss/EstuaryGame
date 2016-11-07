@@ -4,11 +4,13 @@ public class Shore extends Entity {
 
 	private int health = 100;
 	private int numberOfHorseshoeCrabs = 0;
-	private int x;
-	private int y;
+	private int x = 0;
+	private int y = 0;
 	
 	public Shore(int x, int y) {
-		super(x, y);
+		super(x,y);
+		this.x = x;
+		this.y = y;
 		// TODO Auto-generated constructor stub
 	}
 	
