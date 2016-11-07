@@ -118,11 +118,9 @@ public class GameLoopController {
 		spawner.spawn();
 		timer.countDown();
 		for (int i = 0; i < waves.size(); i++) {
-			
 			waves.get(i).move();
 			waveRects.get(i).setRect(waves.get(i).getX(), waveRects.get(i).getY(), waveRects.get(i).getWidth(),
 					waveRects.get(i).getHeight());
-				
 		}	
 	
 		// System.out.println(waves.size());
@@ -131,18 +129,6 @@ public class GameLoopController {
 				oysters.remove(i);
 				oysterRects.remove(i);
 			}
-		}
-
-		// oyster logic
-		if (oysters.size() < 4) {
-			Random rand = new Random();
-			int shore = (int) shore1.getWidth() / scale.getGridSize();
-			int x = rand.nextInt(100) + shore;
-			x = x * scale.getGridSize() + (int) (shore1.getWidth() / scale.getGridSize());
-			int y = (rand.nextInt(50) + 10) * scale.getGridSize();
-			oysters.add(new ClumpOfOysters(x, y));
-			oysterRects.add(new Rectangle2D.Double(x, y, 10, 10));
-			
 		}
 
 		// collision detections
@@ -167,17 +153,11 @@ public class GameLoopController {
 		g2.draw(GAMEBOX);
 		g2.fill(GAMEBOX);
 
-		// for (int i = 0; i < waveRects.size(); i++) {
-		// waveRects.set(i, new Rectangle2D.Double(waves.get(i).getX() * scale,
-		// waves.get(i).getY() * scale, 50, 50));
-		// }
-
 		// abstract way
 		g2.setColor(Color.BLUE);
 		for (Rectangle2D rect : waveRects) {
 			g2.draw(rect);
 			g2.fill(rect);
-			
 		}
 
 		g2.setColor(Color.BLACK);
@@ -355,6 +335,22 @@ public class GameLoopController {
 
 	public ArrayList<Rectangle2D> getWaveRects() {
 		return waveRects;
+	}
+
+	public ArrayList<ClumpOfOysters> getOysters() {
+		return oysters;
+	}
+
+	public ArrayList<Rectangle2D> getOysterRects() {
+		return oysterRects;
+	}
+
+	public Rectangle2D getShore1() {
+		return shore1;
+	}
+
+	public Rectangle2D getGAMEBOX() {
+		return GAMEBOX;
 	}
 
 }
