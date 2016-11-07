@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
@@ -66,7 +68,34 @@ public class Game extends JPanel{
                 frame.setSize(WIDTH, HEIGHT);
                 frame.setFocusable(true);
                 frame.getContentPane().add(game);
+                frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+                frame.setUndecorated(true);
+                //frame.setVisible(true);
                 frame.setVisible(true);
+                frame.addKeyListener(new KeyListener() {
+
+                	@Override
+        			public void keyPressed(KeyEvent e) {
+        				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        					System.exit(0);
+        					
+        				}
+        				System.out.println("IM PRESING A KEY");
+        			}
+
+					@Override
+					public void keyReleased(KeyEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+                	
+                });
                 scale = new Scale((int)game.getBounds().getWidth(), (int)game.getBounds().getHeight(), 8);
                 
                 System.out.println("started");
@@ -78,6 +107,7 @@ public class Game extends JPanel{
 		// loop
 		
 		game.mouseClick(game);
+		
 		System.out.println("called first");
 		game.start();
 		
@@ -94,6 +124,7 @@ public class Game extends JPanel{
 		
 		});
 	}
+	
 	
 	
 	
