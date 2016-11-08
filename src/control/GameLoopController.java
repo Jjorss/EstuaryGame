@@ -62,9 +62,16 @@ public class GameLoopController {
 	private Rectangle2D shore1 = new Rectangle2D.Double(0, 0, 0, 0);
 	private Rectangle2D gabionBuilder = new Rectangle2D.Double(0, 0, 0, 0);
 	private Rectangle2D plantBuilder = new Rectangle2D.Double(0, 0, 0, 0);
+	private Rectangle2D uiGabion = new Rectangle2D.Double(0,0,0,0);
 
+	private boolean renderDragGabion = false;
+	
 	private double gX;
 	private double gY;
+	
+	private int gbPadding = 35;
+	private double gabionWidth;
+	private double gabionHeight;
 
 	public GameLoopController(Game game, Scale scale) {
 		this.game = game;
@@ -102,10 +109,16 @@ public class GameLoopController {
 			this.numOfGabionsInRow.add(0);
 		}
 
-		gX = UIBOX.getWidth() - 27 * scale;
+		gabionWidth = rows.get(0).getHeight() - gbPadding;
+		gabionHeight = rows.get(0).getHeight() - gbPadding;
+		
+		double gWidth = 60 * scale;
+		gX = UIBOX.getWidth() - gWidth;
 		gY = UIBOX.getY();
 
-		gabionBuilder = new Rectangle2D.Double(gX, gY, 27 * scale, UIBOX.getHeight());
+		gabionBuilder = new Rectangle2D.Double(gX, gY, gWidth, UIBOX.getHeight());
+		uiGabion = new Rectangle2D.Double(gabionBuilder.getCenterX() - (gabionWidth),gabionBuilder.getCenterY() - (gabionHeight/2),
+				gabionWidth, gabionHeight);
 		plantBuilder = new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), 100, UIBOX.getHeight());
 
 	}
@@ -184,20 +197,50 @@ public class GameLoopController {
 		// ---------------------------
 		// Gabion builder/Plant builder
 
-		g2.setColor(Color.gray);
-		for (Rectangle2D row : rows) {
-			g2.draw(row);
-			// g2.fill(row);
-		}
+		
 		Font f1 = new Font("Arial", 50, 100);
 		g2.setFont(f1);
 		g2.setColor(Color.BLACK);
 		g2.drawString(timer.getTime() + "", (int) UIBOX.getCenterX(), (int) UIBOX.getCenterY());
-
+		
 		g2.setColor(Color.GRAY);
 		g2.fill(gabionBuilder);
 		g2.draw(gabionBuilder);
 
+		// GabionBuilder Meter
+		g2.setColor(Color.ORANGE);
+		double gbPercentage = (double)gb.getNumberOfOysters() / (double)gb.getMaxGabionCapacity();
+		double maxHeight = gabionBuilder.getHeight();
+		double height = maxHeight * gbPercentage;
+		double width = gabionBuilder.getWidth()/10;
+		double x = gabionBuilder.getX(); //- (width/2);
+		double y = maxHeight - height;
+		Rectangle2D gabionMeter = new Rectangle2D.Double(x, y, width, height);
+		g2.draw(gabionMeter);
+		g2.fill(gabionMeter);
+		// Fake gabion in UI meter
+		if (gb.getGabions() == 0) {
+			g2.setColor(new Color(0, 0, 0, 50));
+		} else {
+			g2.setColor(new Color(0, 0, 0, 255));
+		}
+		g2.draw(uiGabion);
+		g2.fill(uiGabion);
+		
+		if (this.renderDragGabion) {
+			g2.draw(this.renderDragGabion(game.getMouseCords()));
+			g2.setColor(Color.gray);
+			for (Rectangle2D row : rows) {
+				g2.draw(row);
+				
+			}
+		}
+		
+		// number of gabions
+		g2.setColor(Color.WHITE);
+		g2.drawString("" + gb.getGabions(), (int)gabionBuilder.getCenterX() + (f1.getSize()/2), (int)gabionBuilder.getCenterY());
+		
+		// plant meter
 		g2.setColor(Color.GREEN);
 		g2.fill(plantBuilder);
 		g2.draw(plantBuilder);
@@ -284,16 +327,14 @@ public class GameLoopController {
 
 	public void handlePlaceGabion(Point p) {
 		//System.out.println(p.getX() + ", " + p.getY());
-		int padding = 35;
-		double gabionWidth = rows.get(0).getHeight() - padding;
-		double gabionHeight = rows.get(0).getHeight() - padding;
+		
 		// spawn gabion
 		if (gb.getGabions() != 0) {
 			for (int i = 0; i < rows.size(); i++) {
 				Rectangle2D row = rows.get(i);
 				if (row.contains(p) && this.numOfGabionsInRow.get(i) < 5) {
 					double y = row.getCenterY() - ((gabionHeight) / 2);
-					double x = ((gabionWidth + padding) * this.numOfGabionsInRow.get(i)) + row.getX();
+					double x = ((gabionWidth + gbPadding) * this.numOfGabionsInRow.get(i)) + row.getX();
 					gabions.add(new Gabion((int) x, (int) y, i));
 					gabionRects.add(new Rectangle.Double(x, y, gabionWidth, gabionHeight));
 					gb.setGabions(gb.getGabions() - 1);
@@ -301,6 +342,7 @@ public class GameLoopController {
 				}
 			}
 		}
+		this.renderDragGabion = false;
 
 	}
 
@@ -313,16 +355,33 @@ public class GameLoopController {
 		gb.build(numOfClusters);
 		//System.out.println(p);
 	}
+	
+	public Rectangle2D renderDragGabion(Point p) {
+		Rectangle2D r = new Rectangle2D.Double(p.getX()-(uiGabion.getWidth()/2),p.getY()-(uiGabion.getWidth()/2),uiGabion.getWidth(),uiGabion.getHeight());
+		return r;
+	}
+	
+	public void handleDragGabion(Point p) {
+		if (uiGabion.contains(p)) {
+			System.out.println("uiGabion clicked");
+			this.renderDragGabion = true;
+			game.setDragging(true);
+		}		
+	}
 
-	public void handleClick(Point p) {
+	public Point getMousePressed(Point p) {
+		return p;
+	}
+	
+	public void handlePressed(Point p) {
 		for (int i = 0; i < oysterRects.size(); i++) {
 			if (oysterRects.get(i).contains(p)) {
 				handleCollectOyster(p, i);
 				return;
 			}
 		}
-		handlePlaceGabion(p);
-		return;
+		this.handleDragGabion(p);
+		
 	}
 
 	public ArrayList<Wave> getWaves() {

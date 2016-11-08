@@ -32,19 +32,21 @@ public class Spawner {
 	}
 	
 	public void spawnOysters(int intensity, int time) {
+		Random rand = new Random();
+		int width = 50;
+		int height = 50;
+		int padding = 10;
+		
+		double xLeftBound = glc.getRows().get(0).getX() + width + padding;
+		double xRightBound = glc.getGAMEBOX().getWidth() - width - padding;
+		int x = (int) (rand.nextInt((int) ((xRightBound - xLeftBound) + 1)) + xLeftBound);
+		double yTopBound = glc.getGAMEBOX().getY() + height + padding;
+		double yBottomBound = glc.getGAMEBOX().getHeight() - height - padding;
+		int y = (int) (rand.nextInt((int) ((yBottomBound - yTopBound) + 1)) + yTopBound);
+		
 		if (glc.getOysters().size() < 4) {
-			Random rand = new Random();
-			
-			double xLeftBound = glc.getShore1().getWidth();
-			double xRightBound = glc.getGAMEBOX().getWidth();
-			int x = (int) (rand.nextInt((int) ((xRightBound - xLeftBound) + 1)) + xLeftBound);
-			double yTopBound = glc.getGAMEBOX().getY();
-			double yBottomBound = glc.getGAMEBOX().getHeight();
-			int y = (int) (rand.nextInt((int) ((yBottomBound - yTopBound) + 1)) + yTopBound);
-			
-			
 			glc.getOysters().add(new ClumpOfOysters(x, y));
-			glc.getOysterRects().add(new Rectangle2D.Double(x, y, 10, 10));
+			glc.getOysterRects().add(new Rectangle2D.Double(x, y, width, height));
 			
 		}
 	}

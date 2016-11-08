@@ -5,9 +5,9 @@ import java.util.Collection;
 
 public class GabionBuilder extends Builder {
 
-	private int numberOfGabions;
-	private int gabions = 300;
-	private int numOfOysters;
+	
+	private int gabions = 3;
+	private int numOfOysters = 0;
 	private int maxGabionCapacity = 20;
 	
 	@Override
@@ -27,14 +27,7 @@ public class GabionBuilder extends Builder {
 		
 	}
 
-	public int getNumberOfGabions() {
-		return numberOfGabions;
-	}
-
-	public void setNumberOfGabions(int numberOfGabions) {
-		this.numberOfGabions = numberOfGabions;
-	}
-
+	
 	public int getGabions() {
 		return gabions;
 	}
@@ -49,6 +42,10 @@ public class GabionBuilder extends Builder {
 
 	public void setNumberOfLayers(int numberOfLayers) {
 		this.numOfOysters = numberOfLayers;
+	}
+
+	public int getMaxGabionCapacity() {
+		return maxGabionCapacity;
 	}
 
 	

@@ -43,6 +43,9 @@ public class Game extends JPanel{
 	
 	boolean started = false;
 	boolean init = false;
+	boolean dragging = false;
+	
+	private Point mouseCords = new Point(0,0);
 	
 	
 	static Scale scale = new Scale(WIDTH, HEIGHT, 8);
@@ -107,7 +110,7 @@ public class Game extends JPanel{
 		// loop
 		
 		game.mouseClick(game);
-		
+		game.mouseMotion(game);
 		System.out.println("called first");
 		game.start();
 		
@@ -117,11 +120,32 @@ public class Game extends JPanel{
 		game.addMouseListener(new MouseAdapter() {
 			@Override
             public void mouseReleased(MouseEvent e) {
-                //game.click = e.getPoint();
-                //glc.handlePlaceGabion(e.getPoint());
-                glc.handleClick(e.getPoint());
+                if (game.dragging) {
+                	glc.handlePlaceGabion(e.getPoint());
+                	game.dragging = false;
+                }
+                
             }
+			@Override
+			public void mousePressed(MouseEvent e) {
+				glc.handlePressed(e.getPoint());
+				System.out.println("mouse pressed");
+			}
 		
+		});
+	}
+	public void mouseMotion(Game game) {
+		game.addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+		       
+		    }
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				game.setMouseCords(e.getPoint());
+				System.out.println("dragging");
+			}
 		});
 	}
 	
@@ -175,6 +199,22 @@ public class Game extends JPanel{
 			glc.init();
 			System.out.println("this is happening");
 		}
+	}
+
+	public Point getMouseCords() {
+		return mouseCords;
+	}
+
+	public void setMouseCords(Point mouseCords) {
+		this.mouseCords = mouseCords;
+	}
+
+	public boolean isDragging() {
+		return dragging;
+	}
+	
+	public void setDragging(boolean d) {
+		this.dragging = d;
 	}
 	
 }

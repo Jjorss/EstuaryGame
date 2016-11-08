@@ -14,12 +14,12 @@ public class GabionBuilderTest {
 		GabionBuilder gabion = new GabionBuilder();
 		
 		int prevNumLayers = gabion.getNumberOfOysters();
-		int prevNumGabions = gabion.getNumberOfGabions();
+		int prevNumGabions = gabion.getGabions();
 		int prevCollectionSize = gabion.getGabions();
 		
 		gabion.build();
 		
-		Assert.assertTrue(gabion.getNumberOfGabions() > prevNumGabions);
+		Assert.assertTrue(gabion.getGabions() > prevNumGabions);
 		Assert.assertTrue(prevNumLayers > gabion.getNumberOfOysters());
 		Assert.assertTrue(gabion.getGabions() > prevCollectionSize);
 	}
