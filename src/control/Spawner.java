@@ -5,6 +5,7 @@ import java.util.Random;
 
 import model.ClumpOfOysters;
 import model.CrabFishMeter;
+import model.Plants;
 import model.Wave;
 import view.Game;
 
@@ -12,6 +13,9 @@ public class Spawner {
 
 	private GameLoopController glc;
 	private Game game;
+	
+			
+	
 	public  Spawner(GameLoopController glc, Game game) {
 		this.glc = glc;
 		this.game = game;
@@ -36,8 +40,15 @@ public class Spawner {
 		int width = 50;
 		int height = 50;
 		int padding = 10;
+		int max = 0;
 		
-		double xLeftBound = glc.getRows().get(0).getX() + width + padding;
+		for (Integer i : glc.getNumOfGabionsInRow()) {
+			if (max < i.intValue()) {
+				max = i.intValue();
+			}
+		}
+		
+		double xLeftBound = glc.getWaveRows().get(0).getX() + width + padding + (max * (glc.getGabionWidth()+glc.getGbPadding()));
 		double xRightBound = glc.getGAMEBOX().getWidth() - width - padding;
 		int x = (int) (rand.nextInt((int) ((xRightBound - xLeftBound) + 1)) + xLeftBound);
 		double yTopBound = glc.getGAMEBOX().getY() + height + padding;
@@ -54,16 +65,74 @@ public class Spawner {
 	public void spawnWaves(int intensity, int time) {
 		Random rand = new Random();
 		int padding = 35;
-		double waveHeight = (glc.getRows().get(0).getHeight() - padding);
-		double waveWidth = glc.getRows().get(0).getHeight() - padding;
+		double waveHeight = (glc.getWaveRows().get(0).getHeight() - padding);
+		double waveWidth = glc.getWaveRows().get(0).getHeight() - padding;
 		int  numRow = rand.nextInt(7);
-		int y = (int) ((glc.getRows().get(numRow).getCenterY()) - (waveHeight/2));
-		int x = 2000;
+		int y = (int) ((glc.getWaveRows().get(numRow).getCenterY()) - (waveHeight/2));
+		int x = game.getWidth();
 		if (glc.getWaves().size() < 5) {
 			glc.getWaves().add(new Wave(8,x,y));
 			glc.getWaveRects().add(new Rectangle2D.Double(x,y,waveWidth, waveHeight ));
 			
 		}
+	}
+	
+	public void spawnPlants(int indexOfRow) {
+		Random rand = new Random();
+		int pattern = rand.nextInt(3) + 1;
+		double plantWidth = glc.getPlantRows().get(0).getWidth()  * 0.2;
+		double plantHeight = glc.getPlantRows().get(0).getHeight() * 0.3;
+		
+		double rowX = glc.getPlantRows().get(indexOfRow).getX();
+		double rowY =glc.getPlantRows().get(indexOfRow).getY();
+		double rowWidth = glc.getPlantRows().get(indexOfRow).getWidth();
+		double rowHeight = glc.getPlantRows().get(indexOfRow).getHeight();
+		
+		int x1= 0;
+		int y1 = 0;
+		int x2= 0;
+		int y2 = 0;
+		int x3= 0;
+		int y3 = 0;
+		
+		
+		if (pattern == 1) {
+			x1 = (int)(rowX + (rowWidth * 0.1));
+			y1 = (int)(rowY + (rowHeight * 0.1));
+			
+			x2 = (int)(rowX + (rowWidth * 0.4));
+			y2 = (int)(rowY + (rowHeight * 0.35));
+			
+			x3 = (int)(rowX + (rowWidth * 0.7));
+			y3 = (int)(rowY + (rowHeight * 0.6));
+			
+		} else if (pattern == 2) {
+			x1 = (int)(rowX + (rowWidth * 0.1));
+			y1 = (int)(rowY + (rowHeight * 0.2));
+			
+			x2 = (int)(rowX + (rowWidth * 0.4));
+			y2 = (int)(rowY + (rowHeight * 0.6));
+			
+			x3 = (int)(rowX + (rowWidth * 0.7));
+			y3 = (int)(rowY + (rowHeight * 0.1));
+		} else {
+			x1 = (int)(rowX + (rowWidth * 0.1));
+			y1 = (int)(rowY + (rowHeight * 0.5));
+			
+			x2 = (int)(rowX + (rowWidth * 0.4));
+			y2 = (int)(rowY + (rowHeight * 0.1));
+			
+			x3 = (int)(rowX + (rowWidth * 0.7));
+			y3 = (int)(rowY + (rowHeight * 0.6));
+		}
+		glc.getPlantrects().add(new Rectangle2D.Double(x1,y1, plantWidth, plantHeight));
+		glc.getPlantrects().add(new Rectangle2D.Double(x2,y2, plantWidth, plantHeight));
+		glc.getPlantrects().add(new Rectangle2D.Double(x3,y3, plantWidth, plantHeight));
+		
+		glc.getPlants().add(new Plants(x1,y1));
+		glc.getPlants().add(new Plants(x2,y2));
+		glc.getPlants().add(new Plants(x3,y3));
+		
 	}
 	
 	public void spawn() {

@@ -123,6 +123,8 @@ public class Game extends JPanel{
                 if (game.dragging) {
                 	glc.handlePlaceGabion(e.getPoint());
                 	game.dragging = false;
+                } else {
+                	glc.handlePlacePlant(e.getPoint());
                 }
                 
             }

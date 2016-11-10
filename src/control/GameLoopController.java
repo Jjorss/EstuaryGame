@@ -16,6 +16,7 @@ import model.Entity;
 import model.Gabion;
 import model.GabionBuilder;
 import model.Oysters;
+import model.Plants;
 import model.Shore;
 import model.Timer;
 import model.Wave;
@@ -38,7 +39,7 @@ public class GameLoopController {
 	private Point click;
 	private GabionBuilder gb = new GabionBuilder();
 	private Spawner spawner;
-	Timer timer = new Timer();
+	private Timer timer = new Timer();
 	private String time = "" + timer.getTime();
 
 	private ArrayList<Integer> numOfGabionsInRow = new ArrayList<Integer>();
@@ -48,12 +49,15 @@ public class GameLoopController {
 	private ArrayList<Gabion> gabions = new ArrayList<Gabion>();
 	private ArrayList<ClumpOfOysters> oysters = new ArrayList<ClumpOfOysters>();
 	private ArrayList<ConcreteWalls> concreteWalls = new ArrayList<ConcreteWalls>();
+	private ArrayList<Plants> plants = new ArrayList<Plants>();
 	// list of rectangles
 	private ArrayList<Rectangle2D> waveRects = new ArrayList<Rectangle2D>();
 	private ArrayList<Rectangle2D> gabionRects = new ArrayList<Rectangle2D>();
 	private ArrayList<Rectangle2D> oysterRects = new ArrayList<Rectangle2D>();
 	private ArrayList<Rectangle2D> concreteRects = new ArrayList<Rectangle2D>();
-	private ArrayList<Rectangle2D> rows = new ArrayList<Rectangle2D>();
+	private ArrayList<Rectangle2D> waveRows = new ArrayList<Rectangle2D>();
+	private ArrayList<Rectangle2D> plantRows = new ArrayList<Rectangle2D>();
+	private ArrayList<Rectangle2D> plantrects = new ArrayList<Rectangle2D>();
 
 	private Shore shore = new Shore(0, 0);
 
@@ -63,15 +67,20 @@ public class GameLoopController {
 	private Rectangle2D gabionBuilder = new Rectangle2D.Double(0, 0, 0, 0);
 	private Rectangle2D plantBuilder = new Rectangle2D.Double(0, 0, 0, 0);
 	private Rectangle2D uiGabion = new Rectangle2D.Double(0,0,0,0);
+	private Rectangle2D uiPlant = new Rectangle2D.Double(0,0,0,0);
 
 	private boolean renderDragGabion = false;
+	private boolean renderDragPlant = false;
 	
 	private double gX;
 	private double gY;
 	
-	private int gbPadding = 35;
+	private double gbPadding;
 	private double gabionWidth;
 	private double gabionHeight;
+	private double plantWidth;
+	private double plantHeight;
+	private double concreteWallWidth;
 
 	public GameLoopController(Game game, Scale scale) {
 		this.game = game;
@@ -84,9 +93,11 @@ public class GameLoopController {
 		int scale = this.game.getScale().getGridSize();
 		double width = this.game.getScale().getWidth();
 		double height = this.game.getScale().getHeight();
-		double uiBoxHeight = this.game.getScale().getHeight() * 0.20;
+		double uiBoxHeight = this.game.getScale().getHeight() * 0.165;
 		double shoreWidth = this.game.getScale().getWidth() * 0.35;
 		
+		concreteWallWidth = width * 0.01;
+		gbPadding = width * 0.015;
 		
 		spawner = new Spawner(this, this.game);
 		UIBOX = new Rectangle2D.Double(0,0, width, uiBoxHeight);
@@ -96,21 +107,28 @@ public class GameLoopController {
 		this.shore = new Shore((int)this.GAMEBOX.getX(), (int)this.GAMEBOX.getY());
 		shore1 = new Rectangle2D.Double(shore.getX(), shore.getY(), (int) shoreWidth,
 				GAMEBOX.getHeight());
-
+		
+		
 		for (int i = 0; i < 7; i++) {
-			rows.add(new Rectangle2D.Double(shore1.getWidth(), (UIBOX.getHeight() + (GAMEBOX.getHeight()/ 7) * i),
+			waveRows.add(new Rectangle2D.Double(shore1.getWidth() + concreteWallWidth, (UIBOX.getHeight() + (GAMEBOX.getHeight()/ 7) * i),
 					GAMEBOX.getWidth() - shore1.getWidth(), GAMEBOX.getHeight() / 7));
+			plantRows.add(new Rectangle2D.Double(shore1.getWidth()-(shore1.getWidth()*0.2),(UIBOX.getHeight() + (GAMEBOX.getHeight()/ 7) * i),
+					shore1.getWidth()*0.2,GAMEBOX.getHeight() / 7));
 			
 			concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(),(int)(GAMEBOX.getHeight()/ 7) * i));
 			concreteRects.add(new Rectangle2D.Double(shore1.getWidth(), (UIBOX.getHeight() + (GAMEBOX.getHeight()/ 7) * i),
-					20, GAMEBOX.getHeight() / 7));
+					concreteWallWidth, GAMEBOX.getHeight() / 7));			
 			
 			// in initializing row araylist
 			this.numOfGabionsInRow.add(0);
+			//spawner.spawnPlants(i);
 		}
 
-		gabionWidth = rows.get(0).getHeight() - gbPadding;
-		gabionHeight = rows.get(0).getHeight() - gbPadding;
+		gabionWidth = waveRows.get(0).getHeight() - gbPadding;
+		gabionHeight = waveRows.get(0).getHeight() - gbPadding;
+		plantHeight = UIBOX.getHeight()  * 0.7;
+		plantWidth = plantHeight * (2.0/3.0);
+		
 		
 		double gWidth = 60 * scale;
 		gX = UIBOX.getWidth() - gWidth;
@@ -119,8 +137,10 @@ public class GameLoopController {
 		gabionBuilder = new Rectangle2D.Double(gX, gY, gWidth, UIBOX.getHeight());
 		uiGabion = new Rectangle2D.Double(gabionBuilder.getCenterX() - (gabionWidth),gabionBuilder.getCenterY() - (gabionHeight/2),
 				gabionWidth, gabionHeight);
-		plantBuilder = new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), 100, UIBOX.getHeight());
-
+		plantBuilder = new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), UIBOX.getHeight() * (2.0/3.0), UIBOX.getHeight());
+		uiPlant = new Rectangle2D.Double(plantBuilder.getCenterX() - (plantWidth/2),plantBuilder.getCenterY() - (plantHeight/2.0),
+				plantWidth, plantHeight);
+		
 	}
 
 	/**
@@ -187,12 +207,24 @@ public class GameLoopController {
 			g2.draw(wall);
 			g2.fill(wall);
 		}
-
+		
 		// single way
 		g2.setColor(Color.YELLOW);
 		g2.fill(shore1);
 		g2.draw(shore1);
 
+		g2.setColor(Color.GRAY);
+		for (Rectangle2D plantRow: plantRows) {
+			g2.draw(plantRow);
+		}
+		
+		g2.setColor(Color.GREEN);
+		for (Rectangle2D plant : plantrects) {
+			g2.draw(plant);
+			g2.fill(plant);
+		}
+		
+		
 		// UI
 		// ---------------------------
 		// Gabion builder/Plant builder
@@ -230,7 +262,7 @@ public class GameLoopController {
 		if (this.renderDragGabion) {
 			g2.draw(this.renderDragGabion(game.getMouseCords()));
 			g2.setColor(Color.gray);
-			for (Rectangle2D row : rows) {
+			for (Rectangle2D row : waveRows) {
 				g2.draw(row);
 				
 			}
@@ -241,9 +273,13 @@ public class GameLoopController {
 		g2.drawString("" + gb.getGabions(), (int)gabionBuilder.getCenterX() + (f1.getSize()/2), (int)gabionBuilder.getCenterY());
 		
 		// plant meter
-		g2.setColor(Color.GREEN);
+		g2.setColor(Color.ORANGE);
 		g2.fill(plantBuilder);
 		g2.draw(plantBuilder);
+		
+		g2.setColor(Color.GREEN);
+		g2.draw(uiPlant);
+		g2.fill(uiPlant);
 
 	}
 
@@ -265,9 +301,15 @@ public class GameLoopController {
 				// wave hit shore
 				// erode shore
 				shore.erode();
-				shore1.setRect(shore1.getX(), shore1.getY(), shore1.getWidth() - (10 * game.getScale().getGridSize()),
+				shore1.setRect(shore1.getX(), shore1.getY(), shore1.getWidth() - (game.getScale().getWidth()*0.03),
 						shore1.getHeight());
-				
+				for (Rectangle2D plantRow: plantRows) {
+					plantRow.setRect(shore1.getWidth() - plantRow.getWidth(), plantRow.getY(), plantRow.getWidth(), plantRow.getHeight());
+				}
+				for (int j = 0; j < plantrects.size(); j++ ) {
+					plantrects.get(j).setRect(plantrects.get(j).getX() - (game.getScale().getWidth()*0.03), plantrects.get(j).getY(),
+							plantrects.get(j).getWidth(), plantrects.get(j).getHeight());
+				}
 				System.out.println("Wave Hit Shore");
 				whatToRemove.add(new EntityStruct(i, "wave"));
 
@@ -306,7 +348,7 @@ public class GameLoopController {
 				}
 			}
 		}
-		
+		// this is throwing an array out of bounds exception from time to time
 		for (EntityStruct e: whatToRemove) {
 			if (e.type.equals("wave")) {
 				this.waves.remove(e.index);
@@ -324,19 +366,28 @@ public class GameLoopController {
 		
 
 	}
+	
+	public void handlePlacePlant(Point p) {
+		for (int i = 0; i < plantRows.size(); i++) {
+			Rectangle2D row = plantRows.get(i);
+			if (row.contains(p)) {
+				spawner.spawnPlants(i);
+			}
+		}
+	}
 
 	public void handlePlaceGabion(Point p) {
 		//System.out.println(p.getX() + ", " + p.getY());
 		
 		// spawn gabion
 		if (gb.getGabions() != 0) {
-			for (int i = 0; i < rows.size(); i++) {
-				Rectangle2D row = rows.get(i);
+			for (int i = 0; i < waveRows.size(); i++) {
+				Rectangle2D row = waveRows.get(i);
 				if (row.contains(p) && this.numOfGabionsInRow.get(i) < 5) {
 					double y = row.getCenterY() - ((gabionHeight) / 2);
 					double x = ((gabionWidth + gbPadding) * this.numOfGabionsInRow.get(i)) + row.getX();
 					gabions.add(new Gabion((int) x, (int) y, i));
-					gabionRects.add(new Rectangle.Double(x, y, gabionWidth, gabionHeight));
+					gabionRects.add(new Rectangle.Double(x + gbPadding, y, gabionWidth, gabionHeight));
 					gb.setGabions(gb.getGabions() - 1);
 					this.numOfGabionsInRow.set(i, this.numOfGabionsInRow.get(i) + 1);
 				}
@@ -361,12 +412,15 @@ public class GameLoopController {
 		return r;
 	}
 	
-	public void handleDragGabion(Point p) {
+	public void handleDrag(Point p) {
 		if (uiGabion.contains(p)) {
 			System.out.println("uiGabion clicked");
 			this.renderDragGabion = true;
 			game.setDragging(true);
-		}		
+		}
+		//if () {
+			
+		//}
 	}
 
 	public Point getMousePressed(Point p) {
@@ -380,7 +434,7 @@ public class GameLoopController {
 				return;
 			}
 		}
-		this.handleDragGabion(p);
+		this.handleDrag(p);
 		
 	}
 
@@ -388,8 +442,8 @@ public class GameLoopController {
 		return waves;
 	}
 
-	public ArrayList<Rectangle2D> getRows() {
-		return rows;
+	public ArrayList<Rectangle2D> getWaveRows() {
+		return waveRows;
 	}
 
 	public ArrayList<Rectangle2D> getWaveRects() {
@@ -410,6 +464,38 @@ public class GameLoopController {
 
 	public Rectangle2D getGAMEBOX() {
 		return GAMEBOX;
+	}
+
+	public ArrayList<Integer> getNumOfGabionsInRow() {
+		return numOfGabionsInRow;
+	}
+
+	public double getGbPadding() {
+		return gbPadding;
+	}
+
+	public double getGabionWidth() {
+		return gabionWidth;
+	}
+
+	public ArrayList<Plants> getPlants() {
+		return plants;
+	}
+
+	public void setPlants(ArrayList<Plants> plants) {
+		this.plants = plants;
+	}
+
+	public ArrayList<Rectangle2D> getPlantrects() {
+		return plantrects;
+	}
+
+	public void setPlantrects(ArrayList<Rectangle2D> plantrects) {
+		this.plantrects = plantrects;
+	}
+
+	public ArrayList<Rectangle2D> getPlantRows() {
+		return plantRows;
 	}
 
 }

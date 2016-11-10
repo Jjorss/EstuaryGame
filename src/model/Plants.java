@@ -2,14 +2,20 @@ package model;
 
 public class Plants extends Wall{
 
+	int x1;
+	int x2;
+	int x3;
+	int y1;
+	int y2;
+	int y3;
+	int health = 3;
 
 	public Plants(int x, int y) {
 		super(x, y);
+		this.y = y;
+		this.x = x;
 		// TODO Auto-generated constructor stub
 	}
-	int x;
-	int y;
-	int health;
 	
 	@Override
 	public void changeHealth(int newHealth) {
