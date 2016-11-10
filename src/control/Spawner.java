@@ -1,6 +1,7 @@
 package control;
 
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Random;
 
 import model.ClumpOfOysters;
@@ -14,7 +15,8 @@ public class Spawner {
 	private GameLoopController glc;
 	private Game game;
 	
-			
+	private ArrayList<Integer>plantsInRow = new ArrayList<Integer>();
+	private ArrayList<Integer>patternInRow = new ArrayList<Integer>();
 	
 	public  Spawner(GameLoopController glc, Game game) {
 		this.glc = glc;
@@ -73,13 +75,12 @@ public class Spawner {
 		if (glc.getWaves().size() < 5) {
 			glc.getWaves().add(new Wave(8,x,y));
 			glc.getWaveRects().add(new Rectangle2D.Double(x,y,waveWidth, waveHeight ));
-			
 		}
 	}
 	
 	public void spawnPlants(int indexOfRow) {
-		Random rand = new Random();
-		int pattern = rand.nextInt(3) + 1;
+//		Random rand = new Random();
+		int pattern = this.getPatternInRow().get(indexOfRow);
 		double plantWidth = glc.getPlantRows().get(0).getWidth()  * 0.2;
 		double plantHeight = glc.getPlantRows().get(0).getHeight() * 0.3;
 		
@@ -94,7 +95,8 @@ public class Spawner {
 		int y2 = 0;
 		int x3= 0;
 		int y3 = 0;
-		
+		System.out.println("Pattern: " + "\t" + pattern);
+		System.out.println("Plants in row: " + "\t" + this.getPlantsInRow().get(indexOfRow));
 		
 		if (pattern == 1) {
 			x1 = (int)(rowX + (rowWidth * 0.1));
@@ -125,19 +127,46 @@ public class Spawner {
 			x3 = (int)(rowX + (rowWidth * 0.7));
 			y3 = (int)(rowY + (rowHeight * 0.6));
 		}
-		glc.getPlantrects().add(new Rectangle2D.Double(x1,y1, plantWidth, plantHeight));
-		glc.getPlantrects().add(new Rectangle2D.Double(x2,y2, plantWidth, plantHeight));
-		glc.getPlantrects().add(new Rectangle2D.Double(x3,y3, plantWidth, plantHeight));
+		if (this.getPlantsInRow().get(indexOfRow).intValue() == 0) {
+			glc.getPlantrects().add(new Rectangle2D.Double(x1,y1, plantWidth, plantHeight));
+			glc.getPlants().add(new Plants(x1,y1, true));
+			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
+			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
+		} else if (this.getPlantsInRow().get(indexOfRow).intValue() == 1) {
+			glc.getPlantrects().add(new Rectangle2D.Double(x2,y2, plantWidth, plantHeight));
+			glc.getPlants().add(new Plants(x2,y2, true));
+			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
+			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
+		} else if (this.getPlantsInRow().get(indexOfRow).intValue() == 2) {
+			glc.getPlantrects().add(new Rectangle2D.Double(x3,y3, plantWidth, plantHeight));
+			glc.getPlants().add(new Plants(x3,y3, true));
+			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
+			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
+		}
 		
-		glc.getPlants().add(new Plants(x1,y1));
-		glc.getPlants().add(new Plants(x2,y2));
-		glc.getPlants().add(new Plants(x3,y3));
+		
 		
 	}
 	
 	public void spawn() {
 		this.spawnWaves(0, 0);
 		this.spawnOysters(0, 0);
+	}
+
+	public ArrayList<Integer> getPlantsInRow() {
+		return plantsInRow;
+	}
+
+	public void setPlantsInRow(ArrayList<Integer> plantsInRow) {
+		this.plantsInRow = plantsInRow;
+	}
+
+	public ArrayList<Integer> getPatternInRow() {
+		return patternInRow;
+	}
+
+	public void setPatternInRow(ArrayList<Integer> patternInRow) {
+		this.patternInRow = patternInRow;
 	}
 	
 }

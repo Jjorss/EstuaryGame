@@ -12,7 +12,7 @@ public class PlantsTest {
 
 	@Test
 	public void test() {
-		Plants plantatron = new Plants(0, 0);
+		Plants plantatron = new Plants(0, 0, false);
 		
 		int prevHealth = plantatron.getHealth();
 		

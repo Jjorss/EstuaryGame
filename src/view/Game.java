@@ -121,17 +121,20 @@ public class Game extends JPanel{
 			@Override
             public void mouseReleased(MouseEvent e) {
                 if (game.dragging) {
-                	glc.handlePlaceGabion(e.getPoint());
+                	if (glc.isRenderDragGabion()) {
+                		glc.handlePlaceGabion(e.getPoint());
+                	}
+                	if (glc.isRenderDragPlant()) {
+                		glc.handlePlacePlant(e.getPoint());
+                	}
                 	game.dragging = false;
-                } else {
-                	glc.handlePlacePlant(e.getPoint());
-                }
+                } 
                 
             }
 			@Override
 			public void mousePressed(MouseEvent e) {
 				glc.handlePressed(e.getPoint());
-				System.out.println("mouse pressed");
+				//System.out.println("mouse pressed");
 			}
 		
 		});

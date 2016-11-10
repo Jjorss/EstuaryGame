@@ -14,7 +14,7 @@ public class PlantBuilderTest {
 
 	@Test
 	public void test() {
-		PlantBuilder plants = new PlantBuilder();
+		PlantBuilder plants = new PlantBuilder(null);
 		
 		int prevNumPlants = plants.getNumberOfPlants();
 		

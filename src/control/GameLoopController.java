@@ -16,6 +16,7 @@ import model.Entity;
 import model.Gabion;
 import model.GabionBuilder;
 import model.Oysters;
+import model.PlantBuilder;
 import model.Plants;
 import model.Shore;
 import model.Timer;
@@ -40,6 +41,8 @@ public class GameLoopController {
 	private GabionBuilder gb = new GabionBuilder();
 	private Spawner spawner;
 	private Timer timer = new Timer();
+	private Timer plantTimer = new Timer();
+	private PlantBuilder pb = new PlantBuilder(plantTimer);
 	private String time = "" + timer.getTime();
 
 	private ArrayList<Integer> numOfGabionsInRow = new ArrayList<Integer>();
@@ -121,6 +124,10 @@ public class GameLoopController {
 			
 			// in initializing row araylist
 			this.numOfGabionsInRow.add(0);
+			spawner.getPlantsInRow().add(0);
+			Random rand = new Random();
+			int pattern = rand.nextInt(3) + 1;
+			spawner.getPatternInRow().add(pattern);
 			//spawner.spawnPlants(i);
 		}
 
@@ -150,6 +157,8 @@ public class GameLoopController {
 	public void loop() {
 		spawner.spawn();
 		timer.countDown();
+		plantTimer.countUp();
+		pb.build();
 		for (int i = 0; i < waves.size(); i++) {
 			waves.get(i).move();
 			waveRects.get(i).setRect(waves.get(i).getX(), waveRects.get(i).getY(), waveRects.get(i).getWidth(),
@@ -213,15 +222,13 @@ public class GameLoopController {
 		g2.fill(shore1);
 		g2.draw(shore1);
 
-		g2.setColor(Color.GRAY);
-		for (Rectangle2D plantRow: plantRows) {
-			g2.draw(plantRow);
-		}
 		
 		g2.setColor(Color.GREEN);
-		for (Rectangle2D plant : plantrects) {
-			g2.draw(plant);
-			g2.fill(plant);
+		for (int i = 0; i < plants.size(); i++) {
+			if (plants.get(i).isVisible()) {
+				g2.draw(plantrects.get(i));
+				g2.fill(plantrects.get(i));
+			}
 		}
 		
 		
@@ -271,16 +278,38 @@ public class GameLoopController {
 		// number of gabions
 		g2.setColor(Color.WHITE);
 		g2.drawString("" + gb.getGabions(), (int)gabionBuilder.getCenterX() + (f1.getSize()/2), (int)gabionBuilder.getCenterY());
-		
 		// plant meter
+		maxHeight = plantBuilder.getHeight();
+		height = ((double)plantTimer.getTimeMili()/(pb.getNumOfSecondsPerPlant()*1000)) * maxHeight;
+		width = plantBuilder.getWidth();
+		x = plantBuilder.getX();
+		y = maxHeight - height;
+		Rectangle2D plantMeter = new Rectangle2D.Double(x, y, width, height);
+		
 		g2.setColor(Color.ORANGE);
-		g2.fill(plantBuilder);
+		//g2.fill(plantBuilder);
 		g2.draw(plantBuilder);
+		g2.draw(plantMeter);
+		g2.fill(plantMeter);
 		
 		g2.setColor(Color.GREEN);
 		g2.draw(uiPlant);
 		g2.fill(uiPlant);
-
+		
+		g2.setColor(Color.BLACK);
+		g2.drawString(pb.getNumberOfPlants()+"", (int)(plantBuilder.getX() + plantBuilder.getWidth() + (f1.getSize()/2)),
+				(int)plantBuilder.getCenterY());
+		
+		if (this.renderDragPlant) {
+			g2.setColor(Color.GREEN);
+			g2.draw(this.renderDragPlant(game.getMouseCords()));
+			g2.setColor(Color.gray);
+			for (Rectangle2D row : plantRows) {
+				g2.draw(row);
+				
+			}
+		}
+		
 	}
 
 	public void collision() {
@@ -368,12 +397,16 @@ public class GameLoopController {
 	}
 	
 	public void handlePlacePlant(Point p) {
-		for (int i = 0; i < plantRows.size(); i++) {
-			Rectangle2D row = plantRows.get(i);
-			if (row.contains(p)) {
-				spawner.spawnPlants(i);
+		if (pb.getNumberOfPlants() != 0) {
+			for (int i = 0; i < plantRows.size(); i++) {
+				Rectangle2D row = plantRows.get(i);
+				if (row.contains(p)) {
+					spawner.spawnPlants(i);
+					
+				}
 			}
 		}
+		this.renderDragPlant = false;
 	}
 
 	public void handlePlaceGabion(Point p) {
@@ -412,15 +445,22 @@ public class GameLoopController {
 		return r;
 	}
 	
+	public Rectangle2D renderDragPlant(Point p) {
+		Rectangle2D r = new Rectangle2D.Double(p.getX() - (uiPlant.getWidth()/2), p.getY() - (uiPlant.getHeight()/2), this.plantWidth, this.plantHeight);
+		return r;
+	}
+	
 	public void handleDrag(Point p) {
 		if (uiGabion.contains(p)) {
 			System.out.println("uiGabion clicked");
 			this.renderDragGabion = true;
 			game.setDragging(true);
 		}
-		//if () {
-			
-		//}
+		if (uiPlant.contains(p)) {
+			System.out.println("uiPlant Clicked");
+			this.renderDragPlant = true;
+			game.setDragging(true);
+		}
 	}
 
 	public Point getMousePressed(Point p) {
@@ -496,6 +536,22 @@ public class GameLoopController {
 
 	public ArrayList<Rectangle2D> getPlantRows() {
 		return plantRows;
+	}
+
+	public PlantBuilder getPb() {
+		return pb;
+	}
+
+	public void setPb(PlantBuilder pb) {
+		this.pb = pb;
+	}
+	
+	public boolean isRenderDragGabion() {
+		return renderDragGabion;
+	}
+
+	public boolean isRenderDragPlant() {
+		return renderDragPlant;
 	}
 
 }

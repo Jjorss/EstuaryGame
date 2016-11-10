@@ -2,12 +2,23 @@ package model;
 
 public class PlantBuilder extends Builder {
 
-	private int numberOfPlants;
+	private int numberOfPlants = 0;
+	private Timer timer;
+	private int numOfSecondsPerPlant = 5;
+	private boolean addPlant = false;
 
+	public PlantBuilder(Timer timer) {
+		this.timer = timer;
+	}
+	
 	@Override
 	public void build() {
-		// TODO Auto-generated method stub
-		
+		if (timer.getTime() >= 5) {
+			this.setAddPlant(true);
+		} else {
+			this.addPlant = false;
+		}
+		System.out.println(this.numberOfPlants + "\t" + timer.getTime() % this.numOfSecondsPerPlant);
 	}
 
 	public int getNumberOfPlants() {
@@ -16,6 +27,17 @@ public class PlantBuilder extends Builder {
 
 	public void setNumberOfPlants(int numberOfPlants) {
 		this.numberOfPlants = numberOfPlants;
+	}
+	
+	public void setAddPlant(boolean add) {
+		if (add != this.addPlant) {
+			this.numberOfPlants++;
+			this.addPlant = add;
+		}
+	}
+
+	public int getNumOfSecondsPerPlant() {
+		return numOfSecondsPerPlant;
 	}
 	
 }
