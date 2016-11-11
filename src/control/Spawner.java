@@ -7,6 +7,7 @@ import java.util.Random;
 import model.ClumpOfOysters;
 import model.CrabFishMeter;
 import model.Plants;
+import model.RunOff;
 import model.Wave;
 import view.Game;
 
@@ -17,6 +18,7 @@ public class Spawner {
 	
 	private ArrayList<Integer>plantsInRow = new ArrayList<Integer>();
 	private ArrayList<Integer>patternInRow = new ArrayList<Integer>();
+	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	public  Spawner(GameLoopController glc, Game game) {
 		this.glc = glc;
@@ -72,7 +74,7 @@ public class Spawner {
 		int  numRow = rand.nextInt(7);
 		int y = (int) ((glc.getWaveRows().get(numRow).getCenterY()) - (waveHeight/2));
 		int x = game.getWidth();
-		if (glc.getWaves().size() < 5) {
+		if (glc.getWaves().size() < 2) {
 			glc.getWaves().add(new Wave(8,x,y));
 			glc.getWaveRects().add(new Rectangle2D.Double(x,y,waveWidth, waveHeight ));
 		}
@@ -148,9 +150,27 @@ public class Spawner {
 		
 	}
 	
+	public void spawnRunOff(int intensity, int time) {
+		Random rand = new Random();
+		double max = game.getScale().getWidth() * 0.75;
+		double min = game.getScale().getWidth() * 0.10;
+		double rfHeight = glc.getPlantRows().get(0).getHeight() *0.2 ;
+		int rfWidth = rand.nextInt((int)max - (int)min + 1) + (int)min;
+		int numRow = rand.nextInt(7);
+		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
+		int x = 0 - rfWidth;
+		if (glc.getRunOff().size() < 2 && !this.runOffInRow.get(numRow)) {
+			glc.getRunOff().add(new RunOff(8,x,y, numRow));
+			glc.getRunOffRects().add(new Rectangle2D.Double(x,y,rfWidth, rfHeight ));
+			this.runOffInRow.set(numRow, true);
+//			System.out.println("spawning runOff");
+		}
+	}
+	
 	public void spawn() {
 		this.spawnWaves(0, 0);
 		this.spawnOysters(0, 0);
+		this.spawnRunOff(0, 0);
 	}
 
 	public ArrayList<Integer> getPlantsInRow() {
@@ -167,6 +187,14 @@ public class Spawner {
 
 	public void setPatternInRow(ArrayList<Integer> patternInRow) {
 		this.patternInRow = patternInRow;
+	}
+
+	public ArrayList<Boolean> getRunOffInRow() {
+		return runOffInRow;
+	}
+
+	public void setRunOffInRow(ArrayList<Boolean> runOffInRow) {
+		this.runOffInRow = runOffInRow;
 	}
 	
 }

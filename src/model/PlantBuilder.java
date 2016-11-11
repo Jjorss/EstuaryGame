@@ -18,7 +18,7 @@ public class PlantBuilder extends Builder {
 		} else {
 			this.addPlant = false;
 		}
-		System.out.println(this.numberOfPlants + "\t" + timer.getTime() % this.numOfSecondsPerPlant);
+		//System.out.println(this.numberOfPlants + "\t" + timer.getTime() % this.numOfSecondsPerPlant);
 	}
 
 	public int getNumberOfPlants() {

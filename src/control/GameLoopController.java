@@ -18,6 +18,7 @@ import model.GabionBuilder;
 import model.Oysters;
 import model.PlantBuilder;
 import model.Plants;
+import model.RunOff;
 import model.Shore;
 import model.Timer;
 import model.Wave;
@@ -53,6 +54,7 @@ public class GameLoopController {
 	private ArrayList<ClumpOfOysters> oysters = new ArrayList<ClumpOfOysters>();
 	private ArrayList<ConcreteWalls> concreteWalls = new ArrayList<ConcreteWalls>();
 	private ArrayList<Plants> plants = new ArrayList<Plants>();
+	private ArrayList<RunOff> runOff = new ArrayList<RunOff>();
 	// list of rectangles
 	private ArrayList<Rectangle2D> waveRects = new ArrayList<Rectangle2D>();
 	private ArrayList<Rectangle2D> gabionRects = new ArrayList<Rectangle2D>();
@@ -61,6 +63,7 @@ public class GameLoopController {
 	private ArrayList<Rectangle2D> waveRows = new ArrayList<Rectangle2D>();
 	private ArrayList<Rectangle2D> plantRows = new ArrayList<Rectangle2D>();
 	private ArrayList<Rectangle2D> plantrects = new ArrayList<Rectangle2D>();
+	private ArrayList<Rectangle2D> runOffRects = new ArrayList<Rectangle2D>();
 
 	private Shore shore = new Shore(0, 0);
 
@@ -81,8 +84,8 @@ public class GameLoopController {
 	private double gbPadding;
 	private double gabionWidth;
 	private double gabionHeight;
-	private double plantWidth;
-	private double plantHeight;
+	private double uiPlantWidth;
+	private double uiPlantHeight;
 	private double concreteWallWidth;
 
 	public GameLoopController(Game game, Scale scale) {
@@ -128,13 +131,14 @@ public class GameLoopController {
 			Random rand = new Random();
 			int pattern = rand.nextInt(3) + 1;
 			spawner.getPatternInRow().add(pattern);
+			spawner.getRunOffInRow().add(false);
 			//spawner.spawnPlants(i);
 		}
 
 		gabionWidth = waveRows.get(0).getHeight() - gbPadding;
 		gabionHeight = waveRows.get(0).getHeight() - gbPadding;
-		plantHeight = UIBOX.getHeight()  * 0.7;
-		plantWidth = plantHeight * (2.0/3.0);
+		uiPlantHeight = UIBOX.getHeight()  * 0.7;
+		uiPlantWidth = uiPlantHeight * (2.0/3.0);
 		
 		
 		double gWidth = 60 * scale;
@@ -145,8 +149,8 @@ public class GameLoopController {
 		uiGabion = new Rectangle2D.Double(gabionBuilder.getCenterX() - (gabionWidth),gabionBuilder.getCenterY() - (gabionHeight/2),
 				gabionWidth, gabionHeight);
 		plantBuilder = new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), UIBOX.getHeight() * (2.0/3.0), UIBOX.getHeight());
-		uiPlant = new Rectangle2D.Double(plantBuilder.getCenterX() - (plantWidth/2),plantBuilder.getCenterY() - (plantHeight/2.0),
-				plantWidth, plantHeight);
+		uiPlant = new Rectangle2D.Double(plantBuilder.getCenterX() - (uiPlantWidth/2),plantBuilder.getCenterY() - (uiPlantHeight/2.0),
+				uiPlantWidth, uiPlantHeight);
 		
 	}
 
@@ -165,6 +169,31 @@ public class GameLoopController {
 					waveRects.get(i).getHeight());
 		}	
 	
+		ArrayList<RunOff> tempRunOff = new ArrayList<RunOff>();
+		ArrayList<Rectangle2D> tempBox = new ArrayList<Rectangle2D>();
+		for (int i = 0; i < runOff.size(); i++) {
+			runOff.get(i).move();
+			if (shore1.getWidth() + concreteWallWidth + 8 < runOffRects.get(i).getX() + runOffRects.get(i).getWidth()) {
+				runOffRects.get(i).setRect(runOff.get(i).getX(), runOff.get(i).getY(), 
+						runOffRects.get(i).getWidth() - runOff.get(i).getSpeed(), runOffRects.get(i).getHeight());
+				
+				if (runOffRects.get(i).getWidth() > 0) {
+					tempBox.add(runOffRects.get(i));
+					tempRunOff.add(runOff.get(i));
+					
+				} else {
+					spawner.getRunOffInRow().set(runOff.get(i).getRowNum(), false);
+				}
+			} else {
+				runOffRects.get(i).setRect(runOff.get(i).getX(), runOff.get(i).getY(), runOffRects.get(i).getWidth(),
+						runOffRects.get(i).getHeight());
+				tempBox.add(runOffRects.get(i));
+				tempRunOff.add(runOff.get(i));
+			}
+			
+		}
+		runOff = tempRunOff;
+		runOffRects = tempBox;
 		// System.out.println(waves.size());
 		for (int i = 0; i < oysters.size(); i++) {
 			if (!oysters.get(i).isVisible()) {
@@ -222,6 +251,11 @@ public class GameLoopController {
 		g2.fill(shore1);
 		g2.draw(shore1);
 
+		g2.setColor(new Color(184, 138, 0, 127));
+		for (Rectangle2D runOff : runOffRects) {
+			g2.draw(runOff);
+			g2.fill(runOff);
+		}
 		
 		g2.setColor(Color.GREEN);
 		for (int i = 0; i < plants.size(); i++) {
@@ -446,7 +480,10 @@ public class GameLoopController {
 	}
 	
 	public Rectangle2D renderDragPlant(Point p) {
-		Rectangle2D r = new Rectangle2D.Double(p.getX() - (uiPlant.getWidth()/2), p.getY() - (uiPlant.getHeight()/2), this.plantWidth, this.plantHeight);
+		double width = this.getPlantRows().get(0).getWidth()  * 0.2;
+		double height = this.getPlantRows().get(0).getWidth()  * 0.3;
+		Rectangle2D r = new Rectangle2D.Double(p.getX() - (width/2), p.getY() - (height/2),
+				width, height);
 		return r;
 	}
 	
@@ -552,6 +589,14 @@ public class GameLoopController {
 
 	public boolean isRenderDragPlant() {
 		return renderDragPlant;
+	}
+
+	public ArrayList<Rectangle2D> getRunOffRects() {
+		return runOffRects;
+	}
+
+	public ArrayList<RunOff> getRunOff() {
+		return runOff;
 	}
 
 }
