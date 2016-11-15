@@ -173,7 +173,7 @@ public class Spawner {
 		int numRow = rand.nextInt(7);
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
-		if (glc.getRunOff().size() < this.intensity/3 && !this.runOffInRow.get(numRow) && time < 180) {
+		if (glc.getRunOff().size() < this.intensity/3 && !this.runOffInRow.get(numRow) && time < 150) {
 			glc.getRunOff().add(new RunOff(8,x,y, numRow));
 			glc.getRunOffRects().add(new Rectangle2D.Double(x,y,rfWidth, rfHeight ));
 			this.runOffInRow.set(numRow, true);

@@ -94,6 +94,8 @@ public class GameLoopController {
 	private double uiPlantHeight;
 	private double concreteWallWidth;
 	private int fontSize;
+	private int numOfRows = 7;
+	
 	
 	private Color ShoreColor = new Color(255, 200, 100, 255); 
 
@@ -127,15 +129,15 @@ public class GameLoopController {
 		
 		fontSize = (int)(UIBOX.getWidth() * 0.05);
 		
-		for (int i = 0; i < 7; i++) {
-			waveRows.add(new Rectangle2D.Double(shore1.getWidth() + concreteWallWidth, (UIBOX.getHeight() + (GAMEBOX.getHeight()/ 7) * i),
-					GAMEBOX.getWidth() - shore1.getWidth(), GAMEBOX.getHeight() / 7));
-			plantRows.add(new Rectangle2D.Double(shore1.getWidth()-(shore1.getWidth()*0.2),(UIBOX.getHeight() + (GAMEBOX.getHeight()/ 7) * i),
-					shore1.getWidth()*0.2,GAMEBOX.getHeight() / 7));
+		for (int i = 0; i < this.numOfRows; i++) {
+			waveRows.add(new Rectangle2D.Double(shore1.getWidth() + concreteWallWidth, (UIBOX.getHeight() + (GAMEBOX.getHeight()/ this.numOfRows) * i),
+					GAMEBOX.getWidth() - shore1.getWidth(), GAMEBOX.getHeight() / this.numOfRows));
+			plantRows.add(new Rectangle2D.Double(shore1.getWidth()-(shore1.getWidth()*0.2),(UIBOX.getHeight() + (GAMEBOX.getHeight()/ this.numOfRows) * i),
+					shore1.getWidth()*0.2,GAMEBOX.getHeight() / this.numOfRows));
 			
-			concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(),(int)(GAMEBOX.getHeight()/ 7) * i));
-			concreteRects.add(new Rectangle2D.Double(shore1.getWidth(), (UIBOX.getHeight() + (GAMEBOX.getHeight()/ 7) * i),
-					concreteWallWidth, GAMEBOX.getHeight() / 7));			
+			concreteWalls.add(new ConcreteWalls((int)shore1.getWidth(),(int)(GAMEBOX.getHeight()/ this.numOfRows) * i));
+			concreteRects.add(new Rectangle2D.Double(shore1.getWidth(), (UIBOX.getHeight() + (GAMEBOX.getHeight()/ this.numOfRows) * i),
+					concreteWallWidth, GAMEBOX.getHeight() / this.numOfRows));			
 			
 			// in initializing row araylist
 			this.numOfGabionsInRow.add(0);
@@ -144,6 +146,7 @@ public class GameLoopController {
 			int pattern = rand.nextInt(3) + 1;
 			spawner.getPatternInRow().add(pattern);
 			spawner.getRunOffInRow().add(false);
+			spawner.spawnPlants(i);
 			//spawner.spawnPlants(i);
 		}
 
@@ -176,7 +179,12 @@ public class GameLoopController {
 	public void loop() {
 		spawner.spawn(this.eroded);
 		timer.countDown();
-		plantTimer.countUp();
+		if (timer.getTime() < 150) {
+			plantTimer.countUp();
+		}
+		if (timer.getTime() == 0) {
+			game.setPaused(true);
+		}
 		pb.build();
 		for (int i = 0; i < waves.size(); i++) {
 			waves.get(i).move();
@@ -220,7 +228,7 @@ public class GameLoopController {
 		// collision detections
 		collision();
 		System.out.println(cfMeter.getPhLevels());
-		System.out.println(this.isRunOff);
+		
 		// System.out.println("I'm looping");
 	}
 
@@ -247,10 +255,18 @@ public class GameLoopController {
 			g2.fill(rect);
 		}
 
-		g2.setColor(Color.BLACK);
-		for (Rectangle2D gabions : gabionRects) {
-			g2.draw(gabions);
-			g2.fill(gabions);
+		
+		for (int i = 0; i < gabionRects.size(); i++) {
+			if (gabions.get(i).getHealth() == 2) {
+				g2.setColor(new Color(0,0,0, 175));
+			} else if (gabions.get(i).getHealth() == 1) {
+				g2.setColor(new Color(0,0,0, 100));
+			} else {
+				// 3
+				g2.setColor(Color.BLACK);
+			}
+			g2.draw(gabionRects.get(i));
+			g2.fill(gabionRects.get(i));
 		}
 		g2.setColor(Color.GRAY);
 		for (Rectangle2D oyster : oysterRects) {
@@ -455,13 +471,15 @@ public class GameLoopController {
 		}
 		
 		for (int i = 0; i < plantRows.size(); i++) {
+			Rectangle2D p = plantRows.get(i);
 			for (int j = 0; j < runOffRects.size(); j++) {
-				if (plantRows.get(i).intersects(runOffRects.get(j))) {
+				Rectangle2D r = runOffRects.get(j);
+				if (r.getX()+ r.getWidth() >= p.getX()) {
 					this.setIsRunOff(true, i);
-					
 				} else {
 					this.setIsRunOff(false, i);
 				}
+				
 			}
 		}
 		
@@ -573,6 +591,7 @@ public class GameLoopController {
 	public void setIsRunOff(boolean newB, int i) {
 		if (newB != this.isRunOff) {
 			this.isRunOff = newB;
+			
 			if (newB) {
 				if (spawner.getPlantsInRow().get(i) > 2) {
 					cfMeter.setPhLevels(cfMeter.getPhLevels()+1);
@@ -580,6 +599,9 @@ public class GameLoopController {
 					cfMeter.setPhLevels(cfMeter.getPhLevels()-1);
 				} else if (spawner.getPlantsInRow().get(i) == 0) {
 					cfMeter.setPhLevels(cfMeter.getPhLevels()-2);
+				}
+				if (cfMeter.getPhLevels() < 0) {
+					cfMeter.setPhLevels(0);
 				}
 			}
 		}
@@ -676,6 +698,14 @@ public class GameLoopController {
 
 	public void setEroded(boolean eroded) {
 		this.eroded = eroded;
+	}
+
+	public int getNumOfRows() {
+		return numOfRows;
+	}
+
+	public void setNumOfRows(int numOfRows) {
+		this.numOfRows = numOfRows;
 	}
 
 }

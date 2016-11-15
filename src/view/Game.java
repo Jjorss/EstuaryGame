@@ -44,6 +44,7 @@ public class Game extends JPanel{
 	boolean started = false;
 	boolean init = false;
 	boolean dragging = false;
+	boolean isPaused = false;
 	
 	private Point mouseCords = new Point(0,0);
 	
@@ -83,6 +84,14 @@ public class Game extends JPanel{
         					System.exit(0);
         					
         				}
+        				if (e.getKeyCode() == KeyEvent.VK_P) {
+        					System.out.println("PauSED");
+        					if (game.isPaused) {
+        						game.isPaused = false;
+        					} else {
+        						game.isPaused = true;
+        					}
+        				}
         				System.out.println("IM PRESING A KEY");
         			}
 
@@ -120,7 +129,7 @@ public class Game extends JPanel{
 		game.addMouseListener(new MouseAdapter() {
 			@Override
             public void mouseReleased(MouseEvent e) {
-                if (game.dragging) {
+                if (game.dragging && !game.isPaused) {
                 	if (glc.isRenderDragGabion()) {
                 		glc.handlePlaceGabion(e.getPoint());
                 	}
@@ -133,19 +142,17 @@ public class Game extends JPanel{
             }
 			@Override
 			public void mousePressed(MouseEvent e) {
-				glc.handlePressed(e.getPoint());
-				//System.out.println("mouse pressed");
+				if (!game.isPaused) {
+					glc.handlePressed(e.getPoint());
+					//System.out.println("mouse pressed");
+				}
 			}
 		
 		});
 	}
 	public void mouseMotion(Game game) {
 		game.addMouseMotionListener(new MouseAdapter() {
-			@Override
-			public void mouseMoved(MouseEvent e) {
-		       
-		    }
-			
+					
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				game.setMouseCords(e.getPoint());
@@ -167,7 +174,9 @@ public class Game extends JPanel{
 			if (this.started) {
 				this.setInit(true);
 				repaint();
-				glc.loop();
+				if (!this.isPaused) {
+					glc.loop();
+				}
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e) {
@@ -220,6 +229,14 @@ public class Game extends JPanel{
 	
 	public void setDragging(boolean d) {
 		this.dragging = d;
+	}
+
+	public boolean isPaused() {
+		return isPaused;
+	}
+
+	public void setPaused(boolean isPaused) {
+		this.isPaused = isPaused;
 	}
 	
 }
