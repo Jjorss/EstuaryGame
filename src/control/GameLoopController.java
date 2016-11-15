@@ -91,7 +91,7 @@ public class GameLoopController {
 	private double concreteWallWidth;
 	private int fontSize;
 	
-	private Color ShoreColor = Color.YELLOW; 
+	private Color ShoreColor = new Color(255, 200, 100, 255); 
 
 	public GameLoopController(Game game, Scale scale) {
 		this.game = game;
@@ -258,7 +258,7 @@ public class GameLoopController {
 		}
 		
 		// single way
-		g2.setColor(Color.YELLOW);
+		g2.setColor(this.ShoreColor);
 		g2.fill(shore1);
 		g2.draw(shore1);
 
@@ -386,7 +386,7 @@ public class GameLoopController {
 				// erode shore
 				if (shore.erode()) {
 					this.eroded = true;
-					this.ShoreColor = Color.YELLOW;
+					this.ShoreColor = new Color(255, 200, 100);
 					shore1.setRect(shore1.getX(), shore1.getY(), (shore1.getWidth() - this.gabionWidth - this.gbPadding),
 							shore1.getHeight());
 					for (Rectangle2D plantRow: plantRows) {
@@ -397,11 +397,11 @@ public class GameLoopController {
 //						gabionRow.setRect(shore1.getWidth(), gabionRow.getY(), gabionRow.getWidth(), gabionRow.getHeight());
 //					}
 					for (int j = 0; j < plantrects.size(); j++ ) {
-						plantrects.get(j).setRect(plantrects.get(j).getX() - (shore1.getWidth() - this.gabionWidth - this.gbPadding), plantrects.get(j).getY(),
+						plantrects.get(j).setRect(plantrects.get(j).getX() - this.gabionWidth - this.gbPadding, plantrects.get(j).getY(),
 								plantrects.get(j).getWidth(), plantrects.get(j).getHeight());
 					}
 				} else {
-					this.ShoreColor = new Color(255, 200, 100);
+					this.ShoreColor = new Color(255, 200, 100, 230);
 					this.eroded = false;
 				}
 				
