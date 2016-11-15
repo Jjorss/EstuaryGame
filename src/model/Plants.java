@@ -2,14 +2,18 @@ package model;
 
 public class Plants extends Wall{
 
+	private int x;
+	private int y;
+	private int health = 3;
+	private boolean isVisible = false;
 
-	public Plants(int x, int y) {
+	public Plants(int x, int y, boolean isVisible) {
 		super(x, y);
+		this.y = y;
+		this.x = x;
+		this.isVisible = isVisible;
 		// TODO Auto-generated constructor stub
 	}
-	int x;
-	int y;
-	int health;
 	
 	@Override
 	public void changeHealth(int newHealth) {
@@ -33,6 +37,14 @@ public class Plants extends Wall{
 	}
 	public void setX(int x) {
 		this.x = x;
+	}
+
+	public boolean isVisible() {
+		return isVisible;
+	}
+
+	public void setVisible(boolean isVisible) {
+		this.isVisible = isVisible;
 	}
 	
 	

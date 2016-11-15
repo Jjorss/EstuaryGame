@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-/model/
-<<<<<<< HEAD
-=======
-=======
 /control/
 /model/
->>>>>>> JaelsBranch
-/tests/
 /view/
->>>>>>> jacksons-branch
-/control/
+/tests/

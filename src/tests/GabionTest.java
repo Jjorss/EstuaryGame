@@ -10,7 +10,7 @@ import model.Gabion;
 public class GabionTest {
 	@Test
 	public void changeHealthTest() {
-		Gabion tester = new Gabion(0, 0);
+		Gabion tester = new Gabion(0, 0, 0);
 		int oldHealth = tester.getHealth();
 		tester.changeHealth(1);
 		assertEquals(tester.getHealth(), oldHealth+1);

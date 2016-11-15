@@ -2,7 +2,7 @@ package model;
 
 public class ConcreteWalls extends Wall {
 	
-	private boolean isVisible;
+	private boolean isVisible = true;
 
 	public ConcreteWalls(int x, int y) {
 		super(x, y);
@@ -29,6 +29,14 @@ public class ConcreteWalls extends Wall {
 
 	public void setVisible(boolean isVisible) {
 		this.isVisible = isVisible;
+	}
+	
+	public int getX(){
+		return super.x;
+	}
+	
+	public int getY() {
+		return super.y;
 	}
 	
 	

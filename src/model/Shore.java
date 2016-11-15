@@ -4,11 +4,14 @@ public class Shore extends Entity {
 
 	private int health = 100;
 	private int numberOfHorseshoeCrabs = 0;
-	private int x;
-	private int y;
+	private int x = 0;
+	private int y = 0;
+	private int hits = 0;
 	
 	public Shore(int x, int y) {
-		super(x, y);
+		super(x,y);
+		this.x = x;
+		this.y = y;
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -18,11 +21,18 @@ public class Shore extends Entity {
 		throw new UnsupportedOperationException();
 		
 	}
-	public void erode(){
-		// amount to decrement health by
-		this.health = health - 10;
-		// erode shore
-		this.setX(this.getX() - 10);		
+	public boolean erode(){
+		this.hits++;
+		if (this.hits == 2) {
+			// amount to decrement health by
+			this.health = health - 10;
+			// erode shore
+			this.setX(this.getX() - 10);
+			this.hits = 0;
+			return true;
+		} else {
+			return false;
+		}
 	}
 	public void grow(){
 		

@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
  * @author Jackson Jorss
  * @author Jael Flaquer
  * @author Ben Clark
- * @author Robert Lee
+ * @author Robert Ley
  * 
  *
  */

@@ -3,8 +3,12 @@ package view;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,7 +29,7 @@ import control.GameLoopController;
  * @author Jackson Jorss
  * @author Jael Flaquer
  * @author Ben Clark
- * @author Robert Lee
+ * @author Robert Ley
  * 
  *
  */
@@ -34,15 +38,27 @@ import control.GameLoopController;
 public class Game extends JPanel{
 
 	private static final long serialVersionUID = 1L;
-	static Scale scale = new Scale(1280, 720, 8);
-	GameLoopController glc = new GameLoopController(this, scale);
-	private Point click = new Point(0,0);
+	private static final int WIDTH = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+	private static final int HEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	
-	public static void main(String[] args) {
+	boolean started = false;
+	boolean init = false;
+	boolean dragging = false;
+	boolean isPaused = false;
+	
+	private Point mouseCords = new Point(0,0);
+	
+	
+	static Scale scale = new Scale(WIDTH, HEIGHT, 8);
+	GameLoopController glc = new GameLoopController(this, scale);
+	
+	
+	public static void main(String[] args) throws InvocationTargetException, InterruptedException {
 		
 		Game game = new Game();
-		
-		EventQueue.invokeLater(new Runnable() {
+		game.started = true;
+		System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getWidth());
+		EventQueue.invokeAndWait(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -50,35 +66,101 @@ public class Game extends JPanel{
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                     ex.printStackTrace();
                 }
-
+                
                 JFrame frame = new JFrame("Game");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(scale.getWidth(), scale.getHeight());
+                frame.setSize(WIDTH, HEIGHT);
                 frame.setFocusable(true);
                 frame.getContentPane().add(game);
+                frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+                frame.setUndecorated(true);
+                //frame.setVisible(true);
                 frame.setVisible(true);
+                frame.addKeyListener(new KeyListener() {
+
+                	@Override
+        			public void keyPressed(KeyEvent e) {
+        				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        					System.exit(0);
+        					
+        				}
+        				if (e.getKeyCode() == KeyEvent.VK_P) {
+        					System.out.println("PauSED");
+        					if (game.isPaused) {
+        						game.isPaused = false;
+        					} else {
+        						game.isPaused = true;
+        					}
+        				}
+        				System.out.println("IM PRESING A KEY");
+        			}
+
+					@Override
+					public void keyReleased(KeyEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void keyTyped(KeyEvent arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+                	
+                });
+                scale = new Scale((int)game.getBounds().getWidth(), (int)game.getBounds().getHeight(), 8);
                 
+                System.out.println("started");
                 
                 
             }
+            
         });
 		// loop
-		game.mouseClick(game);
 		
+		game.mouseClick(game);
+		game.mouseMotion(game);
+		System.out.println("called first");
 		game.start();
+		
 	}
 	
 	public void mouseClick(Game game) {
 		game.addMouseListener(new MouseAdapter() {
 			@Override
             public void mouseReleased(MouseEvent e) {
-                //game.click = e.getPoint();
-                //glc.handlePlaceGabion(e.getPoint());
-                glc.handleClick(e.getPoint());
+                if (game.dragging && !game.isPaused) {
+                	if (glc.isRenderDragGabion()) {
+                		glc.handlePlaceGabion(e.getPoint());
+                	}
+                	if (glc.isRenderDragPlant()) {
+                		glc.handlePlacePlant(e.getPoint());
+                	}
+                	game.dragging = false;
+                } 
+                
             }
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (!game.isPaused) {
+					glc.handlePressed(e.getPoint());
+					//System.out.println("mouse pressed");
+				}
+			}
 		
 		});
 	}
+	public void mouseMotion(Game game) {
+		game.addMouseMotionListener(new MouseAdapter() {
+					
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				game.setMouseCords(e.getPoint());
+				System.out.println("dragging");
+			}
+		});
+	}
+	
 	
 	
 	
@@ -89,12 +171,17 @@ public class Game extends JPanel{
 	
 	public void start() {
 		while(true) {
-			repaint();
-			glc.loop();
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if (this.started) {
+				this.setInit(true);
+				repaint();
+				if (!this.isPaused) {
+					glc.loop();
+				}
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -108,12 +195,48 @@ public class Game extends JPanel{
 	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        glc.render(g, scale.getGridSize());
+        if (this.init) {
+        	glc.render(g, scale.getGridSize());
+        }
+        
         //scale.render(g);
 	}
 	
-	public Point getClick() {
-		return this.click;
+	@SuppressWarnings("static-access")
+	public Scale getScale() {
+		return this.scale;
+	}
+	
+	public void setInit(boolean newInit) {
+		if (newInit != this.init) {
+			this.init = newInit;
+			glc.init();
+			System.out.println("this is happening");
+		}
+	}
+
+	public Point getMouseCords() {
+		return mouseCords;
+	}
+
+	public void setMouseCords(Point mouseCords) {
+		this.mouseCords = mouseCords;
+	}
+
+	public boolean isDragging() {
+		return dragging;
+	}
+	
+	public void setDragging(boolean d) {
+		this.dragging = d;
+	}
+
+	public boolean isPaused() {
+		return isPaused;
+	}
+
+	public void setPaused(boolean isPaused) {
+		this.isPaused = isPaused;
 	}
 	
 }
