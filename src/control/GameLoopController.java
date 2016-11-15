@@ -74,9 +74,11 @@ public class GameLoopController {
 	private Rectangle2D plantBuilder = new Rectangle2D.Double(0, 0, 0, 0);
 	private Rectangle2D uiGabion = new Rectangle2D.Double(0,0,0,0);
 	private Rectangle2D uiPlant = new Rectangle2D.Double(0,0,0,0);
+	private Rectangle2D crabFishMeter = new Rectangle2D.Double(0,0,0,0);
 
 	private boolean renderDragGabion = false;
 	private boolean renderDragPlant = false;
+	private boolean eroded = false;
 	
 	private double gX;
 	private double gY;
@@ -87,6 +89,9 @@ public class GameLoopController {
 	private double uiPlantWidth;
 	private double uiPlantHeight;
 	private double concreteWallWidth;
+	private int fontSize;
+	
+	private Color ShoreColor = Color.YELLOW; 
 
 	public GameLoopController(Game game, Scale scale) {
 		this.game = game;
@@ -102,10 +107,11 @@ public class GameLoopController {
 		double uiBoxHeight = this.game.getScale().getHeight() * 0.165;
 		double shoreWidth = this.game.getScale().getWidth() * 0.35;
 		
+		
 		concreteWallWidth = width * 0.01;
 		gbPadding = width * 0.015;
 		
-		spawner = new Spawner(this, this.game);
+		spawner = new Spawner(this, this.game, this.timer);
 		UIBOX = new Rectangle2D.Double(0,0, width, uiBoxHeight);
 		GAMEBOX = new Rectangle2D.Double(0, this.UIBOX.getHeight(), width, 
 				height - this.UIBOX.getHeight());
@@ -114,6 +120,8 @@ public class GameLoopController {
 		shore1 = new Rectangle2D.Double(shore.getX(), shore.getY(), (int) shoreWidth,
 				GAMEBOX.getHeight());
 		
+		
+		fontSize = (int)(UIBOX.getWidth() * 0.05);
 		
 		for (int i = 0; i < 7; i++) {
 			waveRows.add(new Rectangle2D.Double(shore1.getWidth() + concreteWallWidth, (UIBOX.getHeight() + (GAMEBOX.getHeight()/ 7) * i),
@@ -151,6 +159,9 @@ public class GameLoopController {
 		plantBuilder = new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), UIBOX.getHeight() * (2.0/3.0), UIBOX.getHeight());
 		uiPlant = new Rectangle2D.Double(plantBuilder.getCenterX() - (uiPlantWidth/2),plantBuilder.getCenterY() - (uiPlantHeight/2.0),
 				uiPlantWidth, uiPlantHeight);
+		double cfWidth = UIBOX.getWidth() *0.2;
+		double cfX = UIBOX.getX() + plantBuilder.getX() + plantBuilder.getWidth() + this.fontSize + (fontSize/2);
+		crabFishMeter = new Rectangle2D.Double(cfX, UIBOX.getY(), cfWidth, UIBOX.getHeight());
 		
 	}
 
@@ -159,7 +170,7 @@ public class GameLoopController {
 	 * methods get called.
 	 */
 	public void loop() {
-		spawner.spawn();
+		spawner.spawn(this.eroded);
 		timer.countDown();
 		plantTimer.countUp();
 		pb.build();
@@ -251,11 +262,7 @@ public class GameLoopController {
 		g2.fill(shore1);
 		g2.draw(shore1);
 
-		g2.setColor(new Color(184, 138, 0, 127));
-		for (Rectangle2D runOff : runOffRects) {
-			g2.draw(runOff);
-			g2.fill(runOff);
-		}
+		
 		
 		g2.setColor(Color.GREEN);
 		for (int i = 0; i < plants.size(); i++) {
@@ -271,7 +278,7 @@ public class GameLoopController {
 		// Gabion builder/Plant builder
 
 		
-		Font f1 = new Font("Arial", 50, 100);
+		Font f1 = new Font("Arial", Font.PLAIN, this.fontSize);
 		g2.setFont(f1);
 		g2.setColor(Color.BLACK);
 		g2.drawString(timer.getTime() + "", (int) UIBOX.getCenterX(), (int) UIBOX.getCenterY());
@@ -340,9 +347,23 @@ public class GameLoopController {
 			g2.setColor(Color.gray);
 			for (Rectangle2D row : plantRows) {
 				g2.draw(row);
-				
+			}
+		} else {
+			g2.setColor(this.ShoreColor);
+			for (Rectangle2D row : plantRows) {
+				//g2.fill(row);
 			}
 		}
+		
+		g2.setColor(new Color(184, 138, 0, 127));
+		for (Rectangle2D runOff : runOffRects) {
+			g2.draw(runOff);
+			g2.fill(runOff);
+		}
+		
+		g2.setColor(Color.MAGENTA);
+		g2.draw(crabFishMeter);
+		g2.fill(crabFishMeter);
 		
 	}
 
@@ -363,16 +384,27 @@ public class GameLoopController {
 			if (waveRects.get(i).intersects(shore1.getX(), shore1.getY(), shore1.getWidth(), shore1.getHeight())) {
 				// wave hit shore
 				// erode shore
-				shore.erode();
-				shore1.setRect(shore1.getX(), shore1.getY(), shore1.getWidth() - (game.getScale().getWidth()*0.03),
-						shore1.getHeight());
-				for (Rectangle2D plantRow: plantRows) {
-					plantRow.setRect(shore1.getWidth() - plantRow.getWidth(), plantRow.getY(), plantRow.getWidth(), plantRow.getHeight());
+				if (shore.erode()) {
+					this.eroded = true;
+					this.ShoreColor = Color.YELLOW;
+					shore1.setRect(shore1.getX(), shore1.getY(), (shore1.getWidth() - this.gabionWidth - this.gbPadding),
+							shore1.getHeight());
+					for (Rectangle2D plantRow: plantRows) {
+						plantRow.setRect(shore1.getWidth() - plantRow.getWidth(), plantRow.getY(), plantRow.getWidth(), plantRow.getHeight());
+					}
+					// for implementing moving gabions placement back with he shore
+//					for (Rectangle2D gabionRow : waveRows) {
+//						gabionRow.setRect(shore1.getWidth(), gabionRow.getY(), gabionRow.getWidth(), gabionRow.getHeight());
+//					}
+					for (int j = 0; j < plantrects.size(); j++ ) {
+						plantrects.get(j).setRect(plantrects.get(j).getX() - (shore1.getWidth() - this.gabionWidth - this.gbPadding), plantrects.get(j).getY(),
+								plantrects.get(j).getWidth(), plantrects.get(j).getHeight());
+					}
+				} else {
+					this.ShoreColor = new Color(255, 200, 100);
+					this.eroded = false;
 				}
-				for (int j = 0; j < plantrects.size(); j++ ) {
-					plantrects.get(j).setRect(plantrects.get(j).getX() - (game.getScale().getWidth()*0.03), plantrects.get(j).getY(),
-							plantrects.get(j).getWidth(), plantrects.get(j).getHeight());
-				}
+				
 				System.out.println("Wave Hit Shore");
 				whatToRemove.add(new EntityStruct(i, "wave"));
 
@@ -397,7 +429,7 @@ public class GameLoopController {
 							System.out.println(gabions.get(j).getRowNum());
 							e.printStackTrace();
 						}
-						System.out.println("row: " + j + " " + this.numOfGabionsInRow.get(i) );
+						
 					}
 				}
 			}

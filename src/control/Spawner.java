@@ -8,6 +8,7 @@ import model.ClumpOfOysters;
 import model.CrabFishMeter;
 import model.Plants;
 import model.RunOff;
+import model.Timer;
 import model.Wave;
 import view.Game;
 
@@ -15,28 +16,40 @@ public class Spawner {
 
 	private GameLoopController glc;
 	private Game game;
+	private Timer timer;
 	
 	private ArrayList<Integer>plantsInRow = new ArrayList<Integer>();
 	private ArrayList<Integer>patternInRow = new ArrayList<Integer>();
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
-	public  Spawner(GameLoopController glc, Game game) {
+	private boolean increasedIntensity = false;
+	private int intensity = 3;
+	
+	public  Spawner(GameLoopController glc, Game game, Timer timer) {
 		this.glc = glc;
 		this.game = game;
+		this.timer = timer;
 	}
 	
-//	public int determineSkill(int mood, int shoreHealth) {
-//		if () {
-//			
-//		}
-//		
-//		//0 good
-//		//1 doing badly
-//		//2 failing
-//	}
-	
-	public int determineWaveQuantity(int intensity, int skill) {
-		return intensity;// *skill
+
+	public void determineIntensity(int currentIntensity, boolean eroded) {
+		
+		if (this.intensity < 10) {
+			if (timer.getTime() % 20 == 0 && !this.increasedIntensity && !eroded) {
+				this.increasedIntensity = true;
+				this.intensity++;
+			} else if (timer.getTime() % 10 != 0){
+				this.increasedIntensity = false;
+			} 
+			if (eroded) {
+				if (this.intensity < 1) {
+					this.intensity = 1;
+				} else {
+					this.intensity -=2;
+				}
+			}
+		}
+		
 	}
 	
 	public void spawnOysters(int intensity, int time) {
@@ -59,7 +72,7 @@ public class Spawner {
 		double yBottomBound = glc.getGAMEBOX().getHeight() - height - padding;
 		int y = (int) (rand.nextInt((int) ((yBottomBound - yTopBound) + 1)) + yTopBound);
 		
-		if (glc.getOysters().size() < 4) {
+		if (glc.getOysters().size() < this.intensity*1.5) {
 			glc.getOysters().add(new ClumpOfOysters(x, y));
 			glc.getOysterRects().add(new Rectangle2D.Double(x, y, width, height));
 			
@@ -74,8 +87,8 @@ public class Spawner {
 		int  numRow = rand.nextInt(7);
 		int y = (int) ((glc.getWaveRows().get(numRow).getCenterY()) - (waveHeight/2));
 		int x = game.getWidth();
-		if (glc.getWaves().size() < 2) {
-			glc.getWaves().add(new Wave(8,x,y));
+		if (glc.getWaves().size() < intensity) {
+			glc.getWaves().add(new Wave(rand.nextInt(intensity - (intensity-3)) + 3,x,y));
 			glc.getWaveRects().add(new Rectangle2D.Double(x,y,waveWidth, waveHeight ));
 		}
 	}
@@ -159,7 +172,7 @@ public class Spawner {
 		int numRow = rand.nextInt(7);
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
-		if (glc.getRunOff().size() < 2 && !this.runOffInRow.get(numRow)) {
+		if (glc.getRunOff().size() < this.intensity/2 && !this.runOffInRow.get(numRow) && time < 100) {
 			glc.getRunOff().add(new RunOff(8,x,y, numRow));
 			glc.getRunOffRects().add(new Rectangle2D.Double(x,y,rfWidth, rfHeight ));
 			this.runOffInRow.set(numRow, true);
@@ -167,10 +180,11 @@ public class Spawner {
 		}
 	}
 	
-	public void spawn() {
-		this.spawnWaves(0, 0);
-		this.spawnOysters(0, 0);
-		this.spawnRunOff(0, 0);
+	public void spawn(boolean eroded) {
+		this.determineIntensity(this.intensity, eroded);
+		this.spawnWaves(this.intensity, 0);
+		this.spawnOysters(this.intensity, 0);
+		this.spawnRunOff(this.intensity, 0);
 	}
 
 	public ArrayList<Integer> getPlantsInRow() {
