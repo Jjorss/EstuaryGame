@@ -3,7 +3,7 @@ package model;
 public class CrabFishMeter {
 
 	private int mood;
-	private int phLevels;
+	private int phLevels = 7;
 	private int size;
 	
 	public int getPhLevels() {

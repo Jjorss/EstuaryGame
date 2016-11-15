@@ -23,7 +23,7 @@ public class Spawner {
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	private boolean increasedIntensity = false;
-	private int intensity = 3;
+	private int intensity = 2;
 	
 	public  Spawner(GameLoopController glc, Game game, Timer timer) {
 		this.glc = glc;
@@ -42,14 +42,15 @@ public class Spawner {
 				this.increasedIntensity = false;
 			} 
 			if (eroded) {
-				if (this.intensity < 1) {
+				if (this.intensity <= 1) {
 					this.intensity = 1;
 				} else {
-					this.intensity -=2;
+					this.intensity -=1;
 				}
+				glc.setEroded(false);
 			}
 		}
-		
+		//System.out.println(this.intensity);
 	}
 	
 	public void spawnOysters(int intensity, int time) {
@@ -172,7 +173,7 @@ public class Spawner {
 		int numRow = rand.nextInt(7);
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
-		if (glc.getRunOff().size() < this.intensity/2 && !this.runOffInRow.get(numRow) && time < 100) {
+		if (glc.getRunOff().size() < this.intensity/3 && !this.runOffInRow.get(numRow) && time < 180) {
 			glc.getRunOff().add(new RunOff(8,x,y, numRow));
 			glc.getRunOffRects().add(new Rectangle2D.Double(x,y,rfWidth, rfHeight ));
 			this.runOffInRow.set(numRow, true);
@@ -184,7 +185,7 @@ public class Spawner {
 		this.determineIntensity(this.intensity, eroded);
 		this.spawnWaves(this.intensity, 0);
 		this.spawnOysters(this.intensity, 0);
-		this.spawnRunOff(this.intensity, 0);
+		this.spawnRunOff(this.intensity, timer.getTime());
 	}
 
 	public ArrayList<Integer> getPlantsInRow() {

@@ -12,6 +12,7 @@ import java.util.Random;
 
 import model.ClumpOfOysters;
 import model.ConcreteWalls;
+import model.CrabFishMeter;
 import model.Entity;
 import model.Gabion;
 import model.GabionBuilder;
@@ -45,8 +46,10 @@ public class GameLoopController {
 	private Timer plantTimer = new Timer();
 	private PlantBuilder pb = new PlantBuilder(plantTimer);
 	private String time = "" + timer.getTime();
+	private CrabFishMeter cfMeter = new CrabFishMeter();
 
 	private ArrayList<Integer> numOfGabionsInRow = new ArrayList<Integer>();
+	
 
 	// list of entities
 	private ArrayList<Wave> waves = new ArrayList<Wave>();
@@ -79,6 +82,7 @@ public class GameLoopController {
 	private boolean renderDragGabion = false;
 	private boolean renderDragPlant = false;
 	private boolean eroded = false;
+	private boolean isRunOff = false;
 	
 	private double gX;
 	private double gY;
@@ -215,7 +219,8 @@ public class GameLoopController {
 
 		// collision detections
 		collision();
-
+		System.out.println(cfMeter.getPhLevels());
+		System.out.println(this.isRunOff);
 		// System.out.println("I'm looping");
 	}
 
@@ -365,6 +370,9 @@ public class GameLoopController {
 		g2.draw(crabFishMeter);
 		g2.fill(crabFishMeter);
 		
+		g2.setColor(Color.WHITE);
+		g2.drawString("" + cfMeter.getPhLevels(), (int)crabFishMeter.getCenterX(), (int)crabFishMeter.getCenterY());
+		
 	}
 
 	public void collision() {
@@ -400,15 +408,17 @@ public class GameLoopController {
 						plantrects.get(j).setRect(plantrects.get(j).getX() - this.gabionWidth - this.gbPadding, plantrects.get(j).getY(),
 								plantrects.get(j).getWidth(), plantrects.get(j).getHeight());
 					}
+					
 				} else {
 					this.ShoreColor = new Color(255, 200, 100, 230);
-					this.eroded = false;
+					
 				}
 				
 				System.out.println("Wave Hit Shore");
 				whatToRemove.add(new EntityStruct(i, "wave"));
 
 			}
+			
 			// if a wave hits a gabion, remove wave
 			// PUT CHANGE OF HEALTH HERE IF WE DECIDE TO GO WITH HEALTH FOR
 			// GABIONS
@@ -443,6 +453,18 @@ public class GameLoopController {
 				}
 			}
 		}
+		
+		for (int i = 0; i < plantRows.size(); i++) {
+			for (int j = 0; j < runOffRects.size(); j++) {
+				if (plantRows.get(i).intersects(runOffRects.get(j))) {
+					this.setIsRunOff(true, i);
+					
+				} else {
+					this.setIsRunOff(false, i);
+				}
+			}
+		}
+		
 		// this is throwing an array out of bounds exception from time to time
 		for (EntityStruct e: whatToRemove) {
 			if (e.type.equals("wave")) {
@@ -459,7 +481,8 @@ public class GameLoopController {
 			}
 		}
 		
-
+		
+		
 	}
 	
 	public void handlePlacePlant(Point p) {
@@ -546,6 +569,22 @@ public class GameLoopController {
 		this.handleDrag(p);
 		
 	}
+	
+	public void setIsRunOff(boolean newB, int i) {
+		if (newB != this.isRunOff) {
+			this.isRunOff = newB;
+			if (newB) {
+				if (spawner.getPlantsInRow().get(i) > 2) {
+					cfMeter.setPhLevels(cfMeter.getPhLevels()+1);
+				} else if (spawner.getPlantsInRow().get(i) == 1 ) {
+					cfMeter.setPhLevels(cfMeter.getPhLevels()-1);
+				} else if (spawner.getPlantsInRow().get(i) == 0) {
+					cfMeter.setPhLevels(cfMeter.getPhLevels()-2);
+				}
+			}
+		}
+	}
+
 
 	public ArrayList<Wave> getWaves() {
 		return waves;
@@ -629,6 +668,14 @@ public class GameLoopController {
 
 	public ArrayList<RunOff> getRunOff() {
 		return runOff;
+	}
+
+	public boolean isEroded() {
+		return eroded;
+	}
+
+	public void setEroded(boolean eroded) {
+		this.eroded = eroded;
 	}
 
 }

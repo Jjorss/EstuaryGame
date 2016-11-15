@@ -34,6 +34,7 @@ public class RunOff extends Entity{
 		//System.out.println(this.getX());
 	}
 
+
 	/**
 	 * Getter
 	 * 
