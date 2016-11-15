@@ -48,8 +48,12 @@ public class Game extends JPanel{
 	boolean dragging = false;
 	boolean isPaused = false;
 	boolean gameOver = false;
+	boolean restart = false;
+	boolean increase = true;
 	
 	private Point mouseCords = new Point(0,0);
+	
+	private int fontSize = 190;
 	
 	
 	static Scale scale = new Scale(WIDTH, HEIGHT, 8);
@@ -94,6 +98,9 @@ public class Game extends JPanel{
         					} else {
         						game.isPaused = true;
         					}
+        				}
+        				if (e.getKeyCode() == KeyEvent.VK_R) {
+        					game.restart = true;
         				}
         				System.out.println("IM PRESING A KEY");
         			}
@@ -201,9 +208,19 @@ public class Game extends JPanel{
         if (this.init) {
         	glc.render(g, scale.getGridSize());
         	if (this.gameOver) {
-        		Font f = new Font("Arial", 1, 200);
+        		if (this.fontSize >= 210) {
+        			this.increase = false;
+        		} else if (this.fontSize <= 190) {
+        			this.increase = true;
+        		}
+        		if (this.increase) {
+        			this.fontSize++;
+        		} else {
+        			this.fontSize--;
+        		}
+        		Font f = new Font("Arial", 1, this.fontSize);
             	g.setFont(f);
-            	g.setColor(Color.BLACK);
+            	g.setColor(Color.WHITE);
             	g.drawString("GAME OVER",(scale.getWidth()/2) - f.getSize()*2 , scale.getHeight()/2);
         	}
         } 
@@ -217,7 +234,10 @@ public class Game extends JPanel{
 	}
 	
 	public void setInit(boolean newInit) {
-		if (newInit != this.init) {
+		if (newInit != this.init || this.restart) {
+			this.restart = false;
+			glc = new GameLoopController(this, scale);
+			this.gameOver = false;
 			this.init = newInit;
 			glc.init();
 			System.out.println("this is happening");
