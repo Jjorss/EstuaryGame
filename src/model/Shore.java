@@ -25,7 +25,8 @@ public class Shore extends Entity {
 		this.hits++;
 		if (this.hits == 2) {
 			// amount to decrement health by
-			this.health = health - 10;
+			this.health = health - 25;
+			System.out.println("Shore Health: " + this.health);
 			// erode shore
 			this.setX(this.getX() - 10);
 			this.hits = 0;

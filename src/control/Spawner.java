@@ -23,7 +23,7 @@ public class Spawner {
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	private boolean increasedIntensity = false;
-	private int intensity = 2;
+	private int intensity = 10;
 	
 	public  Spawner(GameLoopController glc, Game game, Timer timer) {
 		this.glc = glc;

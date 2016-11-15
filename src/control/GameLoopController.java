@@ -182,8 +182,8 @@ public class GameLoopController {
 		if (timer.getTime() < 150) {
 			plantTimer.countUp();
 		}
-		if (timer.getTime() == 0) {
-			game.setPaused(true);
+		if (timer.getTime() == 0 || shore.getHealth() <= 25) {
+			game.setGameOver(true);
 		}
 		pb.build();
 		for (int i = 0; i < waves.size(); i++) {
@@ -227,7 +227,7 @@ public class GameLoopController {
 
 		// collision detections
 		collision();
-		System.out.println(cfMeter.getPhLevels());
+		//System.out.println(cfMeter.getPhLevels());
 		
 		// System.out.println("I'm looping");
 	}

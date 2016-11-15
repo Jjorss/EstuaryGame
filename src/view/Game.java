@@ -1,6 +1,8 @@
 package view;
 
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -45,6 +47,7 @@ public class Game extends JPanel{
 	boolean init = false;
 	boolean dragging = false;
 	boolean isPaused = false;
+	boolean gameOver = false;
 	
 	private Point mouseCords = new Point(0,0);
 	
@@ -174,7 +177,7 @@ public class Game extends JPanel{
 			if (this.started) {
 				this.setInit(true);
 				repaint();
-				if (!this.isPaused) {
+				if (!this.isPaused && !this.gameOver) {
 					glc.loop();
 				}
 				try {
@@ -197,7 +200,13 @@ public class Game extends JPanel{
         super.paintComponent(g);
         if (this.init) {
         	glc.render(g, scale.getGridSize());
-        }
+        	if (this.gameOver) {
+        		Font f = new Font("Arial", 1, 200);
+            	g.setFont(f);
+            	g.setColor(Color.BLACK);
+            	g.drawString("GAME OVER",(scale.getWidth()/2) - f.getSize()*2 , scale.getHeight()/2);
+        	}
+        } 
         
         //scale.render(g);
 	}
@@ -237,6 +246,14 @@ public class Game extends JPanel{
 
 	public void setPaused(boolean isPaused) {
 		this.isPaused = isPaused;
+	}
+
+	public boolean isGameOver() {
+		return gameOver;
+	}
+
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
 	}
 	
 }
