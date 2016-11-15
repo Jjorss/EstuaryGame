@@ -93,10 +93,12 @@ public class Game extends JPanel{
         				}
         				if (e.getKeyCode() == KeyEvent.VK_P) {
         					System.out.println("PauSED");
-        					if (game.isPaused) {
-        						game.isPaused = false;
-        					} else {
-        						game.isPaused = true;
+        					if (!game.gameOver) {
+        						if (game.isPaused) {
+            						game.isPaused = false;
+            					} else {
+            						game.isPaused = true;
+            					}
         					}
         				}
         				if (e.getKeyCode() == KeyEvent.VK_R) {
@@ -219,9 +221,12 @@ public class Game extends JPanel{
         			this.fontSize--;
         		}
         		Font f = new Font("Arial", 1, this.fontSize);
+        		Font f2 = new Font("Arial", 1, this.fontSize/2);
             	g.setFont(f);
             	g.setColor(Color.WHITE);
             	g.drawString("GAME OVER",(scale.getWidth()/2) - f.getSize()*2 , scale.getHeight()/2);
+            	g.setFont(f2);
+            	g.drawString("PRESS R TO RESTART",(scale.getWidth()/2) - f2.getSize()*2 , (scale.getHeight()/2) + f.getSize());
         	}
         } 
         
