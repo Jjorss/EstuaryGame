@@ -15,8 +15,8 @@ public class Timer {
 	}
 	
 	public void countDown(){
-		this.timeMili = 180 - (System.currentTimeMillis() - startGameTime) / 1000;
-		this.time = (int) this.timeMili;
+		this.timeMili = (180*1000) - (System.currentTimeMillis() - startGameTime);
+		this.time = (int) this.timeMili / 1000;
 		//System.out.println(time);
 		if (this.time <= 0) {
 			this.time = 0;

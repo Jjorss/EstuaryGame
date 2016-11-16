@@ -4,11 +4,18 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 import model.ClumpOfOysters;
 import model.ConcreteWalls;
@@ -122,12 +129,14 @@ public class GameLoopController {
 		GAMEBOX = new Rectangle2D.Double(0, this.UIBOX.getHeight(), width, 
 				height - this.UIBOX.getHeight());
 		
+		
+		
 		this.shore = new Shore((int)this.GAMEBOX.getX(), (int)this.GAMEBOX.getY());
 		shore1 = new Rectangle2D.Double(shore.getX(), shore.getY(), (int) shoreWidth,
 				GAMEBOX.getHeight());
 		
 		
-		fontSize = (int)(UIBOX.getWidth() * 0.05);
+		fontSize = (int)(UIBOX.getWidth() * 0.03);
 		
 		for (int i = 0; i < this.numOfRows; i++) {
 			waveRows.add(new Rectangle2D.Double(shore1.getWidth() + concreteWallWidth, (UIBOX.getHeight() + (GAMEBOX.getHeight()/ this.numOfRows) * i),
@@ -156,18 +165,18 @@ public class GameLoopController {
 		uiPlantWidth = uiPlantHeight * (2.0/3.0);
 		
 		
-		double gWidth = 60 * scale;
+		double gWidth = UIBOX.getWidth() * 0.10;
 		gX = UIBOX.getWidth() - gWidth;
 		gY = UIBOX.getY();
 
 		gabionBuilder = new Rectangle2D.Double(gX, gY, gWidth, UIBOX.getHeight());
-		uiGabion = new Rectangle2D.Double(gabionBuilder.getCenterX() - (gabionWidth),gabionBuilder.getCenterY() - (gabionHeight/2),
+		uiGabion = new Rectangle2D.Double(gabionBuilder.getCenterX() - (gabionWidth/2),gabionBuilder.getCenterY() - (gabionHeight/2),
 				gabionWidth, gabionHeight);
 		plantBuilder = new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), UIBOX.getHeight() * (2.0/3.0), UIBOX.getHeight());
 		uiPlant = new Rectangle2D.Double(plantBuilder.getCenterX() - (uiPlantWidth/2),plantBuilder.getCenterY() - (uiPlantHeight/2.0),
 				uiPlantWidth, uiPlantHeight);
-		double cfWidth = UIBOX.getWidth() *0.2;
-		double cfX = UIBOX.getX() + plantBuilder.getX() + plantBuilder.getWidth() + this.fontSize + (fontSize/2);
+		double cfWidth = UIBOX.getWidth() *0.05;
+		double cfX = UIBOX.getX() + plantBuilder.getX() + plantBuilder.getWidth() + (this.fontSize*2);
 		crabFishMeter = new Rectangle2D.Double(cfX, UIBOX.getY(), cfWidth, UIBOX.getHeight());
 		
 	}
@@ -179,7 +188,7 @@ public class GameLoopController {
 	public void loop() {
 		spawner.spawn(this.eroded);
 		timer.countDown();
-		if (timer.getTime() < 150) {
+		if (timer.getTime() < 180) {
 			plantTimer.countUp();
 		}
 		if (timer.getTime() == 0 || shore.getHealth() <= 25) {
@@ -240,19 +249,39 @@ public class GameLoopController {
 	public void render(Graphics g, int scale) {
 		Graphics2D g2 = (Graphics2D) g;
 		
-		g2.setColor(Color.WHITE);
-		g2.draw(UIBOX);
-		g2.fill(UIBOX);
+		BufferedImage img2 = null;
+		try {
+			img2 = ImageIO.read(new File("img/sky.jpg"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		g2.drawImage(img2, (int)UIBOX.getX(), (int)UIBOX.getY(), (int)UIBOX.getWidth(), (int)(UIBOX.getHeight()), null);
 		
-		g2.setColor(Color.cyan);
+		
+		
+		//g2.setColor(Color.WHITE);
+		//g2.draw(UIBOX);
+		//g2.fill(UIBOX);
+		
+		g2.setColor(new Color(163, 232, 255));
 		g2.draw(GAMEBOX);
 		g2.fill(GAMEBOX);
 
 		// abstract way
-		g2.setColor(Color.BLUE);
+		g2.setColor(Color.cyan);
 		for (Rectangle2D rect : waveRects) {
-			g2.draw(rect);
-			g2.fill(rect);
+			//g2.draw(rect);
+			//g2.fill(rect);
+			BufferedImage img = null;
+			try {
+				img = ImageIO.read(new File("img/wave.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			g2.drawImage(img, (int)rect.getX(), (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight(), null);
+			
 		}
 
 		
@@ -270,8 +299,17 @@ public class GameLoopController {
 		}
 		g2.setColor(Color.GRAY);
 		for (Rectangle2D oyster : oysterRects) {
-			g2.draw(oyster);
-			g2.fill(oyster);
+			//g2.draw(oyster);
+			//g2.fill(oyster);
+			BufferedImage img = null;
+			try {
+				img = ImageIO.read(new File("img/oyster.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			g2.drawImage(img, (int)oyster.getX(), (int)oyster.getY(), (int)oyster.getWidth(), (int)(oyster.getHeight()/1.5), null);
+			
 		}
 		for (Rectangle2D wall : concreteRects) {
 			g2.draw(wall);
@@ -288,8 +326,18 @@ public class GameLoopController {
 		g2.setColor(Color.GREEN);
 		for (int i = 0; i < plants.size(); i++) {
 			if (plants.get(i).isVisible()) {
-				g2.draw(plantrects.get(i));
-				g2.fill(plantrects.get(i));
+				//g2.draw(plantrects.get(i));
+				//g2.fill(plantrects.get(i));
+				BufferedImage img = null;
+				try {
+					img = ImageIO.read(new File("img/cordgrass.png"));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				g2.drawImage(img, (int)plantrects.get(i).getX(), (int)plantrects.get(i).getY(),
+						(int)(plantrects.get(i).getWidth()*1.8), (int)(plantrects.get(i).getHeight()*1.9), null);
+				
 			}
 		}
 		
@@ -304,7 +352,7 @@ public class GameLoopController {
 		g2.setColor(Color.BLACK);
 		g2.drawString(timer.getTime() + "", (int) UIBOX.getCenterX(), (int) UIBOX.getCenterY());
 		
-		g2.setColor(Color.GRAY);
+		g2.setColor(Color.WHITE);
 		g2.fill(gabionBuilder);
 		g2.draw(gabionBuilder);
 
@@ -339,7 +387,7 @@ public class GameLoopController {
 		
 		// number of gabions
 		g2.setColor(Color.WHITE);
-		g2.drawString("" + gb.getGabions(), (int)gabionBuilder.getCenterX() + (f1.getSize()/2), (int)gabionBuilder.getCenterY());
+		g2.drawString("" + gb.getGabions(), (int)uiGabion.getX() + (f1.getSize()/2), (int)uiGabion.getCenterY() + (f1.getSize()/2));
 		// plant meter
 		maxHeight = plantBuilder.getHeight();
 		height = ((double)plantTimer.getTimeMili()/(pb.getNumOfSecondsPerPlant()*1000)) * maxHeight;
@@ -348,15 +396,24 @@ public class GameLoopController {
 		y = maxHeight - height;
 		Rectangle2D plantMeter = new Rectangle2D.Double(x, y, width, height);
 		
-		g2.setColor(Color.ORANGE);
+		g2.setColor(new Color(163, 255, 173));
 		//g2.fill(plantBuilder);
-		g2.draw(plantBuilder);
+		//g2.draw(plantBuilder);
 		g2.draw(plantMeter);
 		g2.fill(plantMeter);
 		
-		g2.setColor(Color.GREEN);
-		g2.draw(uiPlant);
-		g2.fill(uiPlant);
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(new File("img/cordgrass.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		g2.drawImage(img, (int)uiPlant.getX(), (int)uiPlant.getY(), (int)uiPlant.getWidth(), (int)(uiPlant.getHeight()), null);
+		
+//		g2.setColor(Color.GREEN);
+//		g2.draw(uiPlant);
+//		g2.fill(uiPlant);
 		
 		g2.setColor(Color.BLACK);
 		g2.drawString(pb.getNumberOfPlants()+"", (int)(plantBuilder.getX() + plantBuilder.getWidth() + (f1.getSize()/2)),
@@ -382,12 +439,30 @@ public class GameLoopController {
 			g2.fill(runOff);
 		}
 		
-		g2.setColor(Color.MAGENTA);
+		g2.setColor(new Color(163, 255, 173));
 		g2.draw(crabFishMeter);
 		g2.fill(crabFishMeter);
 		
 		g2.setColor(Color.WHITE);
 		g2.drawString("" + cfMeter.getPhLevels(), (int)crabFishMeter.getCenterX(), (int)crabFishMeter.getCenterY());
+		g2.setColor(Color.YELLOW);
+		
+		double startX = this.crabFishMeter.getX()+this.crabFishMeter.getWidth();
+		double maxX = this.gabionBuilder.getX();
+		double sunX = ((((180*1000) - timer.getTimeMili())/(180.0*1000)) * (maxX-startX)) + startX;
+		double maxY = 0;
+		int sunHeight = 100;
+		double startY = UIBOX.getCenterY() - sunHeight;
+		double h = maxX - startX;
+		
+		 
+		// ((-.01)*(UIBOX.getWidth()))*(sunX*sunX)+(UIBOX.getHeight()*100);
+		// (-1*(sunHeight/2)) * ((timer.getTimeMili() / (180 * 1000))^2) + UIBOX.getHeight();
+		//System.out.println(sunY);
+		Ellipse2D sun = new Ellipse2D.Double(sunX, startY, sunHeight, sunHeight);
+		
+		g2.draw(sun);
+		g2.fill(sun);
 		
 	}
 

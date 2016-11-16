@@ -23,7 +23,7 @@ public class Spawner {
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	private boolean increasedIntensity = false;
-	private int intensity = 10;
+	private int intensity = 1;
 	
 	public  Spawner(GameLoopController glc, Game game, Timer timer) {
 		this.glc = glc;
@@ -50,7 +50,7 @@ public class Spawner {
 				glc.setEroded(false);
 			}
 		}
-		//System.out.println(this.intensity);
+		System.out.println("Intensity: " + this.intensity);
 	}
 	
 	public void spawnOysters(int intensity, int time) {
