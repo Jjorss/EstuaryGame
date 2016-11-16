@@ -91,17 +91,17 @@ public class Game extends JPanel{
         					System.exit(0);
         					
         				}
-        				if (e.getKeyCode() == KeyEvent.VK_P) {
+        				if (e.getKeyCode() == KeyEvent.VK_P && !game.gameOver) {
         					System.out.println("PauSED");
-        					if (!game.gameOver) {
-        						if (game.isPaused) {
-            						game.isPaused = false;
-            					} else {
-            						game.isPaused = true;
-            					}
-        					}
+        					
+        					if (game.isPaused) {
+            					game.isPaused = false;
+            				} else {
+            					game.isPaused = true;
+            				}
+        					
         				}
-        				if (e.getKeyCode() == KeyEvent.VK_R) {
+        				if (e.getKeyCode() == KeyEvent.VK_R && !game.isPaused) {
         					game.restart = true;
         				}
         				System.out.println("IM PRESING A KEY");

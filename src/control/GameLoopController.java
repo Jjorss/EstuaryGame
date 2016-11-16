@@ -45,6 +45,7 @@ import view.Scale;
 
 public class GameLoopController {
 	private Game game;
+	private BufferedImageController bic = new BufferedImageController();
 	private Scale scale;
 	private Point click;
 	private GabionBuilder gb = new GabionBuilder();
@@ -179,6 +180,7 @@ public class GameLoopController {
 		double cfX = UIBOX.getX() + plantBuilder.getX() + plantBuilder.getWidth() + (this.fontSize*2);
 		crabFishMeter = new Rectangle2D.Double(cfX, UIBOX.getY(), cfWidth, UIBOX.getHeight());
 		
+		bic.loadBufferedImage();
 	}
 
 	/**
@@ -249,14 +251,8 @@ public class GameLoopController {
 	public void render(Graphics g, int scale) {
 		Graphics2D g2 = (Graphics2D) g;
 		
-		BufferedImage img2 = null;
-		try {
-			img2 = ImageIO.read(new File("img/sky.jpg"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		g2.drawImage(img2, (int)UIBOX.getX(), (int)UIBOX.getY(), (int)UIBOX.getWidth(), (int)(UIBOX.getHeight()), null);
+		
+		g2.drawImage(bic.getImages().get(2), (int)UIBOX.getX(), (int)UIBOX.getY(), (int)UIBOX.getWidth(), (int)(UIBOX.getHeight()), null);
 		
 		
 		
@@ -273,14 +269,8 @@ public class GameLoopController {
 		for (Rectangle2D rect : waveRects) {
 			//g2.draw(rect);
 			//g2.fill(rect);
-			BufferedImage img = null;
-			try {
-				img = ImageIO.read(new File("img/wave.png"));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			g2.drawImage(img, (int)rect.getX(), (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight(), null);
+			
+			g2.drawImage(bic.getImages().get(4), (int)rect.getX(), (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight(), null);
 			
 		}
 
@@ -301,14 +291,8 @@ public class GameLoopController {
 		for (Rectangle2D oyster : oysterRects) {
 			//g2.draw(oyster);
 			//g2.fill(oyster);
-			BufferedImage img = null;
-			try {
-				img = ImageIO.read(new File("img/oyster.png"));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			g2.drawImage(img, (int)oyster.getX(), (int)oyster.getY(), (int)oyster.getWidth(), (int)(oyster.getHeight()/1.5), null);
+			
+			g2.drawImage(bic.getImages().get(1), (int)oyster.getX(), (int)oyster.getY(), (int)oyster.getWidth(), (int)(oyster.getHeight()/1.5), null);
 			
 		}
 		for (Rectangle2D wall : concreteRects) {
@@ -328,14 +312,8 @@ public class GameLoopController {
 			if (plants.get(i).isVisible()) {
 				//g2.draw(plantrects.get(i));
 				//g2.fill(plantrects.get(i));
-				BufferedImage img = null;
-				try {
-					img = ImageIO.read(new File("img/cordgrass.png"));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				g2.drawImage(img, (int)plantrects.get(i).getX(), (int)plantrects.get(i).getY(),
+				
+				g2.drawImage(bic.getImages().get(0), (int)plantrects.get(i).getX(), (int)plantrects.get(i).getY(),
 						(int)(plantrects.get(i).getWidth()*1.8), (int)(plantrects.get(i).getHeight()*1.9), null);
 				
 			}
@@ -402,14 +380,7 @@ public class GameLoopController {
 		g2.draw(plantMeter);
 		g2.fill(plantMeter);
 		
-		BufferedImage img = null;
-		try {
-			img = ImageIO.read(new File("img/cordgrass.png"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		g2.drawImage(img, (int)uiPlant.getX(), (int)uiPlant.getY(), (int)uiPlant.getWidth(), (int)(uiPlant.getHeight()), null);
+		g2.drawImage(bic.getImages().get(0), (int)uiPlant.getX(), (int)uiPlant.getY(), (int)uiPlant.getWidth(), (int)(uiPlant.getHeight()), null);
 		
 //		g2.setColor(Color.GREEN);
 //		g2.draw(uiPlant);
@@ -420,9 +391,11 @@ public class GameLoopController {
 				(int)plantBuilder.getCenterY());
 		
 		if (this.renderDragPlant) {
-			g2.setColor(Color.GREEN);
-			g2.draw(this.renderDragPlant(game.getMouseCords()));
-			g2.setColor(Color.gray);
+			//g2.setColor(Color.GREEN);
+			//g2.draw(this.renderDragPlant(game.getMouseCords()));
+			Rectangle2D r = this.renderDragPlant(game.getMouseCords());
+			g2.drawImage(bic.getImages().get(0), (int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight(), null);
+			g2.setColor(Color.LIGHT_GRAY);
 			for (Rectangle2D row : plantRows) {
 				g2.draw(row);
 			}
@@ -451,18 +424,19 @@ public class GameLoopController {
 		double maxX = this.gabionBuilder.getX();
 		double sunX = ((((180*1000) - timer.getTimeMili())/(180.0*1000)) * (maxX-startX)) + startX;
 		double maxY = 0;
-		int sunHeight = 100;
-		double startY = UIBOX.getCenterY() - sunHeight;
+		double sunDim = game.getScale().getWidth() * 0.06;
+		double startY = UIBOX.getCenterY() - (sunDim/2);
 		double h = maxX - startX;
 		
 		 
 		// ((-.01)*(UIBOX.getWidth()))*(sunX*sunX)+(UIBOX.getHeight()*100);
 		// (-1*(sunHeight/2)) * ((timer.getTimeMili() / (180 * 1000))^2) + UIBOX.getHeight();
 		//System.out.println(sunY);
-		Ellipse2D sun = new Ellipse2D.Double(sunX, startY, sunHeight, sunHeight);
+		//Ellipse2D sun = new Ellipse2D.Double(sunX, startY, sunDim, sunDim);
 		
-		g2.draw(sun);
-		g2.fill(sun);
+		//g2.draw(sun);
+		//g2.fill(sun);
+		g2.drawImage(bic.getImages().get(3), (int)sunX, (int)startY, (int)sunDim, (int)sunDim, null);
 		
 	}
 
