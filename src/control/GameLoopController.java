@@ -263,17 +263,7 @@ public class GameLoopController {
 		g2.setColor(new Color(163, 232, 255));
 		g2.draw(GAMEBOX);
 		g2.fill(GAMEBOX);
-
-		// abstract way
-		g2.setColor(Color.cyan);
-		for (Rectangle2D rect : waveRects) {
-			//g2.draw(rect);
-			//g2.fill(rect);
-			
-			g2.drawImage(bic.getImages().get(4), (int)rect.getX(), (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight(), null);
-			
-		}
-
+		
 		
 		for (int i = 0; i < gabionRects.size(); i++) {
 			if (gabions.get(i).getHealth() == 2) {
@@ -287,6 +277,7 @@ public class GameLoopController {
 			g2.draw(gabionRects.get(i));
 			g2.fill(gabionRects.get(i));
 		}
+
 		g2.setColor(Color.GRAY);
 		for (Rectangle2D oyster : oysterRects) {
 			//g2.draw(oyster);
@@ -295,8 +286,25 @@ public class GameLoopController {
 			g2.drawImage(bic.getImages().get(1), (int)oyster.getX(), (int)oyster.getY(), (int)oyster.getWidth(), (int)(oyster.getHeight()/1.5), null);
 			
 		}
+		
+		// abstract way
+		g2.setColor(Color.cyan);
+		for (Rectangle2D rect : waveRects) {
+			//g2.draw(rect);
+			//g2.fill(rect);
+			
+			g2.drawImage(bic.getImages().get(4), (int)rect.getX(), (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight(), null);
+			
+		}
+
+		
+		
+		
+		
 		for (Rectangle2D wall : concreteRects) {
+			g2.setColor(Color.LIGHT_GRAY);
 			g2.draw(wall);
+			g2.setColor(Color.DARK_GRAY);
 			g2.fill(wall);
 		}
 		
@@ -412,7 +420,7 @@ public class GameLoopController {
 			g2.fill(runOff);
 		}
 		
-		g2.setColor(new Color(163, 255, 173));
+		g2.setColor(Color.DARK_GRAY);
 		g2.draw(crabFishMeter);
 		g2.fill(crabFishMeter);
 		
@@ -525,8 +533,10 @@ public class GameLoopController {
 				Rectangle2D r = runOffRects.get(j);
 				if (r.getX()+ r.getWidth() >= p.getX()) {
 					this.setIsRunOff(true, i);
+					//System.out.println("true");
 				} else {
 					this.setIsRunOff(false, i);
+					//System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
 				}
 				
 			}
@@ -640,7 +650,8 @@ public class GameLoopController {
 	public void setIsRunOff(boolean newB, int i) {
 		if (newB != this.isRunOff) {
 			this.isRunOff = newB;
-			
+			//System.out.println("RunnOff Hit Plants");
+			// bug happens when two runOffs hit two plants at the same time / or there are two runOffs in game at one time
 			if (newB) {
 				if (spawner.getPlantsInRow().get(i) > 2) {
 					cfMeter.setPhLevels(cfMeter.getPhLevels()+1);

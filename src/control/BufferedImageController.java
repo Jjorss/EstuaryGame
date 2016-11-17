@@ -1,5 +1,6 @@
 package control;
 
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -27,8 +28,17 @@ public class BufferedImageController {
 			return bufferedImage;
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println("Rendering in gray skeleton");
+			bufferedImage = new BufferedImage(50,50,BufferedImage.TYPE_INT_RGB);
+			Color c = Color.LIGHT_GRAY;
+			for (int i = 0; i < bufferedImage.getWidth(); i++) {
+				for (int j = 0; j < bufferedImage.getHeight(); j++) {
+					bufferedImage.setRGB(i, j, c.getRGB());
+				}
+			}
+			return bufferedImage;
 		}
-		return null;
+		
 	}
 	public ArrayList<BufferedImage> getImages() {
 		return images;

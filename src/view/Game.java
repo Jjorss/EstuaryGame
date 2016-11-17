@@ -168,7 +168,7 @@ public class Game extends JPanel{
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				game.setMouseCords(e.getPoint());
-				System.out.println("dragging");
+				//System.out.println("dragging");
 			}
 		});
 	}
@@ -208,6 +208,7 @@ public class Game extends JPanel{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (this.init) {
+        	
         	glc.render(g, scale.getGridSize());
         	if (this.gameOver) {
         		if (this.fontSize >= 210) {
@@ -245,7 +246,7 @@ public class Game extends JPanel{
 			this.gameOver = false;
 			this.init = newInit;
 			glc.init();
-			System.out.println("this is happening");
+			System.out.println("Initialized");
 		}
 	}
 

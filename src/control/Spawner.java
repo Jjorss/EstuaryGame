@@ -38,6 +38,7 @@ public class Spawner {
 			if (timer.getTime() % 20 == 0 && !this.increasedIntensity && !eroded) {
 				this.increasedIntensity = true;
 				this.intensity++;
+				System.out.println("Intensity: " + this.intensity);
 			} else if (timer.getTime() % 10 != 0){
 				this.increasedIntensity = false;
 			} 
@@ -46,11 +47,12 @@ public class Spawner {
 					this.intensity = 1;
 				} else {
 					this.intensity -=1;
+					System.out.println("Intensity: " + this.intensity);
 				}
 				glc.setEroded(false);
 			}
 		}
-		System.out.println("Intensity: " + this.intensity);
+		
 	}
 	
 	public void spawnOysters(int intensity, int time) {
@@ -112,7 +114,7 @@ public class Spawner {
 		int x3= 0;
 		int y3 = 0;
 		System.out.println("Pattern: " + "\t" + pattern);
-		System.out.println("Plants in row: " + "\t" + this.getPlantsInRow().get(indexOfRow));
+		//System.out.println("Plants in row: " + "\t" + this.getPlantsInRow().get(indexOfRow));
 		
 		if (pattern == 1) {
 			x1 = (int)(rowX + (rowWidth * 0.1));
@@ -173,7 +175,7 @@ public class Spawner {
 		int numRow = rand.nextInt(7);
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
-		if (glc.getRunOff().size() < this.intensity/3 && !this.runOffInRow.get(numRow) && time < 150) {
+		if (glc.getRunOff().size() < 1/*this.intensity/3*/ && !this.runOffInRow.get(numRow) && time < 120) {
 			glc.getRunOff().add(new RunOff(8,x,y, numRow));
 			glc.getRunOffRects().add(new Rectangle2D.Double(x,y,rfWidth, rfHeight ));
 			this.runOffInRow.set(numRow, true);
