@@ -33,7 +33,7 @@ import control.GameLoopController;
  * @author Ben Clark
  * @author Robert Ley
  * 
- *
+ * image credits: handVector: Designed by Alvaro_cabrera - Freepik.com
  */
 
 

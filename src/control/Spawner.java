@@ -75,11 +75,12 @@ public class Spawner {
 		double yBottomBound = glc.getGAMEBOX().getHeight() - height - padding;
 		int y = (int) (rand.nextInt((int) ((yBottomBound - yTopBound) + 1)) + yTopBound);
 		
-		if (glc.getOysters().size() < this.intensity*1.5) {
+		if (glc.getOysters().size() < intensity*1.5) {
 			glc.getOysters().add(new ClumpOfOysters(x, y));
 			glc.getOysterRects().add(new Rectangle2D.Double(x, y, width, height));
-			
+			System.out.println("spawned");
 		}
+		
 	}
 	
 	public void spawnWaves(int intensity, int time) {
@@ -93,6 +94,7 @@ public class Spawner {
 		if (glc.getWaves().size() < intensity) {
 			glc.getWaves().add(new Wave(rand.nextInt(intensity - (intensity-3)) + 3,x,y));
 			glc.getWaveRects().add(new Rectangle2D.Double(x,y,waveWidth, waveHeight ));
+			glc.getNumOfWavesInRow().set(numRow, glc.getNumOfWavesInRow().get(numRow)+1);
 		}
 	}
 	
