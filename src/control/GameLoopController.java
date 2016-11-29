@@ -181,7 +181,7 @@ public class GameLoopController {
 			int pattern = rand.nextInt(3) + 1;
 			spawner.getPatternInRow().add(pattern);
 			spawner.getRunOffInRow().add(false);
-			spawner.spawnPlants(i);
+			//spawner.spawnPlants(i);
 			//spawner.spawnPlants(i);
 		}
 
@@ -266,15 +266,25 @@ public class GameLoopController {
 					if (textTimer.getTime() >= 2) {
 						textTimer = new Timer();
 						this.currentTutorialState = TutorialState.PLANTS;
-						this.currentGameState = GameState.GAME;
+						
 					}
 					
 				}
 				break;
 			case PLANTS:
-				//this.message = "PLANTS!!!!!!!";
+				textTimer.countUpStop(2);
+				if (textTimer.getTime() >= 2) {
+					this.message = "Plant plants to help filter the dirty runoff.";
+				} else {
+					this.message = "Look, your Plants have grown!";
+					// flash plant number
+				}
+				// once first plant it planted, move on to run off;
+				
 				break;
 			case RUNOFF:
+				this.currentGameState = GameState.GAME;
+				this.timer = new Timer();
 				break;
 			
 			default:
@@ -458,7 +468,9 @@ public class GameLoopController {
 						(int)hsCrab.getWidth(), (int)hsCrab.getHeight(), null);
 				g2.setColor(Color.WHITE);
 				g2.setFont(new Font("Arial", 1, 36));
-				g2.drawString("" + this.message, (int)(hsCrab.getX()+hsCrab.getWidth()), (int)(hsCrab.getCenterY() - game.getScale().getHeight() * 0.01));
+				//g2.drawString("" + this.message, (int)(hsCrab.getX()+hsCrab.getWidth()), (int)(hsCrab.getCenterY() - game.getScale().getHeight() * 0.01));
+				ac.playTextAnimation(g2, (int)(hsCrab.getX()+hsCrab.getWidth()), 
+						(int)(hsCrab.getCenterY() - game.getScale().getHeight() * 0.01));
 			}		
 		}
 	}
@@ -978,6 +990,10 @@ public class GameLoopController {
 
 	public ArrayList<Integer> getNumOfWavesInRow() {
 		return numOfWavesInRow;
+	}
+
+	public String getMessage() {
+		return message;
 	}
 
 

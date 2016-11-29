@@ -14,7 +14,9 @@ public class AnimationController {
 	
 	private int gabionAnimationstate = 0;
 	private int oysterAnimationState = 0;
+	private int textAnimationState = 0;
 	private int picNum = 0;
+	private int textCounter = 0;
 	
 	private double currentX = 0;
 	private double currentY = 0;
@@ -38,6 +40,8 @@ public class AnimationController {
 	private Animation animation;
 	private boolean played = false;
 	private Rectangle2D rect;
+	
+	private String message;
 	
 	
 	public AnimationController(GameLoopController glc, BufferedImageController bic, Animation animation, Rectangle2D rect) {
@@ -103,7 +107,7 @@ public class AnimationController {
 			g2.drawImage(bic.getImages().get(1), (int)oyster.getX(), (int)oyster.getY(), 
 					(int)oyster.getWidth(), (int)(oyster.getHeight()/1.5), null);
 			
-			if (glc.getUiGabion().contains(oyster)) {
+			if (glc.getUiGabion().intersects(oyster)) {
 				this.played = true;
 				System.out.println("OVER");
 			}
@@ -111,6 +115,28 @@ public class AnimationController {
 		default:
 			this.played = true;
 			System.out.println("Oyster animation failed");
+		}
+	}
+	
+	public void playTextAnimation(Graphics2D g2, int x, int y) {
+		switch(this.textAnimationState) {
+		case 0:
+			this.message = glc.getMessage().substring(0, this.textCounter);
+			this.textCounter++;
+			if (this.textCounter == glc.getMessage().length()+1) {
+				this.textAnimationState = 1;
+			}
+			g2.drawString(this.message, x, y);
+			break;
+		case 1:
+			g2.drawString(this.message, x, y);
+			if (this.message != glc.getMessage()) {
+				this.textAnimationState = 0;
+				this.textCounter = 0;
+				this.message = "";
+			}
+			break;
+			default:
 		}
 	}
 
