@@ -3,6 +3,9 @@ package control;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.geom.Rectangle2D;
+
+import model.Animation;
 
 public class AnimationController {
 
@@ -30,11 +33,18 @@ public class AnimationController {
 	private long startTimeOyster = 0;
 	private long durationOyster = 0;
 	
+	private Rectangle2D oyster;
+	
+	private Animation animation;
+	private boolean played = false;
+	private Rectangle2D rect;
 	
 	
-	public AnimationController(GameLoopController glc, BufferedImageController bic) {
+	public AnimationController(GameLoopController glc, BufferedImageController bic, Animation animation, Rectangle2D rect) {
 		this.glc = glc;
 		this.bic = bic;
+		this.setAnimation(animation);
+		this.rect = rect;
 	}
 	
 	public void playGabionPlacementAnimation(Graphics2D g2) {
@@ -68,33 +78,53 @@ public class AnimationController {
 		}
 	}
 	
-	public void playCollectOysterAnimation(int index, Graphics2D g2) {
+	public void playCollectOysterAnimation(Graphics2D g2) {
 		switch(this.oysterAnimationState) {
 		case 0:
-			this.startOyster = new Point((int)glc.getOysterRects().get(index).getX(), (int)glc.getOysterRects().get(index).getY());
+			this.oyster = this.rect;
+			this.startOyster = new Point((int)oyster.getX(), (int)oyster.getY());
 			this.endOyster = new Point((int)glc.getUiGabion().getCenterX(), (int)glc.getUiGabion().getCenterY());
 			this.startTimeOyster = System.currentTimeMillis();
 			this.currentXOyster = (int) startOyster.getX();
 			this.currentYOyster = (int) startOyster.getY();
 			this.oysterAnimationState = 1;
+			
 			break;
 		case 1: 
-			glc.getOysterRects().get(index).setRect(currentXOyster, currentYOyster, glc.getOysterRects().get(index).getWidth(),
-					glc.getOysterRects().get(index).getHeight());
+			 
+			oyster.setRect(currentXOyster, currentYOyster, oyster.getWidth(),
+					oyster.getHeight());
 			this.durationOyster = System.currentTimeMillis() - this.startTimeOyster;
 			this.progressOyster = this.durationOyster / 1000.0;
 			this.currentXOyster = (this.currentXOyster + ((this.endOyster.getX() - this.currentXOyster) * this.progressOyster));
 			this.currentYOyster = (this.currentYOyster + ((this.endOyster.getY() - this.currentYOyster) * this.progressOyster));
-			g2.setColor(Color.orange);
+			g2.setColor(Color.red);
 			g2.drawLine((int)this.currentXOyster, (int)this.currentYOyster, this.endOyster.x, this.endOyster.y);
-			if (glc.getUiGabion().contains(glc.getOysterRects().get(index))) {
-				this.oysterAnimationState = 0;
-				glc.getOysters().get(index).setVisible(false);
+			g2.drawImage(bic.getImages().get(1), (int)oyster.getX(), (int)oyster.getY(), 
+					(int)oyster.getWidth(), (int)(oyster.getHeight()/1.5), null);
+			
+			if (glc.getUiGabion().contains(oyster)) {
+				this.played = true;
 				System.out.println("OVER");
 			}
 			break;
 		default:
+			this.played = true;
+			System.out.println("Oyster animation failed");
 		}
 	}
+
+	public boolean isPlayed() {
+		return played;
+	}
+
+	public Animation getAnimation() {
+		return animation;
+	}
+
+	public void setAnimation(Animation animation) {
+		this.animation = animation;
+	}
+
 	
 }

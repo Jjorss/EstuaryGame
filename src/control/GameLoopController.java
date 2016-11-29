@@ -13,10 +13,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import model.Animation;
 import model.ClumpOfOysters;
 import model.ConcreteWalls;
 import model.CrabFishMeter;
@@ -61,6 +63,7 @@ public class GameLoopController {
 	private HorseshoeCrab helperHorse;
 	private AnimationController ac;
 	
+	
 
 	private ArrayList<Integer> numOfGabionsInRow = new ArrayList<Integer>();
 	private ArrayList<Integer> numOfWavesInRow = new ArrayList<Integer>();
@@ -74,6 +77,7 @@ public class GameLoopController {
 	private ArrayList<Plants> plants = new ArrayList<Plants>();
 	private ArrayList<RunOff> runOff = new ArrayList<RunOff>();
 	private ArrayList<HorseshoeCrab> hsCrab = new ArrayList<HorseshoeCrab>();
+	private ArrayList<AnimationController> animations = new ArrayList<AnimationController>();
 	// list of rectangles
 	private ArrayList<Rectangle2D> waveRects = new ArrayList<Rectangle2D>();
 	private ArrayList<Rectangle2D> gabionRects = new ArrayList<Rectangle2D>();
@@ -211,7 +215,7 @@ public class GameLoopController {
 		
 		
 		bic.loadBufferedImage();
-		ac = new AnimationController(this, bic);
+		ac = new AnimationController(this, bic, null, null);
 	}
 
 	/**
@@ -230,7 +234,7 @@ public class GameLoopController {
 			switch (this.currentTutorialState) {
 			case OYSTERS:
 				this.message = "Collect Oyster Shells!";
-				spawner.spawnOysters(5, 0);
+				spawner.spawnOysters(1, 0);
 				if (gb.getGabions() >= 2) {
 					this.message = "Good Job!";
 					// after 3 seconds go to the next state
@@ -339,6 +343,13 @@ public class GameLoopController {
 		}
 		collision();
 		
+		for(Iterator<AnimationController> it = animations.iterator(); it.hasNext();) {
+			AnimationController a = it.next();
+			if(a.isPlayed()) {
+				it.remove();
+				System.out.println("REMOVED");
+			}
+		}
 		
 		
 	}
@@ -389,6 +400,7 @@ public class GameLoopController {
 		this.renderCrabFishMeter(g2);
 		
 		this.renderSun(g2);
+		this.renderAnimation(g2);
 		if (this.currentGameState == GameState.TUTORIAL && this.currentTutorialState == TutorialState.GABIONS) {
 			ac.playGabionPlacementAnimation(g2);
 		}
@@ -520,9 +532,11 @@ public class GameLoopController {
 			//g2.draw(oyster);
 			//g2.fill(oyster);
 			if (this.getOysters().get(i).isCollected()) {
-				ac.playCollectOysterAnimation(i, g2);
+				
+				
 			}
-			g2.drawImage(bic.getImages().get(1), (int)oyster.getX(), (int)oyster.getY(), (int)oyster.getWidth(), (int)(oyster.getHeight()/1.5), null);
+			g2.drawImage(bic.getImages().get(1), (int)oyster.getX(),
+					(int)oyster.getY(), (int)oyster.getWidth(), (int)(oyster.getHeight()/1.5), null);
 			
 		}
 	}
@@ -617,6 +631,21 @@ public class GameLoopController {
 			//g2.draw(sun);
 			//g2.fill(sun);
 			g2.drawImage(bic.getImages().get(3), (int)sunX, (int)startY, (int)sunDim, (int)sunDim, null);
+		}
+	}
+	
+	public void renderAnimation(Graphics2D g2) {
+		for(AnimationController ac : animations) {
+			switch(ac.getAnimation()) {
+			case OYSTER:
+				ac.playCollectOysterAnimation(g2);
+				break;
+			case PLACEGABION:
+				ac.playGabionPlacementAnimation(g2);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	
@@ -772,9 +801,12 @@ public class GameLoopController {
 	public void handleCollectOyster(Point p, int i) {
 		int numOfClusters = 0;
 		numOfClusters = oysters.get(i).getNumOfOystersInClump();
-		//oysters.get(i).setVisible(false);
+		Rectangle2D o = oysterRects.get(i);
 		gb.build(numOfClusters);
-		this.oysters.get(i).setCollected(true);
+		//this.oysters.get(i).setCollected(true);
+		this.animations.add(new AnimationController(this, this.bic, Animation.OYSTER, o));
+		oysters.get(i).setVisible(false);
+		System.out.println("size: " + this.animations.size());
 		
 	}
 	
