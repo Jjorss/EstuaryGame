@@ -209,7 +209,7 @@ public class Game extends JPanel{
         super.paintComponent(g);
         if (this.init) {
         	
-        	glc.render(g, scale.getGridSize());
+        	glc.render(g);
         	if (this.gameOver) {
         		if (this.fontSize >= 210) {
         			this.increase = false;

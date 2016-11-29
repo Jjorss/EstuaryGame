@@ -348,20 +348,54 @@ public class GameLoopController {
 	 * methods get called.
 	 */
 
-	public void render(Graphics g, int scale) {
+	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		
-		
+		// UIBOX Sky
 		g2.drawImage(bic.getImages().get(2), (int)UIBOX.getX(), (int)UIBOX.getY(), (int)UIBOX.getWidth(), (int)(UIBOX.getHeight()), null);
-		
-		
+		// GAMEBOX
 		g2.setColor(new Color(163, 232, 255));
 		g2.draw(GAMEBOX);
 		g2.fill(GAMEBOX);
 		
+		this.renderGabions(g2);
+		this.renderWaves(g2);
+		this.renderConcreteWalls(g2);
+		this.renderShore(g2);
+		this.renderHorseshoeCrab(g2);
+		this.renderPlants(g2);
 		
+		// UI
+		// ---------------------------
+		// Gabion builder/Plant builder
+		this.renderGameTimer(g2);
+		this.renderGabionBuilder(g2);
 		
+		// GabionBuilder Meter
+		this.renderGabionMeter(g2);
+		this.renderUIGabion(g2);
+		this.renderDragGabion(g2);
+		this.renderNumberOfGabions(g2);
 		
+		this.renderOysters(g2);
+		
+		// plant meter
+		this.renderPlantMeter(g2);
+		this.renderNumberOfPlants(g2);
+		this.renderDragPlant(g2);
+		
+		this.renderRunoff(g2);
+		
+		this.renderCrabFishMeter(g2);
+		
+		this.renderSun(g2);
+		if (this.currentGameState == GameState.TUTORIAL && this.currentTutorialState == TutorialState.GABIONS) {
+			ac.playGabionPlacementAnimation(g2);
+		}
+		
+	}
+	
+	public void renderGabions(Graphics2D g2) {
 		for (int i = 0; i < gabionRects.size(); i++) {
 			if (gabions.get(i).getHealth() == 2) {
 				g2.setColor(new Color(0,0,0, 175));
@@ -374,10 +408,9 @@ public class GameLoopController {
 			g2.draw(gabionRects.get(i));
 			g2.fill(gabionRects.get(i));
 		}
+	}
 
-		
-		
-
+	public void renderWaves(Graphics2D g2) {
 		g2.setColor(Color.cyan);
 		for (Rectangle2D rect : waveRects) {
 			//g2.draw(rect);
@@ -386,24 +419,24 @@ public class GameLoopController {
 			g2.drawImage(bic.getImages().get(4), (int)rect.getX(), (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight(), null);
 			
 		}
-
-		
-		
-		
-		
+	}
+	
+	public void renderConcreteWalls(Graphics2D g2) {
 		for (Rectangle2D wall : concreteRects) {
 			g2.setColor(Color.LIGHT_GRAY);
 			g2.draw(wall);
 			g2.setColor(Color.DARK_GRAY);
 			g2.fill(wall);
 		}
-		
-		
+	}
+	
+	public void renderShore(Graphics2D g2) {
 		g2.setColor(this.ShoreColor);
 		g2.fill(shore1);
 		g2.draw(shore1);
-
-		
+	}
+	
+	public void renderHorseshoeCrab(Graphics2D g2) {
 		//g2.setColor(Color.PINK);
 		if (this.currentGameState == GameState.TUTORIAL) {
 			for(Rectangle2D hsCrab : hsCrabRects) {
@@ -414,11 +447,20 @@ public class GameLoopController {
 				g2.setColor(Color.WHITE);
 				g2.setFont(new Font("Arial", 1, 36));
 				g2.drawString("" + this.message, (int)(hsCrab.getX()+hsCrab.getWidth()), (int)(hsCrab.getCenterY() - game.getScale().getHeight() * 0.01));
-			}
-			
+			}		
 		}
-		
-		g2.setColor(Color.GREEN);
+	}
+	
+	public void renderGameTimer(Graphics2D g2) {
+		if (this.currentGameState == GameState.GAME) {
+			g2.setFont(f1);
+			g2.setColor(Color.BLACK);
+			g2.drawString(timer.getTime() + "", (int) UIBOX.getCenterX(), (int) UIBOX.getCenterY());
+		}
+	}
+	
+	public void renderPlants(Graphics2D g2) {
+		//g2.setColor(Color.GREEN);
 		for (int i = 0; i < plants.size(); i++) {
 			if (plants.get(i).isVisible()) {
 				//g2.draw(plantrects.get(i));
@@ -429,25 +471,15 @@ public class GameLoopController {
 				
 			}
 		}
-		
-		
-		// UI
-		// ---------------------------
-		// Gabion builder/Plant builder
-
-		
-		
-		if (this.currentGameState == GameState.GAME) {
-			g2.setFont(f1);
-			g2.setColor(Color.BLACK);
-			g2.drawString(timer.getTime() + "", (int) UIBOX.getCenterX(), (int) UIBOX.getCenterY());
-		}
-		
+	}
+	
+	public void renderGabionBuilder(Graphics2D g2) {
 		g2.setColor(Color.WHITE);
 		g2.fill(gabionBuilder);
 		g2.draw(gabionBuilder);
-
-		// GabionBuilder Meter
+	}
+	
+	public void renderGabionMeter(Graphics2D g2){
 		g2.setColor(Color.ORANGE);
 		double gbPercentage = (double)gb.getNumberOfOysters() / (double)gb.getMaxGabionCapacity();
 		double maxHeight = gabionBuilder.getHeight();
@@ -458,7 +490,9 @@ public class GameLoopController {
 		Rectangle2D gabionMeter = new Rectangle2D.Double(x, y, width, height);
 		g2.draw(gabionMeter);
 		g2.fill(gabionMeter);
-		// Fake gabion in UI meter
+	}
+	
+	public void renderUIGabion(Graphics2D g2) {
 		if (gb.getGabions() == 0) {
 			g2.setColor(new Color(0, 0, 0, 50));
 		} else {
@@ -466,16 +500,20 @@ public class GameLoopController {
 		}
 		g2.draw(uiGabion);
 		g2.fill(uiGabion);
-		
+	}
+	
+	public void renderDragGabion(Graphics2D g2) {
 		if (this.renderDragGabion) {
-			g2.draw(this.renderDragGabion(game.getMouseCords()));
+			g2.draw(this.createDragGabion(game.getMouseCords()));
 			g2.setColor(Color.gray);
 			for (Rectangle2D row : waveRows) {
 				g2.draw(row);
 				
 			}
 		}
-		
+	}
+	
+	public void renderOysters(Graphics2D g2) {
 		g2.setColor(Color.GRAY);
 		for (int i = 0; i < this.oysters.size(); i++) { // concurrent modification error
 			Rectangle2D oyster = this.oysterRects.get(i);
@@ -487,16 +525,19 @@ public class GameLoopController {
 			g2.drawImage(bic.getImages().get(1), (int)oyster.getX(), (int)oyster.getY(), (int)oyster.getWidth(), (int)(oyster.getHeight()/1.5), null);
 			
 		}
-		
-		// number of gabions
+	}
+	
+	public void renderNumberOfGabions(Graphics2D g2) {
 		g2.setColor(Color.WHITE);
 		g2.drawString("" + gb.getGabions(), (int)uiGabion.getX() + (f1.getSize()/2), (int)uiGabion.getCenterY() + (f1.getSize()/2));
-		// plant meter
-		maxHeight = plantBuilder.getHeight();
-		height = ((double)plantTimer.getTimeMili()/(pb.getNumOfSecondsPerPlant()*1000)) * maxHeight;
-		width = plantBuilder.getWidth();
-		x = plantBuilder.getX();
-		y = maxHeight - height;
+	}
+	
+	public void renderPlantMeter(Graphics2D g2){
+		double maxHeight = plantBuilder.getHeight();
+		double height = ((double)plantTimer.getTimeMili()/(pb.getNumOfSecondsPerPlant()*1000)) * maxHeight;
+		double width = plantBuilder.getWidth();
+		double x = plantBuilder.getX();
+		double y = maxHeight - height;
 		Rectangle2D plantMeter = new Rectangle2D.Double(x, y, width, height);
 		
 		g2.setColor(new Color(163, 255, 173));
@@ -505,20 +546,27 @@ public class GameLoopController {
 		g2.draw(plantMeter);
 		g2.fill(plantMeter);
 		
-		g2.drawImage(bic.getImages().get(0), (int)uiPlant.getX(), (int)uiPlant.getY(), (int)uiPlant.getWidth(), (int)(uiPlant.getHeight()), null);
-		
 //		g2.setColor(Color.GREEN);
 //		g2.draw(uiPlant);
 //		g2.fill(uiPlant);
 		
+		g2.drawImage(bic.getImages().get(0), (int)uiPlant.getX(), (int)uiPlant.getY(),
+				(int)uiPlant.getWidth(), (int)(uiPlant.getHeight()), null);
+		
+	}
+	
+	public void renderNumberOfPlants(Graphics g2) {
 		g2.setColor(Color.BLACK);
 		g2.drawString(pb.getNumberOfPlants()+"", (int)(plantBuilder.getX() + plantBuilder.getWidth() + (f1.getSize()/2)),
 				(int)plantBuilder.getCenterY());
-		
+	}
+	
+	public void renderDragPlant(Graphics2D g2) {
+
 		if (this.renderDragPlant) {
 			//g2.setColor(Color.GREEN);
 			//g2.draw(this.renderDragPlant(game.getMouseCords()));
-			Rectangle2D r = this.renderDragPlant(game.getMouseCords());
+			Rectangle2D r = this.createDragPlant(game.getMouseCords());
 			g2.drawImage(bic.getImages().get(0), (int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight(), null);
 			g2.setColor(Color.LIGHT_GRAY);
 			for (Rectangle2D row : plantRows) {
@@ -530,13 +578,17 @@ public class GameLoopController {
 				//g2.fill(row);
 			}
 		}
-		
+	}
+	
+	public void renderRunoff(Graphics2D g2) {
 		g2.setColor(new Color(184, 138, 0, 127));
 		for (Rectangle2D runOff : runOffRects) {
 			g2.draw(runOff);
 			g2.fill(runOff);
 		}
-		
+	}
+	
+	public void renderCrabFishMeter(Graphics2D g2) {
 		g2.setColor(Color.DARK_GRAY);
 		g2.draw(crabFishMeter);
 		g2.fill(crabFishMeter);
@@ -544,7 +596,9 @@ public class GameLoopController {
 		g2.setColor(Color.WHITE);
 		g2.drawString("" + cfMeter.getPhLevels(), (int)crabFishMeter.getCenterX(), (int)crabFishMeter.getCenterY());
 		g2.setColor(Color.YELLOW);
-		
+	}
+	
+	public void renderSun(Graphics2D g2) {
 		if (this.currentGameState != GameState.TUTORIAL) {
 			double startX = this.crabFishMeter.getX()+this.crabFishMeter.getWidth();
 			double maxX = this.gabionBuilder.getX();
@@ -564,12 +618,8 @@ public class GameLoopController {
 			//g2.fill(sun);
 			g2.drawImage(bic.getImages().get(3), (int)sunX, (int)startY, (int)sunDim, (int)sunDim, null);
 		}
-		if (this.currentGameState == GameState.TUTORIAL && this.currentTutorialState == TutorialState.GABIONS) {
-			ac.playGabionPlacementAnimation(g2);
-		}
-		
 	}
-
+	
 	public void collision() {
 		class EntityStruct {
 			int index = 0;
@@ -728,12 +778,12 @@ public class GameLoopController {
 		
 	}
 	
-	public Rectangle2D renderDragGabion(Point p) {
+	public Rectangle2D createDragGabion(Point p) {
 		Rectangle2D r = new Rectangle2D.Double(p.getX()-(uiGabion.getWidth()/2),p.getY()-(uiGabion.getWidth()/2),uiGabion.getWidth(),uiGabion.getHeight());
 		return r;
 	}
 	
-	public Rectangle2D renderDragPlant(Point p) {
+	public Rectangle2D createDragPlant(Point p) {
 		double width = this.getPlantRows().get(0).getWidth()  * 0.2;
 		double height = this.getPlantRows().get(0).getWidth()  * 0.3;
 		Rectangle2D r = new Rectangle2D.Double(p.getX() - (width/2), p.getY() - (height/2),
