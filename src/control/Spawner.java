@@ -35,7 +35,7 @@ public class Spawner {
 	public void determineIntensity(int currentIntensity, boolean eroded) {
 		
 		if (this.intensity < 10) {
-			if (timer.getTime() % 20 == 0 && !this.increasedIntensity && !eroded) {
+			if (timer.getTime() % 10 == 0 && !this.increasedIntensity && !eroded) {
 				this.increasedIntensity = true;
 				this.intensity++;
 				System.out.println("Intensity: " + this.intensity);
@@ -190,6 +190,7 @@ public class Spawner {
 		this.spawnWaves(this.intensity, 0);
 		this.spawnOysters(this.intensity, 0);
 		this.spawnRunOff(this.intensity, timer.getTime());
+		System.out.println(this.intensity);
 	}
 
 	public ArrayList<Integer> getPlantsInRow() {
@@ -214,6 +215,11 @@ public class Spawner {
 
 	public void setRunOffInRow(ArrayList<Boolean> runOffInRow) {
 		this.runOffInRow = runOffInRow;
+	}
+
+
+	public void setTimer(Timer timer) {
+		this.timer = timer;
 	}
 	
 }

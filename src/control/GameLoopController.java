@@ -106,6 +106,7 @@ public class GameLoopController {
 	private boolean eroded = false;
 	private boolean isRunOff = false;
 	private boolean placedFirstGabion = false;
+	private boolean placedFirstPlant = false;
 	
 	
 	private double gX;
@@ -259,34 +260,57 @@ public class GameLoopController {
 			case GABIONS:
 				this.message= "Stop the waves by placing gabions!";
 				// falshing gabion here
-				
 				if (this.placedFirstGabion) {
+					plantTimer.countUp(5);
 					this.message = "Good Job";
 					textTimer.countUp(2);
 					if (textTimer.getTime() >= 2) {
 						textTimer = new Timer();
-						this.currentTutorialState = TutorialState.PLANTS;
+						this.currentTutorialState = TutorialState.RUNOFF;
 						
 					}
-					
+				
 				}
-				break;
-			case PLANTS:
-				textTimer.countUpStop(2);
-				if (textTimer.getTime() >= 2) {
-					this.message = "Plant plants to help filter the dirty runoff.";
-				} else {
-					this.message = "Look, your Plants have grown!";
-					// flash plant number
-				}
-				// once first plant it planted, move on to run off;
 				
 				break;
 			case RUNOFF:
-				this.currentGameState = GameState.GAME;
-				this.timer = new Timer();
+				plantTimer.countUp(5);
+				textTimer.countUpStop(3);
+				if (textTimer.getTime() >= 3) {
+					this.message = "Oh no! Runoff!";
+					textTimer = new Timer();
+					this.currentTutorialState = TutorialState.PLANTS;
+				} else {
+					this.message = "Look, your Plants have grown!";
+					// flash plant number
+					
+				}
+				spawner.spawnRunOff(1, 0);
+				
 				break;
-			
+			case PLANTS:
+				plantTimer.countUp(5);
+				textTimer.countUpStop(2);
+				if (textTimer.getTime() >= 2) {
+					this.message = "Plant plants to filter the dirty runoff.";
+					if (this.placedFirstPlant) {
+						textTimer = new Timer();
+						this.message = "Good Job! The water is clean! You now know how to defend your estuary!";
+						this.currentTutorialState = TutorialState.END;
+					}
+				}
+				spawner.spawnRunOff(1, 0);
+				break;
+			case END:
+				textTimer.countUpStop(5);
+				if(textTimer.getTime() >= 5) {
+					textTimer = new Timer();
+					timer = new Timer();
+					spawner.setTimer(timer);
+					this.currentGameState = GameState.GAME;
+					
+				}
+				break;
 			default:
 				System.out.println("STATES NOT WORKING, CURRENT STATE: " + this.currentTutorialState);
 			}
@@ -312,7 +336,7 @@ public class GameLoopController {
 		// stuff that always needs to be done
 		
 		pb.build();
-		if (this.currentTutorialState != TutorialState.GABIONS) {
+		if (this.currentTutorialState != TutorialState.GABIONS && this.currentTutorialState != TutorialState.PLANTS) {
 			for (int i = 0; i < waves.size(); i++) {
 				waves.get(i).move();
 				waveRects.get(i).setRect(waves.get(i).getX(), waveRects.get(i).getY(), waveRects.get(i).getWidth(),
@@ -323,7 +347,9 @@ public class GameLoopController {
 		ArrayList<RunOff> tempRunOff = new ArrayList<RunOff>();
 		ArrayList<Rectangle2D> tempBox = new ArrayList<Rectangle2D>();
 		for (int i = 0; i < runOff.size(); i++) {
-			runOff.get(i).move();
+			if (this.currentTutorialState != TutorialState.PLANTS) {
+				runOff.get(i).move();
+			}
 			if (shore1.getWidth() + concreteWallWidth + 8 < runOffRects.get(i).getX() + runOffRects.get(i).getWidth()) {
 				runOffRects.get(i).setRect(runOff.get(i).getX(), runOff.get(i).getY(), 
 						runOffRects.get(i).getWidth() - runOff.get(i).getSpeed(), runOffRects.get(i).getHeight());
@@ -781,7 +807,7 @@ public class GameLoopController {
 				Rectangle2D row = plantRows.get(i);
 				if (row.contains(p)) {
 					spawner.spawnPlants(i);
-					
+					this.placedFirstPlant = true;
 				}
 			}
 		}
@@ -818,7 +844,7 @@ public class GameLoopController {
 		//this.oysters.get(i).setCollected(true);
 		this.animations.add(new AnimationController(this, this.bic, Animation.OYSTER, o));
 		oysters.get(i).setVisible(false);
-		System.out.println("size: " + this.animations.size());
+		
 		
 	}
 	

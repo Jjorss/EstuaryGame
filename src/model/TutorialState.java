@@ -1,5 +1,5 @@
 package model;
 
 public enum TutorialState {
-	OYSTERS, GABIONS, WAVES, PLANTS, RUNOFF
+	OYSTERS, GABIONS, WAVES, PLANTS, RUNOFF, END
 }
