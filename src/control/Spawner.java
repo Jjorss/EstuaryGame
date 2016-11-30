@@ -147,24 +147,47 @@ public class Spawner {
 			x3 = (int)(rowX + (rowWidth * 0.7));
 			y3 = (int)(rowY + (rowHeight * 0.6));
 		}
-		if (this.getPlantsInRow().get(indexOfRow).intValue() == 0) {
+		
+		boolean first = false;
+		boolean second = false;
+		boolean third = false;
+		for (Rectangle2D plant: glc.getPlantrects()) {
+			if ((int)plant.getX() == x1 && (int)plant.getY() == y1) {
+				first = true;
+			}
+			if ((int)plant.getX() == x2 && (int)plant.getY() == y2) {
+				second = true;
+			}
+			if ((int)plant.getX() == x3 && (int)plant.getY() == y3) {
+				third = true;
+			}
+		}
+		if (!first) {
 			glc.getPlantrects().add(new Rectangle2D.Double(x1,y1, plantWidth, plantHeight));
 			glc.getPlants().add(new Plants(x1,y1, true));
 			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
 			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
-		} else if (this.getPlantsInRow().get(indexOfRow).intValue() == 1) {
+		} else if (!second) {
+			
 			glc.getPlantrects().add(new Rectangle2D.Double(x2,y2, plantWidth, plantHeight));
 			glc.getPlants().add(new Plants(x2,y2, true));
 			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
 			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
-		} else if (this.getPlantsInRow().get(indexOfRow).intValue() == 2) {
+		} else if (!third) {
 			glc.getPlantrects().add(new Rectangle2D.Double(x3,y3, plantWidth, plantHeight));
 			glc.getPlants().add(new Plants(x3,y3, true));
 			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
 			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
 		}
-		
-		
+//		
+//		double upperBound = glc.getPlantRows().get(indexOfRow).getY();
+//		double lowerBound = upperBound + glc.getPlantRows().get(indexOfRow).getHeight();
+//		for (int i  = 0; i < glc.getPlantrects().size(); i++) {
+//			Rectangle2D plant = glc.getPlantrects().get(i);
+//			if (plant.getY() >= upperBound && plant.getY() <= lowerBound) {
+//				
+//			}
+//		}
 		
 	}
 	
@@ -190,7 +213,7 @@ public class Spawner {
 		this.spawnWaves(this.intensity, 0);
 		this.spawnOysters(this.intensity, 0);
 		this.spawnRunOff(this.intensity, timer.getTime());
-		System.out.println(this.intensity);
+		//System.out.println(this.intensity);
 	}
 
 	public ArrayList<Integer> getPlantsInRow() {

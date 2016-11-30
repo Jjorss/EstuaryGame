@@ -18,6 +18,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import control.GameLoopController;
+import model.GameState;
 
 // look up layouts with swing
 // grid bag
@@ -207,7 +208,7 @@ public class Game extends JPanel{
 	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (this.init) {
+        if (this.init && glc.getCurrentGameState()!= GameState.LOADING) {
         	
         	glc.render(g);
         	if (this.gameOver) {
@@ -229,7 +230,11 @@ public class Game extends JPanel{
             	g.setFont(f2);
             	g.drawString("PRESS R TO RESTART",(scale.getWidth()/2) - f2.getSize()*2 , (scale.getHeight()/2) + f.getSize());
         	}
-        } 
+        } else {
+        	Font f = new Font("Arial", Font.BOLD, 50);
+        	g.setFont(f);
+        	g.drawString("LOADING...", this.getWidth()/2, this.getHeight()/2);
+        }
         
         //scale.render(g);
 	}

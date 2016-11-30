@@ -4,7 +4,7 @@ public class Plants extends Wall{
 
 	private int x;
 	private int y;
-	private int health = 3;
+	private int health = 30;
 	private boolean isVisible = false;
 
 	public Plants(int x, int y, boolean isVisible) {
@@ -18,6 +18,7 @@ public class Plants extends Wall{
 	@Override
 	public void changeHealth(int newHealth) {
 		// TODO Auto-generated method stub
+		this.health = newHealth;
 		
 	}
 	public int getHealth() {

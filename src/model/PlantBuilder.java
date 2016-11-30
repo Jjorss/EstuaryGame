@@ -2,7 +2,7 @@ package model;
 
 public class PlantBuilder extends Builder {
 
-	private int numberOfPlants = 0;
+	private int numberOfPlants = 20;
 	private Timer timer;
 	private int numOfSecondsPerPlant = 5;
 	private boolean addPlant = false;

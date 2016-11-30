@@ -1,5 +1,5 @@
 package model;
 
 public enum GameState {
-	TUTORIAL, PAUSED, MENU, GAME
+	TUTORIAL, PAUSED, MENU, GAME, LOADING
 }
