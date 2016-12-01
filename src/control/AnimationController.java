@@ -11,7 +11,7 @@ public class AnimationController {
 
 	private GameLoopController glc;
 	private BufferedImageController bic;
-	
+	//
 	private int gabionAnimationstate = 0;
 	private int oysterAnimationState = 0;
 	private int textAnimationState = 0;
