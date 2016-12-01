@@ -49,7 +49,7 @@ public class Game extends JPanel{
 	boolean dragging = false;
 	boolean isPaused = false;
 	boolean gameOver = false;
-	boolean restart = false;
+	private boolean restart = false;
 	boolean increase = true;
 	
 	private Point mouseCords = new Point(0,0);
@@ -285,6 +285,14 @@ public class Game extends JPanel{
 
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
+	}
+
+	public boolean isRestart() {
+		return restart;
+	}
+
+	public void setRestart(boolean restart) {
+		this.restart = restart;
 	}
 	
 }

@@ -1,5 +1,6 @@
 package control;
 
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -17,6 +18,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 
 import model.Animation;
 import model.ClumpOfOysters;
@@ -50,61 +52,66 @@ import view.Scale;
 
 public class GameLoopController {
 	private Game game;
-	private BufferedImageController bic = new BufferedImageController();
+	private BufferedImageController bic;
 	private Scale scale;
 	private Point click;
-	private GabionBuilder gb = new GabionBuilder();
+	private GabionBuilder gb;
 	private Spawner spawner;
-	private Timer timer = new Timer();
-	private Timer plantTimer = new Timer();
-	private Timer textTimer = new Timer();
-	private PlantBuilder pb = new PlantBuilder(plantTimer);
-	private CrabFishMeter cfMeter = new CrabFishMeter();
+	private Timer timer;
+	private Timer plantTimer;
+	private Timer textTimer;
+	private PlantBuilder pb;
+	private CrabFishMeter cfMeter;
 	private HorseshoeCrab helperHorse;
 	private AnimationController ac;
 
-	private ArrayList<Integer> numOfGabionsInRow = new ArrayList<Integer>();
-	private ArrayList<Integer> numOfWavesInRow = new ArrayList<Integer>();
+	private ArrayList<Integer> numOfGabionsInRow;
+	private ArrayList<Integer> numOfWavesInRow;
 
 	// list of entities
-	private ArrayList<Wave> waves = new ArrayList<Wave>();
-	private ArrayList<Gabion> gabions = new ArrayList<Gabion>();
-	private ArrayList<ClumpOfOysters> oysters = new ArrayList<ClumpOfOysters>();
-	private ArrayList<ConcreteWalls> concreteWalls = new ArrayList<ConcreteWalls>();
-	private ArrayList<Plants> plants = new ArrayList<Plants>();
-	private ArrayList<RunOff> runOff = new ArrayList<RunOff>();
-	private ArrayList<HorseshoeCrab> hsCrab = new ArrayList<HorseshoeCrab>();
-	private ArrayList<AnimationController> animations = new ArrayList<AnimationController>();
+	private ArrayList<Wave> waves;
+	private ArrayList<Gabion> gabions;
+	private ArrayList<ClumpOfOysters> oysters;
+	private ArrayList<ConcreteWalls> concreteWalls;
+	private ArrayList<Plants> plants;
+	private ArrayList<RunOff> runOff;
+	private ArrayList<HorseshoeCrab> hsCrab;
+	private ArrayList<AnimationController> animations;
 	// list of rectangles
-	private ArrayList<Rectangle2D> waveRects = new ArrayList<Rectangle2D>();
-	private ArrayList<Rectangle2D> gabionRects = new ArrayList<Rectangle2D>();
-	private ArrayList<Rectangle2D> oysterRects = new ArrayList<Rectangle2D>();
-	private ArrayList<Rectangle2D> concreteRects = new ArrayList<Rectangle2D>();
-	private ArrayList<Rectangle2D> waveRows = new ArrayList<Rectangle2D>();
-	private ArrayList<Rectangle2D> plantRows = new ArrayList<Rectangle2D>();
-	private ArrayList<Rectangle2D> plantrects = new ArrayList<Rectangle2D>();
-	private ArrayList<Rectangle2D> runOffRects = new ArrayList<Rectangle2D>();
-	private ArrayList<Rectangle2D> hsCrabRects = new ArrayList<Rectangle2D>();
+	private ArrayList<Rectangle2D> waveRects;
+	private ArrayList<Rectangle2D> gabionRects;
+	private ArrayList<Rectangle2D> oysterRects;
+	private ArrayList<Rectangle2D> concreteRects;
+	private ArrayList<Rectangle2D> waveRows;
+	private ArrayList<Rectangle2D> plantRows;
+	private ArrayList<Rectangle2D> plantrects;
+	private ArrayList<Rectangle2D> runOffRects;
+	private ArrayList<Rectangle2D> hsCrabRects;
 
-	private Shore shore = new Shore(0, 0);
+	private Shore shore;
 
-	private Rectangle2D GAMEBOX = new Rectangle2D.Double(0, 0, 0, 0);
-	private Rectangle2D UIBOX = new Rectangle2D.Double(0, 0, 0, 0);
-	private Rectangle2D shore1 = new Rectangle2D.Double(0, 0, 0, 0);
-	private Rectangle2D gabionBuilder = new Rectangle2D.Double(0, 0, 0, 0);
-	private Rectangle2D plantBuilder = new Rectangle2D.Double(0, 0, 0, 0);
-	private Rectangle2D uiGabion = new Rectangle2D.Double(0, 0, 0, 0);
-	private Rectangle2D uiPlant = new Rectangle2D.Double(0, 0, 0, 0);
-	private Rectangle2D crabFishMeter = new Rectangle2D.Double(0, 0, 0, 0);
-	private Rectangle2D helperHorseRect = new Rectangle2D.Double(0, 0, 0, 0);
+	private Rectangle2D GAMEBOX;
+	private Rectangle2D UIBOX;
+	private Rectangle2D MENU;
+	private Rectangle2D shore1;
+	private Rectangle2D gabionBuilder;
+	private Rectangle2D plantBuilder;
+	private Rectangle2D uiGabion;
+	private Rectangle2D uiPlant;
+	private Rectangle2D crabFishMeter;
+	private Rectangle2D helperHorseRect;
 
-	private boolean renderDragGabion = false;
-	private boolean renderDragPlant = false;
-	private boolean eroded = false;
-	private boolean isRunOff = false;
-	private boolean placedFirstGabion = false;
-	private boolean placedFirstPlant = false;
-	private boolean init = false;
+	private Rectangle2D playButton;
+	private Rectangle2D instructionButton;
+	private Rectangle2D creditButton;
+
+	private boolean renderDragGabion;
+	private boolean renderDragPlant;
+	private boolean eroded;
+	private boolean isRunOff;
+	private boolean placedFirstGabion;
+	private boolean placedFirstPlant;
+	private boolean init;
 
 	private double gX;
 	private double gY;
@@ -120,7 +127,7 @@ public class GameLoopController {
 
 	private Font f1;
 
-	private String time = "" + timer.getTime();
+	private String time;
 	private String message = "";
 
 	private GameState currentGameState = GameState.LOADING;
@@ -136,12 +143,79 @@ public class GameLoopController {
 
 	}
 
+	public GameLoopController(Game game, Scale scale, GameState gs) {
+		this.game = game;
+		this.scale = scale;
+		this.currentGameState = gs;
+	}
+
 	public void init() {
+		bic = new BufferedImageController();
+		gb = new GabionBuilder();
+		timer = new Timer();
+		spawner = new Spawner(this, game, timer);
+		plantTimer = new Timer();
+		textTimer = new Timer();
+		pb = new PlantBuilder(plantTimer);
+		cfMeter = new CrabFishMeter();
+
+		numOfGabionsInRow = new ArrayList<Integer>();
+		numOfWavesInRow = new ArrayList<Integer>();
+
+		// list of entities
+		waves = new ArrayList<Wave>();
+		gabions = new ArrayList<Gabion>();
+		oysters = new ArrayList<ClumpOfOysters>();
+		concreteWalls = new ArrayList<ConcreteWalls>();
+		plants = new ArrayList<Plants>();
+		runOff = new ArrayList<RunOff>();
+		hsCrab = new ArrayList<HorseshoeCrab>();
+		animations = new ArrayList<AnimationController>();
+		// list of rectangles
+		waveRects = new ArrayList<Rectangle2D>();
+		gabionRects = new ArrayList<Rectangle2D>();
+		oysterRects = new ArrayList<Rectangle2D>();
+		concreteRects = new ArrayList<Rectangle2D>();
+		waveRows = new ArrayList<Rectangle2D>();
+		plantRows = new ArrayList<Rectangle2D>();
+		plantrects = new ArrayList<Rectangle2D>();
+		runOffRects = new ArrayList<Rectangle2D>();
+		hsCrabRects = new ArrayList<Rectangle2D>();
+
+		shore = new Shore(0, 0);
+
+		GAMEBOX = new Rectangle2D.Double(0, 0, 0, 0);
+		UIBOX = new Rectangle2D.Double(0, 0, 0, 0);
+		MENU = new Rectangle2D.Double(0, 0, 0, 0);
+		shore1 = new Rectangle2D.Double(0, 0, 0, 0);
+		gabionBuilder = new Rectangle2D.Double(0, 0, 0, 0);
+		plantBuilder = new Rectangle2D.Double(0, 0, 0, 0);
+		uiGabion = new Rectangle2D.Double(0, 0, 0, 0);
+		uiPlant = new Rectangle2D.Double(0, 0, 0, 0);
+		crabFishMeter = new Rectangle2D.Double(0, 0, 0, 0);
+		helperHorseRect = new Rectangle2D.Double(0, 0, 0, 0);
+
+		playButton = new Rectangle2D.Double(0, 0, 0, 0);
+		instructionButton = new Rectangle2D.Double(0, 0, 0, 0);
+		creditButton = new Rectangle2D.Double(0, 0, 0, 0);
+
+		renderDragGabion = false;
+		renderDragPlant = false;
+		eroded = false;
+		isRunOff = false;
+		placedFirstGabion = false;
+		placedFirstPlant = false;
+		init = false;
+
+		time = "" + timer.getTime();
+		
 		int scale = this.game.getScale().getGridSize();
 		double width = this.game.getScale().getWidth();
 		double height = this.game.getScale().getHeight();
 		double uiBoxHeight = this.game.getScale().getHeight() * 0.165;
 		double shoreWidth = this.game.getScale().getWidth() * 0.35;
+		double menuWidth = width * 0.4;
+		double menuHeight = height * 0.4;
 
 		concreteWallWidth = width * 0.01;
 		gbPadding = width * 0.015;
@@ -149,6 +223,13 @@ public class GameLoopController {
 		spawner = new Spawner(this, this.game, this.timer);
 		UIBOX = new Rectangle2D.Double(0, 0, width, uiBoxHeight);
 		GAMEBOX = new Rectangle2D.Double(0, this.UIBOX.getHeight(), width, height - this.UIBOX.getHeight());
+		MENU = new Rectangle2D.Double((width / 2) - (menuWidth / 2), (height / 2) - (menuHeight / 2), menuWidth,
+				menuHeight);
+		playButton = new Rectangle2D.Double(MENU.getX(), MENU.getY(), menuWidth, menuHeight / 3);
+		instructionButton = new Rectangle2D.Double(MENU.getX(), MENU.getY() + menuHeight / 3, menuWidth,
+				menuHeight / 3);
+		creditButton = new Rectangle2D.Double(MENU.getX(), MENU.getY() + ((menuHeight / 3) * 2), menuWidth,
+				menuHeight / 3);
 
 		this.shore = new Shore((int) this.GAMEBOX.getX(), (int) this.GAMEBOX.getY());
 		shore1 = new Rectangle2D.Double(shore.getX(), shore.getY(), (int) shoreWidth, GAMEBOX.getHeight());
@@ -180,6 +261,7 @@ public class GameLoopController {
 			spawner.getRunOffInRow().add(false);
 			// spawner.spawnPlants(i);
 			// spawner.spawnPlants(i);
+			
 		}
 
 		gabionWidth = waveRows.get(0).getHeight() - gbPadding;
@@ -232,6 +314,7 @@ public class GameLoopController {
 			collision();
 			switch (this.currentTutorialState) {
 			case OYSTERS:
+				System.out.println(this.waveRects.size());
 				this.message = "Collect Oyster Shells!";
 				spawner.spawnOysters(1, 0);
 				if (gb.getGabions() >= 2) {
@@ -257,9 +340,9 @@ public class GameLoopController {
 				break;
 			case GABIONS:
 				this.message = "Stop the waves by placing gabions!";
+				plantTimer.countUp(5);
 				// falshing gabion here
 				if (this.placedFirstGabion) {
-					plantTimer.countUp(5);
 					this.message = "Good Job";
 					textTimer.countUp(2);
 					if (textTimer.getTime() >= 2) {
@@ -335,8 +418,6 @@ public class GameLoopController {
 						if (i < 0) {
 							i = 0;
 						}
-					} else {
-						System.out.println("false");
 					}
 				}
 				if (this.waveRects.get(i).getX() <= this.shore1.getX()) {
@@ -355,8 +436,8 @@ public class GameLoopController {
 		case LOADING:
 			if (this.init) {
 				this.currentGameState = GameState.MENU;
-				gb.setGabions(this.waveRows.size());
-				for (int i = 0; i < this.waveRows.size(); i++) {
+				gb.setGabions(this.numOfRows);
+				for (int i = 0; i < this.numOfRows; i++) {
 					spawner.spawnWaves(5, 0);
 					this.handlePlaceGabion(
 							new Point((int) this.waveRows.get(i).getX() + 1, (int) this.waveRows.get(i).getY() - 1));
@@ -544,6 +625,7 @@ public class GameLoopController {
 			this.renderSun(g2);
 			this.renderShore(g2);
 			this.renderPlants(g2);
+			this.renderMenu(g2);
 			break;
 		case PAUSED:
 			break;
@@ -815,6 +897,21 @@ public class GameLoopController {
 		}
 	}
 
+	public void renderMenu(Graphics2D g2) {
+		g2.setColor(Color.red);
+		g2.draw(MENU);
+		g2.fill(MENU);
+		g2.setColor(Color.ORANGE);
+		g2.draw(this.playButton);
+		g2.fill(this.playButton);
+		g2.setColor(Color.PINK);
+		g2.draw(this.instructionButton);
+		g2.fill(this.instructionButton);
+		g2.setColor(Color.MAGENTA);
+		g2.draw(this.creditButton);
+		g2.fill(this.creditButton);
+	}
+
 	public void collision() {
 		class EntityStruct {
 			int index = 0;
@@ -964,7 +1061,9 @@ public class GameLoopController {
 					gabionRects.add(new Rectangle.Double(x + gbPadding, y, gabionWidth, gabionHeight));
 					gb.setGabions(gb.getGabions() - 1);
 					this.numOfGabionsInRow.set(i, this.numOfGabionsInRow.get(i) + 1);
-					this.placedFirstGabion = true;
+					if (this.currentGameState != GameState.MENU) {
+						this.placedFirstGabion = true;
+					}
 				}
 			}
 		}
@@ -1014,6 +1113,20 @@ public class GameLoopController {
 	}
 
 	public void handlePressed(Point p) {
+		if (this.currentGameState == GameState.MENU) {
+			if (this.playButton.contains(p)) {
+				this.init();
+				this.currentGameState = GameState.TUTORIAL;
+				// this shouldn't be necessary
+				this.waveRects.clear();
+				this.waves.clear();
+
+			} else if (this.instructionButton.contains(p)) {
+
+			} else if (this.creditButton.contains(p)) {
+
+			}
+		}
 		for (int i = 0; i < oysterRects.size(); i++) {
 			if (oysterRects.get(i).contains(p)) {
 				handleCollectOyster(p, i);

@@ -4,7 +4,7 @@ public class Plants extends Wall{
 
 	private int x;
 	private int y;
-	private int health = 30;
+	private int health = 300;
 	private boolean isVisible = false;
 
 	public Plants(int x, int y, boolean isVisible) {
