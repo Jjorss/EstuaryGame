@@ -29,7 +29,6 @@ import model.Gabion;
 import model.GabionBuilder;
 import model.GameState;
 import model.HorseshoeCrab;
-import model.Oysters;
 import model.PlantBuilder;
 import model.Plants;
 import model.RunOff;
