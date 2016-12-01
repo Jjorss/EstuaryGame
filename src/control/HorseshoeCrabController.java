@@ -10,7 +10,23 @@ public class HorseshoeCrabController {
 	private Rectangle2D rect;
 	
 	public HorseshoeCrabController(HorseshoeCrab hsc, Rectangle2D rect) {
-		this.hsc = hsc;
+		this.setHsc(hsc);
+		this.setRect(rect);
+	}
+
+	public Rectangle2D getRect() {
+		return rect;
+	}
+
+	public void setRect(Rectangle2D rect) {
 		this.rect = rect;
+	}
+
+	public HorseshoeCrab getHsc() {
+		return hsc;
+	}
+
+	public void setHsc(HorseshoeCrab hsc) {
+		this.hsc = hsc;
 	}
 }

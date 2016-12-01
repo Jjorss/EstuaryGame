@@ -12,4 +12,20 @@ public class ShoreController {
 	public ShoreController(Shore shore, Rectangle2D rect) {
 		
 	}
+
+	public Shore getShore() {
+		return shore;
+	}
+
+	public void setShore(Shore shore) {
+		this.shore = shore;
+	}
+
+	public Rectangle2D getRect() {
+		return rect;
+	}
+
+	public void setRect(Rectangle2D rect) {
+		this.rect = rect;
+	}
 }
