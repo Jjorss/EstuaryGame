@@ -397,28 +397,18 @@ public class GameLoopController {
 		case PAUSED:
 			break;
 		case MENU:
-			// REDOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-//			for (int i = 0; i < this.waveRects.size(); i++) {
-//				for (int j = 0; j < this.gabionRects.size(); j++) {
-//					if (this.waveRects.get(i).intersects(this.gabionRects.get(j))) {
-//						this.waveRects.remove(i);
-//						this.waves.remove(i);
-//						i = i - 1;
-//						if (i < 0) {
-//							i = 0;
-//						}
-//					}
-//				}
-//				if (this.waveRects.get(i).getX() <= this.shore1.getX()) {
-//					this.waveRects.remove(i);
-//					this.waves.remove(i);
-//					i = i - 1;
-//					if (i < 0) {
-//						i = 0;
-//					}
-//				}
-//			}
-
+			for (Iterator<WaveController> itw = waves.iterator(); itw.hasNext();) {
+				WaveController wave = itw.next();
+				for (Iterator<GabionController> itg = gabions.iterator(); itg.hasNext();) {
+					GabionController gabion = itg.next();
+					if (wave.getRect().intersects(gabion.getRect())) {
+						itw.remove();
+					}
+				}
+				if (wave.getRect().intersects(shore.getRect())) {
+					itw.remove();
+				}
+			}
 			timer.countDown();
 			spawner.spawnWaves(5, 0);
 			break;
@@ -488,6 +478,35 @@ public class GameLoopController {
 //				oysterRects.remove(i);
 //			}
 //		}
+		for (Iterator<RunOffController> it = runOff.iterator(); it.hasNext();) {
+			RunOffController runOff = it.next();
+			if (this.currentTutorialState != TutorialState.PLANTS) {
+				runOff.getRunOff().move();
+			}
+			if (shore.getRect().getWidth() + concreteWallWidth + 8 < runOff.getRect().getX() + runOff.getRect().getWidth()) {
+				runOff.getRect().setRect(runOff.getRunOff().getX(), runOff.getRunOff().getY(),
+						runOff.getRect().getWidth() - runOff.getRunOff().getSpeed(), runOff.getRect().getHeight());
+
+				if (runOff.getRect().getWidth() < 0) {
+					it.remove();
+
+				} else {
+					spawner.getRunOffInRow().set(runOff.getRunOff().getRowNum(), false);
+				}
+			} else {
+				runOff.setRect(new Rectangle2D.Double(runOff.getRunOff().getX(), runOff.getRunOff().getY(),
+						runOff.getRect().getWidth(), runOff.getRect().getHeight()));
+			}
+
+		
+		}
+		
+		for (Iterator<OysterController> it = oysters.iterator();it.hasNext();) {
+			OysterController oyster = it.next();
+			if (!oyster.getOyster().isVisible()) {
+				it.remove();
+			}
+		}
 
 		for (Iterator<AnimationController> it = animations.iterator(); it.hasNext();) {
 			AnimationController a = it.next();
@@ -1036,7 +1055,7 @@ public class GameLoopController {
 		Rectangle2D o = oysters.get(i).getRect();
 		gb.getGb().build(numOfClusters);
 		// this.oysters.get(i).setCollected(true);
-		//this.animations.add(new AnimationController(this, this.bic, Animation.OYSTER, o));
+		this.animations.add(new AnimationController(this, this.bic, Animation.OYSTER, o));
 		oysters.get(i).getOyster().setVisible(false);
 
 	}
