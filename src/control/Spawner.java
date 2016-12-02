@@ -76,8 +76,9 @@ public class Spawner {
 		int y = (int) (rand.nextInt((int) ((yBottomBound - yTopBound) + 1)) + yTopBound);
 		
 		if (glc.getOysters().size() < intensity*1.5) {
-			glc.getOysters().add(new ClumpOfOysters(x, y));
-			glc.getOysterRects().add(new Rectangle2D.Double(x, y, width, height));
+			ClumpOfOysters clump = new ClumpOfOysters(x, y);
+			Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
+			glc.getOysters().add(new OysterController(clump, rect));
 			System.out.println("spawned");
 		}
 		
@@ -92,8 +93,9 @@ public class Spawner {
 		int y = (int) ((glc.getWaveRows().get(numRow).getCenterY()) - (waveHeight/2));
 		int x = game.getWidth();
 		if (glc.getWaves().size() < intensity) {
-			glc.getWaves().add(new Wave(rand.nextInt(intensity - (intensity-3)) + 3,x,y));
-			glc.getWaveRects().add(new Rectangle2D.Double(x,y,waveWidth, waveHeight ));
+			Wave w = new Wave(rand.nextInt(intensity - (intensity-3)) + 3,x,y);
+			Rectangle2D rect = new Rectangle2D.Double(x,y,waveWidth, waveHeight );
+			glc.getWaves().add(new WaveController(w, rect));
 			glc.getNumOfWavesInRow().set(numRow, glc.getNumOfWavesInRow().get(numRow)+1);
 		}
 	}
@@ -151,31 +153,37 @@ public class Spawner {
 		boolean first = false;
 		boolean second = false;
 		boolean third = false;
-		for (Rectangle2D plant: glc.getPlantrects()) {
-			if ((int)plant.getX() == x1 && (int)plant.getY() == y1) {
+		for (PlantController plant: glc.getPlants()) {
+			if ((int)plant.getRect().getX() == x1 && (int)plant.getRect().getY() == y1) {
 				first = true;
 			}
-			if ((int)plant.getX() == x2 && (int)plant.getY() == y2) {
+			if ((int)plant.getRect().getX() == x2 && (int)plant.getRect().getY() == y2) {
 				second = true;
 			}
-			if ((int)plant.getX() == x3 && (int)plant.getY() == y3) {
+			if ((int)plant.getRect().getX() == x3 && (int)plant.getRect().getY() == y3) {
 				third = true;
 			}
 		}
 		if (!first) {
-			glc.getPlantrects().add(new Rectangle2D.Double(x1,y1, plantWidth, plantHeight));
-			glc.getPlants().add(new Plants(x1,y1, true));
+			Rectangle2D rect = new Rectangle2D.Double(x1,y1, plantWidth, plantHeight);
+			Plants p = new Plants(x1,y1, true);
+			glc.getPlants().add(new PlantController(p, rect));
+			
 			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
 			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
 		} else if (!second) {
 			
-			glc.getPlantrects().add(new Rectangle2D.Double(x2,y2, plantWidth, plantHeight));
-			glc.getPlants().add(new Plants(x2,y2, true));
+			Rectangle2D rect = new Rectangle2D.Double(x2,y2, plantWidth, plantHeight);
+			Plants p = new Plants(x2,y2, true);
+			glc.getPlants().add(new PlantController(p, rect));
+			
 			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
 			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
 		} else if (!third) {
-			glc.getPlantrects().add(new Rectangle2D.Double(x3,y3, plantWidth, plantHeight));
-			glc.getPlants().add(new Plants(x3,y3, true));
+			Rectangle2D rect = new Rectangle2D.Double(x3,y3, plantWidth, plantHeight);
+			Plants p = new Plants(x3,y3, true);
+			glc.getPlants().add(new PlantController(p, rect));
+
 			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
 			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
 		}
@@ -201,8 +209,9 @@ public class Spawner {
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
 		if (glc.getRunOff().size() < 1/*this.intensity/3*/ && !this.runOffInRow.get(numRow) && time < 120) {
-			glc.getRunOff().add(new RunOff(8,x,y, numRow));
-			glc.getRunOffRects().add(new Rectangle2D.Double(x,y,rfWidth, rfHeight ));
+			RunOff r = new RunOff(8,x,y, numRow);
+			Rectangle2D rect = new Rectangle2D.Double(x,y,rfWidth, rfHeight );
+			glc.getRunOff().add(new RunOffController(r, rect));
 			this.runOffInRow.set(numRow, true);
 //			System.out.println("spawning runOff");
 		}
