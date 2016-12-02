@@ -66,7 +66,7 @@ public class AnimationController {
 		case 1:
 			picNum = (picNum + 1) % 2;
 			picNum += 6;
-			g2.drawImage(bic.getImages().get(picNum), (int)currentX, (int)currentY, 100, 150, null);
+			g2.drawImage(bic.getImageAtIndex(picNum), (int)currentX, (int)currentY, 100, 150, null);
 			//System.out.println("drew image: " + currentX + "\t" + currentY + "\t" + progress);
 			duration = System.currentTimeMillis() - startTime;
 			progress = duration / 2000.0;
@@ -104,7 +104,7 @@ public class AnimationController {
 			this.currentYOyster = (this.currentYOyster + ((this.endOyster.getY() - this.currentYOyster) * this.progressOyster));
 			g2.setColor(Color.red);
 			g2.drawLine((int)this.currentXOyster, (int)this.currentYOyster, this.endOyster.x, this.endOyster.y);
-			g2.drawImage(bic.getImages().get(1), (int)oyster.getX(), (int)oyster.getY(), 
+			g2.drawImage(bic.getImageAtIndex(Image.OYSTER.getIndex()), (int)oyster.getX(), (int)oyster.getY(), 
 					(int)oyster.getWidth(), (int)(oyster.getHeight()/1.5), null);
 			
 			if (glc.getUiGabion().intersects(oyster)) {

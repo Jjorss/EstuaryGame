@@ -1,41 +1,27 @@
 package control;
 
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-import javax.imageio.ImageIO;
-import javax.swing.JButton;
-
 import model.Animation;
-import model.ClumpOfOysters;
 import model.ConcreteWalls;
 import model.CrabFishMeter;
-import model.Entity;
 import model.Gabion;
 import model.GabionBuilder;
 import model.GameState;
 import model.HorseshoeCrab;
 import model.PlantBuilder;
-import model.Plants;
-import model.RunOff;
 import model.Shore;
 import model.Timer;
 import model.TutorialState;
-import model.Wave;
 import view.Game;
 import view.Scale;
 
@@ -529,7 +515,7 @@ public class GameLoopController {
 		switch (this.currentGameState) {
 		case TUTORIAL:
 			// UIBOX Sky
-			g2.drawImage(bic.getImages().get(2), (int) UIBOX.getX(), (int) UIBOX.getY(), (int) UIBOX.getWidth(),
+			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(), (int) UIBOX.getWidth(),
 					(int) (UIBOX.getHeight()), null);
 			// GAMEBOX
 			g2.setColor(new Color(163, 232, 255));
@@ -586,7 +572,7 @@ public class GameLoopController {
 			break;
 		case GAME:
 			// UIBOX Sky
-			g2.drawImage(bic.getImages().get(2), (int) UIBOX.getX(), (int) UIBOX.getY(), (int) UIBOX.getWidth(),
+			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(), (int) UIBOX.getWidth(),
 					(int) (UIBOX.getHeight()), null);
 			// GAMEBOX
 			g2.setColor(new Color(163, 232, 255));
@@ -627,8 +613,9 @@ public class GameLoopController {
 			break;
 		case MENU:
 			// UIBOX Sky
-			g2.drawImage(bic.getImages().get(2), (int) UIBOX.getX(), (int) UIBOX.getY(), (int) UIBOX.getWidth(),
+			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(), (int) UIBOX.getWidth(),
 					(int) (UIBOX.getHeight()), null);
+			//System.out.println(Image.HAND.getIndex() + " " + Image.HAND.getPath() + " " + bic.getImages().get(2));
 			// GAMEBOX
 			g2.setColor(new Color(163, 232, 255));
 			g2.draw(GAMEBOX);
@@ -674,7 +661,7 @@ public class GameLoopController {
 			WaveController wc = it.next();
 			// g2.draw(wc.getRect());
 			// g2.fill(wc.getRect());
-			g2.drawImage(bic.getImages().get(4), (int) wc.getRect().getX(), (int) wc.getRect().getY(), (int) wc.getRect().getWidth(),
+			g2.drawImage(bic.getImageAtIndex(Image.WAVE.getIndex()), (int) wc.getRect().getX(), (int) wc.getRect().getY(), (int) wc.getRect().getWidth(),
 					(int) wc.getRect().getHeight(), null);
 		}
 		
@@ -701,7 +688,7 @@ public class GameLoopController {
 		for (HorseshoeCrabController hsCrab : hsCrab) {
 			// g2.draw(hsCrab);
 			// g2.fill(hsCrab);
-			g2.drawImage(bic.getImages().get(5), (int) hsCrab.getRect().getX(), (int) hsCrab.getRect().getY(), 
+			g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB.getIndex()), (int) hsCrab.getRect().getX(), (int) hsCrab.getRect().getY(), 
 					(int) hsCrab.getRect().getWidth(), (int) hsCrab.getRect().getHeight(), null);
 			g2.setColor(Color.WHITE);
 			g2.setFont(new Font("Arial", 1, 36));
@@ -729,7 +716,7 @@ public class GameLoopController {
 				// g2.draw(plant.getRect());
 				// g2.fill(plant.getRect());
 
-				g2.drawImage(bic.getImages().get(0), (int) plant.getRect().getX(), (int) plant.getRect().getY(),
+				g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) plant.getRect().getX(), (int) plant.getRect().getY(),
 						(int) (plant.getRect().getWidth() * 1.8), (int) (plant.getRect().getHeight() * 1.9), null);
 
 			}
@@ -784,7 +771,7 @@ public class GameLoopController {
 			if (oyster.getOyster().isCollected()) {
 
 			}
-			g2.drawImage(bic.getImages().get(1), (int) oyster.getRect().getX(), 
+			g2.drawImage(bic.getImageAtIndex(Image.OYSTER.getIndex()), (int) oyster.getRect().getX(), 
 					(int) oyster.getRect().getY(), (int) oyster.getRect().getWidth(), (int) (oyster.getRect().getHeight() / 1.5), null);
 		}
 	}
@@ -813,7 +800,7 @@ public class GameLoopController {
 		// g2.draw(uiPlant);
 		// g2.fill(uiPlant);
 
-		g2.drawImage(bic.getImages().get(0), (int) uiPlant.getX(), (int) uiPlant.getY(), (int) uiPlant.getWidth(),
+		g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) uiPlant.getX(), (int) uiPlant.getY(), (int) uiPlant.getWidth(),
 				(int) (uiPlant.getHeight()), null);
 
 	}
@@ -831,7 +818,7 @@ public class GameLoopController {
 			// g2.setColor(Color.GREEN);
 			// g2.draw(this.renderDragPlant(game.getMouseCords()));
 			Rectangle2D r = this.createDragPlant(game.getMouseCords());
-			g2.drawImage(bic.getImages().get(0), (int) r.getX(), (int) r.getY(), (int) r.getWidth(),
+			g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) r.getX(), (int) r.getY(), (int) r.getWidth(),
 					(int) r.getHeight(), null);
 			g2.setColor(Color.LIGHT_GRAY);
 			for (Rectangle2D row : plantRows) {
@@ -890,7 +877,7 @@ public class GameLoopController {
 		double y = ((x - x2) * (x - x3)) / ((x1 - x2) * (x1 - x3)) * y1
 				+ ((x - x1) * (x - x3)) / ((x2 - x1) * (x2 - x3)) * y2
 				+ ((x - x1) * (x - x2)) / ((x3 - x1) * (x3 - x2)) * y3;
-		g2.drawImage(bic.getImages().get(3), (int) sunX, (int) y, (int) sunDim, (int) sunDim, null);
+		g2.drawImage(bic.getImageAtIndex(Image.SUN.getIndex()), (int) sunX, (int) y, (int) sunDim, (int) sunDim, null);
 
 	}
 

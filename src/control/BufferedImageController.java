@@ -13,16 +13,21 @@ public class BufferedImageController {
 
 	int imgWidth;
 	int imgHeight;
-	String[] animationPaths = {"img/cordgrass.png", "img/oyster.png", "img/sky.jpg", "img/sun.png", "img/wave.png", 
-			"img/crab.png", "img/handVector.jpg"};
+	String[] animationPaths = {"img/cordgrass.png", "img/crab.png", "img/oyster.png", "img/sky.jpg", 
+			"img/sun.png", "img/wave.png", "img/handVector.jpg"};
 	ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
 	ArrayList<BufferedImage> animations = new ArrayList<BufferedImage>();
 	
 	public void loadBufferedImage(){
-		for(String path : animationPaths) {
-			images.add(this.createImage(path));
+		for(int i = 0; i < animationPaths.length; i++) {
+			images.add(this.createImage(animationPaths[i]));
 		}
 		this.createAnimation(6, 2, 325, 433);
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
 	}
 	public BufferedImage createImage(String path){
 		BufferedImage bufferedImage;
@@ -55,7 +60,7 @@ public class BufferedImageController {
 		
 	}
 	
-	public ArrayList<BufferedImage> getImages() {
-		return images;
+	public BufferedImage getImageAtIndex(int i) {
+		return images.get(i);
 	}
 }
