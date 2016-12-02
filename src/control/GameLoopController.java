@@ -45,6 +45,8 @@ public class GameLoopController {
 	private Timer timer;
 	private Timer plantTimer;
 	private Timer textTimer;
+	private Timer runOffTimer;
+	private Timer cleanWaterTimer;
 	private PlantBuilderController pb;
 	private CrabFishMeterController cfMeter;
 	private HorseshoeCrabController helperHorse;
@@ -89,6 +91,8 @@ public class GameLoopController {
 	private boolean placedFirstGabion;
 	private boolean placedFirstPlant;
 	private boolean init;
+	private boolean hittingPlant;
+	private boolean hittingWater;
 
 	private double gX;
 	private double gY;
@@ -112,6 +116,8 @@ public class GameLoopController {
 	private TutorialState currentTutorialState = TutorialState.OYSTERS;
 
 	private Color ShoreColor = new Color(255, 200, 100, 255);
+	private Color runOffColor = new Color(184, 138, 0, 127);
+	private Color dirtyWater = new Color(184, 138, 0, 0);
 
 	public GameLoopController(Game game, Scale scale) {
 		this.game = game;
@@ -133,6 +139,8 @@ public class GameLoopController {
 		spawner = new Spawner(this, game, timer);
 		plantTimer = new Timer();
 		textTimer = new Timer();
+		runOffTimer = new Timer();
+		cleanWaterTimer = new Timer();
 		pb = new PlantBuilderController(new PlantBuilder(plantTimer), new Rectangle2D.Double(0,0,0,0));
 		cfMeter = new CrabFishMeterController(new CrabFishMeter(), new Rectangle2D.Double(0,0,0,0));
 
@@ -172,6 +180,8 @@ public class GameLoopController {
 		placedFirstGabion = false;
 		placedFirstPlant = false;
 		init = false;
+		hittingPlant = false;
+		hittingWater = false;
 
 		time = "" + timer.getTime();
 		
@@ -375,7 +385,7 @@ public class GameLoopController {
 			spawner.spawn(this.eroded);
 			plantTimer.countUp(5);
 
-			if (timer.getTime() == 0 || shore.getShore().getHealth() <= 25) {
+			if (timer.getTime() == 0 || shore.getShore().getHealth() <= 25 || this.dirtyWater.getAlpha() >= 200) {
 				game.setGameOver(true);
 			}
 			collision();
@@ -416,13 +426,8 @@ public class GameLoopController {
 		// stuff that always needs to be done
 
 		pb.getPb().build();
-		// REDOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+		
 		if (this.currentTutorialState != TutorialState.GABIONS && this.currentTutorialState != TutorialState.PLANTS) {
-//			for (int i = 0; i < waves.size(); i++) {
-//				waves.get(i).move();
-//				waveRects.get(i).setRect(waves.get(i).getX(), waveRects.get(i).getY(), waveRects.get(i).getWidth(),
-//						waveRects.get(i).getHeight());
-//			}
 			for (WaveController wave : waves) {
 				wave.getWave().move();
 				Rectangle2D newWave = new Rectangle2D.Double(wave.getWave().getX(), wave.getWave().getY(),
@@ -430,40 +435,7 @@ public class GameLoopController {
 				wave.setRect(newWave);
 			}
 		}
-//
-//		ArrayList<RunOff> tempRunOff = new ArrayList<RunOff>();
-//		ArrayList<Rectangle2D> tempBox = new ArrayList<Rectangle2D>();
-//		for (int i = 0; i < runOff.size(); i++) {
-//			if (this.currentTutorialState != TutorialState.PLANTS) {
-//				runOff.get(i).move();
-//			}
-//			if (shore1.getWidth() + concreteWallWidth + 8 < runOffRects.get(i).getX() + runOffRects.get(i).getWidth()) {
-//				runOffRects.get(i).setRect(runOff.get(i).getX(), runOff.get(i).getY(),
-//						runOffRects.get(i).getWidth() - runOff.get(i).getSpeed(), runOffRects.get(i).getHeight());
-//
-//				if (runOffRects.get(i).getWidth() > 0) {
-//					tempBox.add(runOffRects.get(i));
-//					tempRunOff.add(runOff.get(i));
-//
-//				} else {
-//					spawner.getRunOffInRow().set(runOff.get(i).getRowNum(), false);
-//				}
-//			} else {
-//				runOffRects.get(i).setRect(runOff.get(i).getX(), runOff.get(i).getY(), runOffRects.get(i).getWidth(),
-//						runOffRects.get(i).getHeight());
-//				tempBox.add(runOffRects.get(i));
-//				tempRunOff.add(runOff.get(i));
-//			}
-//
-//		}
-//		runOff = tempRunOff;
-//		runOffRects = tempBox;
-//		for (int i = 0; i < oysters.size(); i++) {
-//			if (!oysters.get(i).isVisible()) {
-//				oysters.remove(i);
-//				oysterRects.remove(i);
-//			}
-//		}
+
 		for (Iterator<RunOffController> it = runOff.iterator(); it.hasNext();) {
 			RunOffController runOff = it.next();
 			if (this.currentTutorialState != TutorialState.PLANTS) {
@@ -472,9 +444,12 @@ public class GameLoopController {
 			if (shore.getRect().getWidth() + concreteWallWidth + 8 < runOff.getRect().getX() + runOff.getRect().getWidth()) {
 				runOff.getRect().setRect(runOff.getRunOff().getX(), runOff.getRunOff().getY(),
 						runOff.getRect().getWidth() - runOff.getRunOff().getSpeed(), runOff.getRect().getHeight());
-
+				this.hittingWater = true;
+				this.runOffTimer.countUp(1);
+				
 				if (runOff.getRect().getWidth() < 0) {
 					it.remove();
+					
 
 				} else {
 					spawner.getRunOffInRow().set(runOff.getRunOff().getRowNum(), false);
@@ -482,9 +457,37 @@ public class GameLoopController {
 			} else {
 				runOff.setRect(new Rectangle2D.Double(runOff.getRunOff().getX(), runOff.getRunOff().getY(),
 						runOff.getRect().getWidth(), runOff.getRect().getHeight()));
+				this.hittingWater = false;
+//				int newAlpha = this.dirtyWater.getAlpha() - 1;
+//				if(newAlpha <= 0) {
+//					newAlpha = 0;
+//				}
+//				this.dirtyWater = new Color(this.dirtyWater.getRed(),this.dirtyWater.getGreen(),
+//						this.dirtyWater.getBlue(), newAlpha);
 			}
 
 		
+		}
+		if (!this.hittingPlant && runOffTimer.getTime()>=1 && this.hittingWater) {
+			int newAlpha = this.dirtyWater.getAlpha() + 10;
+			if(newAlpha >= 250) {
+				newAlpha = 250;
+			}
+			this.dirtyWater = new Color(this.dirtyWater.getRed(),this.dirtyWater.getGreen(),
+					this.dirtyWater.getBlue(), newAlpha);
+			System.out.println("changing color!!!");
+		}
+		if (!this.hittingWater) {
+			cleanWaterTimer.countUp(3);
+			int newAlpha = 0;
+			if (cleanWaterTimer.getTime() >= 3) {
+				newAlpha = this.dirtyWater.getAlpha() - 10;
+			}
+			if(newAlpha <= 0) {
+				newAlpha = 0;
+			}
+			this.dirtyWater = new Color(this.dirtyWater.getRed(),this.dirtyWater.getGreen(),
+					this.dirtyWater.getBlue(), newAlpha);
 		}
 		
 		for (Iterator<OysterController> it = oysters.iterator();it.hasNext();) {
@@ -578,7 +581,7 @@ public class GameLoopController {
 			g2.setColor(new Color(163, 232, 255));
 			g2.draw(GAMEBOX);
 			g2.fill(GAMEBOX);
-
+			this.renderDirtyWater(g2);
 			this.renderGabions(g2);
 			this.renderWaves(g2);
 			this.renderConcreteWalls(g2);
@@ -638,6 +641,16 @@ public class GameLoopController {
 
 		}
 
+	}
+	
+	public void renderDirtyWater(Graphics2D g2) {
+		g2.setColor(this.dirtyWater);
+		double width = this.GAMEBOX.getWidth() - this.shore.getRect().getWidth();
+		double height = this.GAMEBOX.getHeight();
+		Rectangle2D dirtywaterRect = new Rectangle2D.Double(this.shore.getRect().getX()+this.shore.getRect().getWidth(),
+				this.UIBOX.getY()+this.UIBOX.getHeight(), width ,height);
+		g2.draw(dirtywaterRect);
+		g2.fill(dirtywaterRect);
 	}
 
 	public void renderGabions(Graphics2D g2) {
@@ -833,7 +846,7 @@ public class GameLoopController {
 	}
 
 	public void renderRunoff(Graphics2D g2) {
-		g2.setColor(new Color(184, 138, 0, 127));
+		g2.setColor(runOffColor);
 		for (RunOffController runOff : runOff) {
 			g2.draw(runOff.getRect());
 			g2.fill(runOff.getRect());
@@ -971,14 +984,13 @@ public class GameLoopController {
 			}
 			
 		}
-		
-		for (Iterator<PlantController> itp = plants.iterator(); itp.hasNext();) {
-			PlantController plant = itp.next();
-			
-			for (Iterator<RunOffController> itr = runOff.iterator(); itr.hasNext();) {
-				RunOffController runOff = itr.next();
+		for (Iterator<RunOffController> itr = runOff.iterator(); itr.hasNext();) {
+			RunOffController runOff = itr.next();
+			for (Iterator<PlantController> itp = plants.iterator(); itp.hasNext();) {
+				PlantController plant = itp.next();
 				if (plant.getRect().intersects(runOff.getRect())) {
 					// this.setIsRunOff(true, i);
+					this.hittingPlant = true;
 					plant.getPlant().changeHealth(plant.getPlant().getHealth() - 1);
 					System.out.println(plant.getPlant().getHealth());
 					if (plant.getPlant().getHealth() <= 0) {
@@ -987,10 +999,13 @@ public class GameLoopController {
 				} else {
 					// LOOK IT THIS---------------------------------------------------------------------------------
 					//this.setIsRunOff(false, i);
+					this.hittingPlant = false;
+					System.out.println("not intersecting plant");
 
 				}
 
 			}
+			
 		}
 		
 		
