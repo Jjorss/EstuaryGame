@@ -18,6 +18,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import control.GameLoopController;
+import model.GameState;
 
 // look up layouts with swing
 // grid bag
@@ -33,7 +34,7 @@ import control.GameLoopController;
  * @author Ben Clark
  * @author Robert Ley
  * 
- *
+ * image credits: handVector: Designed by Alvaro_cabrera - Freepik.com
  */
 
 
@@ -48,8 +49,12 @@ public class Game extends JPanel{
 	boolean dragging = false;
 	boolean isPaused = false;
 	boolean gameOver = false;
+	private boolean restart = false;
+	boolean increase = true;
 	
 	private Point mouseCords = new Point(0,0);
+	
+	private int fontSize = 190;
 	
 	
 	static Scale scale = new Scale(WIDTH, HEIGHT, 8);
@@ -87,13 +92,18 @@ public class Game extends JPanel{
         					System.exit(0);
         					
         				}
-        				if (e.getKeyCode() == KeyEvent.VK_P) {
+        				if (e.getKeyCode() == KeyEvent.VK_P && !game.gameOver) {
         					System.out.println("PauSED");
+        					
         					if (game.isPaused) {
-        						game.isPaused = false;
-        					} else {
-        						game.isPaused = true;
-        					}
+            					game.isPaused = false;
+            				} else {
+            					game.isPaused = true;
+            				}
+        					
+        				}
+        				if (e.getKeyCode() == KeyEvent.VK_R && !game.isPaused) {
+        					game.restart = true;
         				}
         				System.out.println("IM PRESING A KEY");
         			}
@@ -159,7 +169,7 @@ public class Game extends JPanel{
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				game.setMouseCords(e.getPoint());
-				System.out.println("dragging");
+				//System.out.println("dragging");
 			}
 		});
 	}
@@ -198,15 +208,33 @@ public class Game extends JPanel{
 	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (this.init) {
-        	glc.render(g, scale.getGridSize());
+        if (this.init && glc.getCurrentGameState()!= GameState.LOADING) {
+        	
+        	glc.render(g);
         	if (this.gameOver) {
-        		Font f = new Font("Arial", 1, 200);
+        		if (this.fontSize >= 210) {
+        			this.increase = false;
+        		} else if (this.fontSize <= 190) {
+        			this.increase = true;
+        		}
+        		if (this.increase) {
+        			this.fontSize++;
+        		} else {
+        			this.fontSize--;
+        		}
+        		Font f = new Font("Arial", 1, this.fontSize);
+        		Font f2 = new Font("Arial", 1, this.fontSize/2);
             	g.setFont(f);
-            	g.setColor(Color.BLACK);
+            	g.setColor(Color.WHITE);
             	g.drawString("GAME OVER",(scale.getWidth()/2) - f.getSize()*2 , scale.getHeight()/2);
+            	g.setFont(f2);
+            	g.drawString("PRESS R TO RESTART",(scale.getWidth()/2) - f2.getSize()*2 , (scale.getHeight()/2) + f.getSize());
         	}
-        } 
+        } else {
+        	Font f = new Font("Arial", Font.BOLD, 50);
+        	g.setFont(f);
+        	g.drawString("LOADING...", this.getWidth()/2, this.getHeight()/2);
+        }
         
         //scale.render(g);
 	}
@@ -217,10 +245,13 @@ public class Game extends JPanel{
 	}
 	
 	public void setInit(boolean newInit) {
-		if (newInit != this.init) {
+		if (newInit != this.init || this.restart) {
+			this.restart = false;
+			glc = new GameLoopController(this, scale);
+			this.gameOver = false;
 			this.init = newInit;
 			glc.init();
-			System.out.println("this is happening");
+			System.out.println("Initialized");
 		}
 	}
 
@@ -254,6 +285,14 @@ public class Game extends JPanel{
 
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
+	}
+
+	public boolean isRestart() {
+		return restart;
+	}
+
+	public void setRestart(boolean restart) {
+		this.restart = restart;
 	}
 	
 }

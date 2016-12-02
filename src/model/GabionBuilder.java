@@ -6,7 +6,7 @@ import java.util.Collection;
 public class GabionBuilder extends Builder {
 
 	
-	private int gabions = 3;
+	private int gabions = 0;
 	private int numOfOysters = 0;
 	private int maxGabionCapacity = 20;
 	
@@ -21,9 +21,9 @@ public class GabionBuilder extends Builder {
 			this.numOfOysters -= this.maxGabionCapacity;
 			this.gabions += 1;
 		}
-		System.out.println("Num of Gabions: " + this.gabions);
-		System.out.println("Num of Oysters Collected: " + numOfOystersCollected);
-		System.out.println("Num of Oysters TOTAL: " + this.numOfOysters);
+		//System.out.println("Num of Gabions: " + this.gabions);
+		//System.out.println("Num of Oysters Collected: " + numOfOystersCollected);
+		//System.out.println("Num of Oysters TOTAL: " + this.numOfOysters);
 		
 	}
 

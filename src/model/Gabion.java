@@ -30,4 +30,7 @@ public class Gabion extends Wall {
 	public int getRowNum() {
 		return this.rowNum;
 	}
+	public void setHealth(int h) {
+		this.health = h;
+	}
 }

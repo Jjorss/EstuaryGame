@@ -5,6 +5,8 @@ import java.util.Random;
 public class ClumpOfOysters extends Entity{
 
 	private boolean isVisible = true;
+	private boolean collected = false;
+	
 	private int numOfOystersInClump= 0;
 	private int minimum = 3;
 	private int maximum = 5;
@@ -57,6 +59,14 @@ public class ClumpOfOysters extends Entity{
 
 	public void setVisible(boolean isVisiable) {
 		this.isVisible = isVisiable;
+	}
+
+	public boolean isCollected() {
+		return collected;
+	}
+
+	public void setCollected(boolean collected) {
+		this.collected = collected;
 	}
 
 	
