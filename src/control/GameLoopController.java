@@ -704,7 +704,7 @@ public class GameLoopController {
 			g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB.getIndex()), (int) hsCrab.getRect().getX(), (int) hsCrab.getRect().getY(), 
 					(int) hsCrab.getRect().getWidth(), (int) hsCrab.getRect().getHeight(), null);
 			g2.setColor(Color.WHITE);
-			g2.setFont(new Font("Arial", 1, 36));
+			g2.setFont(new Font("Arial", 1, (int)(game.getScale().getWidth()*0.015)));
 			// g2.drawString("" + this.message,
 			// (int)(hsCrab.getX()+hsCrab.getWidth()),
 			// (int)(hsCrab.getCenterY() - game.getScale().getHeight() *
