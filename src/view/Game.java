@@ -212,9 +212,9 @@ public class Game extends JPanel{
         	
         	glc.render(g);
         	if (this.gameOver) {
-        		if (this.fontSize >= 210) {
+        		if (this.fontSize >= WIDTH * 0.1) {
         			this.increase = false;
-        		} else if (this.fontSize <= 190) {
+        		} else if (this.fontSize <= WIDTH * 0.08) {
         			this.increase = true;
         		}
         		if (this.increase) {
