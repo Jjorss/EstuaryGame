@@ -340,8 +340,10 @@ public class GameLoopController {
 				break;
 			case RUNOFF:
 				plantTimer.countUp(5);
-				textTimer.countUpStop(3);
-				if (textTimer.getTime() >= 3) {
+				//textTimer.countUpStop(3);
+				spawner.spawnRunOff(1, 0);
+				if (this.runOff.get(0).getRect().getX()+this.runOff.get(0).getRect().getWidth()
+						>= (shore.getRect().getX()+shore.getRect().getWidth())/3) {
 					this.message = "Oh no! Runoff!";
 					textTimer = new Timer();
 					this.currentTutorialState = TutorialState.PLANTS;
@@ -350,7 +352,6 @@ public class GameLoopController {
 					// flash plant number
 
 				}
-				spawner.spawnRunOff(1, 0);
 
 				break;
 			case PLANTS:
