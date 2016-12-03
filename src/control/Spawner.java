@@ -104,7 +104,7 @@ public class Spawner {
 //		Random rand = new Random();
 		int pattern = this.getPatternInRow().get(indexOfRow);
 		double plantWidth = glc.getPlantRows().get(0).getWidth()  * 0.2;
-		double plantHeight = glc.getPlantRows().get(0).getHeight() * 0.3;
+		double plantHeight = glc.getPlantRows().get(0).getHeight() * 0.35;
 		
 		double rowX = glc.getPlantRows().get(indexOfRow).getX();
 		double rowY =glc.getPlantRows().get(indexOfRow).getY();
@@ -208,7 +208,7 @@ public class Spawner {
 		int numRow = rand.nextInt(7);
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
-		if (glc.getRunOff().size() < 1/*this.intensity/3*/ && !this.runOffInRow.get(numRow) && time < 120) {
+		if (glc.getRunOff().size() < 2/*this.intensity/3*/ && !this.runOffInRow.get(numRow) && time < 180) {
 			RunOff r = new RunOff(8,x,y, numRow);
 			Rectangle2D rect = new Rectangle2D.Double(x,y,rfWidth, rfHeight );
 			glc.getRunOff().add(new RunOffController(r, rect));

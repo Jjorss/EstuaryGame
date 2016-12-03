@@ -54,7 +54,7 @@ public class Game extends JPanel{
 	
 	private Point mouseCords = new Point(0,0);
 	
-	private int fontSize = 190;
+	private int fontSize = (int)(WIDTH*0.1);
 	
 	
 	static Scale scale = new Scale(WIDTH, HEIGHT, 8);
