@@ -447,37 +447,38 @@ public class GameLoopController {
 						runOff.getRect().getWidth() - runOff.getRunOff().getSpeed(), runOff.getRect().getHeight());
 				this.hittingWater = true;
 				this.runOffTimer.countUp(1);
+//				System.out.println("Plant: " + this.hittingPlant);
+//				System.out.println("Timer: " + runOffTimer.getTime());
+//				System.out.println("Water: " + this.hittingWater );
+				if (!this.hittingPlant && runOffTimer.getTime()>=1 && this.hittingWater) {
+					int newAlpha = this.dirtyWater.getAlpha() + 10;
+					if(newAlpha >= 250) {
+						newAlpha = 250;
+					}
+					this.dirtyWater = new Color(this.dirtyWater.getRed(),this.dirtyWater.getGreen(),
+							this.dirtyWater.getBlue(), newAlpha);
+					//System.out.println("changing color!!!");
+				}
 				
-				if (runOff.getRect().getWidth() < 0) {
-					it.remove();
+				if (runOff.getRect().getWidth() > 0) {
+					spawner.getRunOffInRow().set(runOff.getRunOff().getRowNum(), false);
 					
 
-				} else {
-					spawner.getRunOffInRow().set(runOff.getRunOff().getRowNum(), false);
-				}
+				} 
 			} else {
 				runOff.setRect(new Rectangle2D.Double(runOff.getRunOff().getX(), runOff.getRunOff().getY(),
 						runOff.getRect().getWidth(), runOff.getRect().getHeight()));
 				this.hittingWater = false;
-//				int newAlpha = this.dirtyWater.getAlpha() - 1;
-//				if(newAlpha <= 0) {
-//					newAlpha = 0;
-//				}
-//				this.dirtyWater = new Color(this.dirtyWater.getRed(),this.dirtyWater.getGreen(),
-//						this.dirtyWater.getBlue(), newAlpha);
+	
 			}
-
+			if (runOff.getRect().getWidth() <= 0) {
+				it.remove();
+				System.out.println("runOff size: " + this.getRunOff().size());
+			}
 		
 		}
-		if (!this.hittingPlant && runOffTimer.getTime()>=1 && this.hittingWater) {
-			int newAlpha = this.dirtyWater.getAlpha() + 10;
-			if(newAlpha >= 250) {
-				newAlpha = 250;
-			}
-			this.dirtyWater = new Color(this.dirtyWater.getRed(),this.dirtyWater.getGreen(),
-					this.dirtyWater.getBlue(), newAlpha);
-			System.out.println("changing color!!!");
-		}
+		
+		
 		if (!this.hittingWater) {
 			cleanWaterTimer.countUp(5);
 			int newAlpha = this.dirtyWater.getAlpha();
@@ -993,70 +994,74 @@ public class GameLoopController {
 			}
 			
 		}
-//		for (Iterator<RunOffController> itr = runOff.iterator(); itr.hasNext();) {
-//			RunOffController runOff = itr.next();
-//			for (Iterator<PlantController> itp = plants.iterator(); itp.hasNext();) {
-//				PlantController plant = itp.next();
-//				if (this.plantItersectingRunOff(plant.getRect(), runOff.getRect())) {
-//					// this.setIsRunOff(true, i);
-//					this.hittingPlant = true;
-//					plant.getPlant().changeHealth(plant.getPlant().getHealth() - 1);
-//					System.out.println(plant.getPlant().getHealth());
-//					if (plant.getPlant().getHealth() <= 0) {
-//						itp.remove();
-//					}
-//				} else {
-//					// LOOK IT THIS---------------------------------------------------------------------------------
-//					//this.setIsRunOff(false, i);
-//					this.hittingPlant = false;
-//					System.out.println("not intersecting plant");
-//
-//				}
-//
-//			}
-//			
-//		}
-		boolean intersectingRow = false;
-		ArrayList<Integer> rowIndexes = new ArrayList<Integer>();
 		for (Iterator<RunOffController> itr = runOff.iterator(); itr.hasNext();) {
 			RunOffController runOff = itr.next();
-			for (int i = 0; i < plantRows.size(); i++) {
-				Rectangle2D row = plantRows.get(i);
-				if(row.getX() <= runOff.getRect().getX()+runOff.getRect().getWidth() &&
-						runOff.getRect().getY() >= row.getY() 
-						&& runOff.getRect().getY()+runOff.getRect().getHeight() <= row.getY()+row.getHeight()) {
-					intersectingRow = true;
-					rowIndexes.add(i);
-				}
-		
-			}
-		}
-		
-		if(intersectingRow) {
-			for(Iterator<PlantController>itp = plants.iterator(); itp.hasNext();) {
+			for (Iterator<PlantController> itp = plants.iterator(); itp.hasNext();) {
 				PlantController plant = itp.next();
-				for (Integer rowIndex : rowIndexes) {
-					if(plant.getRect().getY() >= plantRows.get(rowIndex).getY() &&
-							plant.getPlant().getY() <= plantRows.get(rowIndex).getY() + plantRows.get(rowIndex).getHeight()) {
-						this.hittingPlant = true;
-						plant.getPlant().changeHealth(plant.getPlant().getHealth()-1);
-						
-						if (plant.getPlant().getHealth()<=0) {
-							itp.remove();
-						}
-						System.out.println("itersecting");
-						break;
-					} else {
-						System.out.println("Row: " + rowIndex );
-						System.out.println("Row Bounds: " + plantRows.get(rowIndex).getBounds());
-						System.out.println("Plant Bounds: " + plant.getRect().getBounds());
-						this.hittingPlant = false;
+				if (runOff.getRect().intersects(plant.getRect())) {
+					// this.setIsRunOff(true, i);
+					this.hittingPlant = true;
+					plant.getPlant().changeHealth(plant.getPlant().getHealth() - 1);
+					//System.out.println(plant.getPlant().getHealth());
+					runOff.getRect().setRect(runOff.getRect().getX(), runOff.getRect().getY(),
+							runOff.getRect().getWidth()-10, runOff.getRect().getHeight());
+					if (plant.getPlant().getHealth() <= 0) {
+						itp.remove();
 					}
+				} else {
+					// LOOK IT THIS---------------------------------------------------------------------------------
+					//this.setIsRunOff(false, i);
+					this.hittingPlant = false;
+					//System.out.println("not intersecting plant");
+
 				}
+
 			}
-			System.out.println(this.hittingPlant);
+			
 		}
 		
+		
+//		boolean intersectingRow = false;
+//		ArrayList<Integer> rowIndexes = new ArrayList<Integer>();
+//		for (Iterator<RunOffController> itr = runOff.iterator(); itr.hasNext();) {
+//			RunOffController runOff = itr.next();
+//			for (int i = 0; i < plantRows.size(); i++) {
+//				Rectangle2D row = plantRows.get(i);
+//				if(row.getX() <= runOff.getRect().getX()+runOff.getRect().getWidth() &&
+//						runOff.getRect().getY() >= row.getY() 
+//						&& runOff.getRect().getY()+runOff.getRect().getHeight() <= row.getY()+row.getHeight()) {
+//					intersectingRow = true;
+//					rowIndexes.add(i);
+//				}
+//		
+//			}
+//		}
+//		
+//		if(intersectingRow) {
+//			for(Iterator<PlantController>itp = plants.iterator(); itp.hasNext();) {
+//				PlantController plant = itp.next();
+//				for (Integer rowIndex : rowIndexes) {
+//					if(plant.getRect().getY() >= plantRows.get(rowIndex).getY() &&
+//							plant.getPlant().getY() <= plantRows.get(rowIndex).getY() + plantRows.get(rowIndex).getHeight()) {
+//						this.hittingPlant = true;
+//						plant.getPlant().changeHealth(plant.getPlant().getHealth()-1);
+//						
+//						if (plant.getPlant().getHealth()<=0) {
+//							itp.remove();
+//						}
+//						System.out.println("itersecting");
+//						
+//					} else {
+//						System.out.println("Row: " + rowIndex );
+//						System.out.println("Row Bounds: " + plantRows.get(rowIndex).getBounds());
+//						System.out.println("Plant Bounds: " + plant.getRect().getBounds());
+//						this.hittingPlant = false;
+//					}
+//				}
+//			}
+//			System.out.println(this.hittingPlant);
+//		}
+//		
 
 	}
 	

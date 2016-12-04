@@ -159,6 +159,7 @@ public class Game extends JPanel{
 					glc.handlePressed(e.getPoint());
 					//System.out.println("mouse pressed");
 				}
+				game.setMouseCords(e.getPoint());
 			}
 		
 		});

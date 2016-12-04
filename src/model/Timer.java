@@ -29,11 +29,12 @@ public class Timer {
 			this.initStartTime = false;
 			startGameTime = System.currentTimeMillis();
 		}
-		this.timeMili = System.currentTimeMillis() - startGameTime;
-		this.time = (int) timeMili/1000;
 		if (time >= stopTime) {
 			startGameTime = System.currentTimeMillis();
 		}
+		this.timeMili = System.currentTimeMillis() - startGameTime;
+		this.time = (int) timeMili/1000;
+		
 	}
 
 	public void countUpStop(int stopTime) {
