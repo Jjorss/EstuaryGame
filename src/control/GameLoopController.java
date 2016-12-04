@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -65,19 +66,19 @@ public class GameLoopController {
 	private ArrayList<HorseshoeCrabController> hsCrab;
 	private ArrayList<AnimationController> animations;
 	// list of rectangles
-	private ArrayList<Rectangle2D>waveRows;
-	private ArrayList<Rectangle2D>plantRows;
+	private ArrayList<Rectangle2D> waveRows;
+	private ArrayList<Rectangle2D> plantRows;
 
 	private ShoreController shore;
 
 	private Rectangle2D GAMEBOX;
 	private Rectangle2D UIBOX;
 	private Rectangle2D MENU;
-//	private Rectangle2D gabionBuilder;
-//	private Rectangle2D plantBuilder;
+	// private Rectangle2D gabionBuilder;
+	// private Rectangle2D plantBuilder;
 	private Rectangle2D uiGabion;
 	private Rectangle2D uiPlant;
-//	private Rectangle2D crabFishMeter;
+	// private Rectangle2D crabFishMeter;
 	private Rectangle2D helperHorseRect;
 
 	private Rectangle2D playButton;
@@ -89,6 +90,7 @@ public class GameLoopController {
 	private boolean eroded;
 	private boolean isRunOff;
 	private boolean placedFirstGabion;
+	private boolean placedWrongGabion;
 	private boolean placedFirstPlant;
 	private boolean init;
 	private boolean hittingPlant;
@@ -113,7 +115,7 @@ public class GameLoopController {
 
 	private GameState currentGameState = GameState.LOADING;
 
-	private TutorialState currentTutorialState = TutorialState.RUNOFF;
+	private TutorialState currentTutorialState = TutorialState.OYSTERS;
 
 	private Color ShoreColor = new Color(255, 200, 100, 255);
 	private Color runOffColor = new Color(184, 138, 0, 127);
@@ -134,15 +136,15 @@ public class GameLoopController {
 
 	public void init() {
 		bic = new BufferedImageController();
-		gb = new GabionBuilderController(new GabionBuilder(), new Rectangle2D.Double(0,0,0,0));
+		gb = new GabionBuilderController(new GabionBuilder(), new Rectangle2D.Double(0, 0, 0, 0));
 		timer = new Timer();
 		spawner = new Spawner(this, game, timer);
 		plantTimer = new Timer();
 		textTimer = new Timer();
 		runOffTimer = new Timer();
 		cleanWaterTimer = new Timer();
-		pb = new PlantBuilderController(new PlantBuilder(plantTimer), new Rectangle2D.Double(0,0,0,0));
-		cfMeter = new CrabFishMeterController(new CrabFishMeter(), new Rectangle2D.Double(0,0,0,0));
+		pb = new PlantBuilderController(new PlantBuilder(plantTimer), new Rectangle2D.Double(0, 0, 0, 0));
+		cfMeter = new CrabFishMeterController(new CrabFishMeter(), new Rectangle2D.Double(0, 0, 0, 0));
 
 		numOfGabionsInRow = new ArrayList<Integer>();
 		numOfWavesInRow = new ArrayList<Integer>();
@@ -156,11 +158,11 @@ public class GameLoopController {
 		runOff = new ArrayList<RunOffController>();
 		hsCrab = new ArrayList<HorseshoeCrabController>();
 		animations = new ArrayList<AnimationController>();
-		
+
 		waveRows = new ArrayList<Rectangle2D>();
 		plantRows = new ArrayList<Rectangle2D>();
 
-		shore = new ShoreController(new Shore(0, 0), new Rectangle2D.Double(0,0,0,0));
+		shore = new ShoreController(new Shore(0, 0), new Rectangle2D.Double(0, 0, 0, 0));
 
 		GAMEBOX = new Rectangle2D.Double(0, 0, 0, 0);
 		UIBOX = new Rectangle2D.Double(0, 0, 0, 0);
@@ -178,13 +180,14 @@ public class GameLoopController {
 		eroded = false;
 		isRunOff = false;
 		placedFirstGabion = false;
+		placedWrongGabion = false;
 		placedFirstPlant = false;
 		init = false;
 		hittingPlant = false;
 		hittingWater = false;
 
 		time = "" + timer.getTime();
-		
+
 		int scale = this.game.getScale().getGridSize();
 		double width = this.game.getScale().getWidth();
 		double height = this.game.getScale().getHeight();
@@ -208,10 +211,10 @@ public class GameLoopController {
 				menuHeight / 3);
 
 		this.shore.setShore(new Shore((int) this.GAMEBOX.getX(), (int) this.GAMEBOX.getY()));
-		this.shore.setRect(new Rectangle2D.Double(shore.getShore().getX(), shore.getShore().getY(),
-				(int) shoreWidth, GAMEBOX.getHeight()));
-
-		fontSize = (int) (UIBOX.getWidth() * 0.03);
+		this.shore.setRect(new Rectangle2D.Double(shore.getShore().getX(), shore.getShore().getY(), (int) shoreWidth,
+				GAMEBOX.getHeight()));
+		
+		fontSize = (int) (width * 0.03);
 		f1 = new Font("Arial", Font.PLAIN, this.fontSize);
 
 		for (int i = 0; i < this.numOfRows; i++) {
@@ -222,11 +225,12 @@ public class GameLoopController {
 					(UIBOX.getHeight() + (GAMEBOX.getHeight() / this.numOfRows) * i), shore.getRect().getWidth() * 0.2,
 					GAMEBOX.getHeight() / this.numOfRows));
 
-			concreteWalls.add(new ConcreteWallController(new ConcreteWalls((int) shore.getRect().getWidth(),
-					(int) (GAMEBOX.getHeight() / this.numOfRows) * i), new Rectangle2D.Double(shore.getRect().getWidth(),
+			concreteWalls.add(new ConcreteWallController(
+					new ConcreteWalls((int) shore.getRect().getWidth(),
+							(int) (GAMEBOX.getHeight() / this.numOfRows) * i),
+					new Rectangle2D.Double(shore.getRect().getWidth(),
 							(UIBOX.getHeight() + (GAMEBOX.getHeight() / this.numOfRows) * i), concreteWallWidth,
 							GAMEBOX.getHeight() / this.numOfRows)));
-			
 
 			// in initializing row araylist
 			this.numOfGabionsInRow.add(0);
@@ -238,7 +242,7 @@ public class GameLoopController {
 			spawner.getRunOffInRow().add(false);
 			// spawner.spawnPlants(i);
 			// spawner.spawnPlants(i);
-			
+
 		}
 
 		gabionWidth = waveRows.get(0).getHeight() - gbPadding;
@@ -246,40 +250,39 @@ public class GameLoopController {
 		uiPlantHeight = UIBOX.getHeight() * 0.7;
 		uiPlantWidth = uiPlantHeight * (2.0 / 3.0);
 
-		double gWidth = UIBOX.getWidth() * 0.10;
+		double gWidth = UIBOX.getWidth() * 0.125;
 		gX = UIBOX.getWidth() - gWidth;
 		gY = UIBOX.getY();
 		gb.setRect(new Rectangle2D.Double(gX, gY, gWidth, UIBOX.getHeight()));
-		
-		uiGabion = new Rectangle2D.Double(gb.getRect().getCenterX() - (gabionWidth / 2),
+
+		uiGabion = new Rectangle2D.Double(gb.getRect().getX(),
 				gb.getRect().getCenterY() - (gabionHeight / 2), gabionWidth, gabionHeight);
-		
-		pb.setRect(new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), UIBOX.getHeight() * (2.0 / 3.0),
-				UIBOX.getHeight()));
-		
+
+		pb.setRect(
+				new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), UIBOX.getHeight() * (2.0 / 3.0), UIBOX.getHeight()));
+
 		uiPlant = new Rectangle2D.Double(pb.getRect().getCenterX() - (uiPlantWidth / 2),
 				pb.getRect().getCenterY() - (uiPlantHeight / 2.0), uiPlantWidth, uiPlantHeight);
-		
-		
+
 		double cfWidth = UIBOX.getWidth() * 0.05;
 		double cfX = UIBOX.getX() + pb.getRect().getX() + pb.getRect().getWidth() + (this.fontSize * 2);
 		cfMeter.setRect(new Rectangle2D.Double(cfX, UIBOX.getY(), cfWidth, UIBOX.getHeight()));
-		
 
 		double helperHorseWidth = width * 0.1;
 		double helperHorseHeight = height * 0.15;
-		
-		HorseshoeCrab helperHorseCrab = new HorseshoeCrab((int) (this.cfMeter.getRect().getX() + this.cfMeter.getRect().getWidth()),
-				(int) (UIBOX.getY()));
-		
-		Rectangle2D helperHorseRect = new Rectangle2D.Double(helperHorseCrab.getX(), helperHorseCrab.getY(), helperHorseWidth,
-				helperHorseHeight);
+
+		HorseshoeCrab helperHorseCrab = new HorseshoeCrab(
+				(int) (this.cfMeter.getRect().getX() + this.cfMeter.getRect().getWidth()), (int) (UIBOX.getY()));
+
+		Rectangle2D helperHorseRect = new Rectangle2D.Double(helperHorseCrab.getX(), helperHorseCrab.getY(),
+				helperHorseWidth, helperHorseHeight);
 		helperHorse = new HorseshoeCrabController(helperHorseCrab, helperHorseRect);
 		hsCrab.add(helperHorse);
 
 		bic.loadBufferedImage();
-		ac = new AnimationController(this, bic, null, null);
+		ac = new AnimationController(this, bic, null, null, 0);
 		this.init = true;
+		System.out.println("game ready");
 	}
 
 	/**
@@ -287,12 +290,7 @@ public class GameLoopController {
 	 * methods get called.
 	 */
 	public void loop() {
-		// if (timer.getTime() >= 120) {
-		// this.currentState = GameState.TUTORIAL;
-		// } else {
-		// this.currentState = GameState.GAME;
-		// }
-		//
+
 		switch (this.currentGameState) {
 		case TUTORIAL:
 			collision();
@@ -313,18 +311,26 @@ public class GameLoopController {
 				break;
 			case WAVES:
 				this.message = "Oh no, waves!";
-				spawner.spawnWaves(2, 0);
+				spawner.TutorialSpawnWaves();
 				spawner.spawnOysters(2, 0);
 				textTimer.countUp(3);
 				System.out.println(textTimer.getTime());
 				if (textTimer.getTime() >= 3) {
+					this.animations.add(new AnimationController(this, bic, Animation.PLACEGABION, null, 1));
+					this.animations.add(new AnimationController(this, bic, Animation.PLACEGABION, null, 4));
 					this.currentTutorialState = TutorialState.GABIONS;
 					textTimer = new Timer();
 				}
 				break;
 			case GABIONS:
-				this.message = "Stop the waves by placing gabions!";
-				plantTimer.countUp(5);
+				if(this.placedWrongGabion) {
+					this.message = "Make sure to place your gabions in front of waves.";
+				} else {
+					this.message = "Stop the waves by placing gabions!";
+				}
+				
+				//plantTimer.countUp(5);
+				pb.getPb().setNumberOfPlants(1);
 				// falshing gabion here
 				if (this.placedFirstGabion) {
 					this.message = "Good Job";
@@ -340,10 +346,10 @@ public class GameLoopController {
 				break;
 			case RUNOFF:
 				plantTimer.countUp(5);
-				//textTimer.countUpStop(3);
+				// textTimer.countUpStop(3);
 				spawner.spawnRunOff(1, 0);
-				if (this.runOff.get(0).getRect().getX()+this.runOff.get(0).getRect().getWidth()
-						>= (shore.getRect().getX()+shore.getRect().getWidth())/3) {
+				if (this.runOff.get(0).getRect().getX() + this.runOff.get(0).getRect()
+						.getWidth() >= (shore.getRect().getX() + shore.getRect().getWidth()) / 3) {
 					this.message = "Oh no! Runoff!";
 					textTimer = new Timer();
 					this.currentTutorialState = TutorialState.PLANTS;
@@ -410,7 +416,9 @@ public class GameLoopController {
 			spawner.spawnWaves(5, 0);
 			break;
 		case LOADING:
+			System.out.println(this.init);
 			if (this.init) {
+				System.out.println("Entered");
 				this.currentGameState = GameState.MENU;
 				gb.getGb().setGabions(this.numOfRows);
 				for (int i = 0; i < this.numOfRows; i++) {
@@ -427,7 +435,7 @@ public class GameLoopController {
 		// stuff that always needs to be done
 
 		pb.getPb().build();
-		
+
 		if (this.currentTutorialState != TutorialState.GABIONS && this.currentTutorialState != TutorialState.PLANTS) {
 			for (WaveController wave : waves) {
 				wave.getWave().move();
@@ -442,57 +450,56 @@ public class GameLoopController {
 			if (this.currentTutorialState != TutorialState.PLANTS) {
 				runOff.getRunOff().move();
 			}
-			if (shore.getRect().getWidth() + concreteWallWidth + 8 < runOff.getRect().getX() + runOff.getRect().getWidth()) {
+			if (shore.getRect().getWidth() + concreteWallWidth + 8 < runOff.getRect().getX()
+					+ runOff.getRect().getWidth()) {
 				runOff.getRect().setRect(runOff.getRunOff().getX(), runOff.getRunOff().getY(),
 						runOff.getRect().getWidth() - runOff.getRunOff().getSpeed(), runOff.getRect().getHeight());
 				this.hittingWater = true;
 				this.runOffTimer.countUp(1);
-//				System.out.println("Plant: " + this.hittingPlant);
-//				System.out.println("Timer: " + runOffTimer.getTime());
-//				System.out.println("Water: " + this.hittingWater );
-				if (!this.hittingPlant && runOffTimer.getTime()>=1 && this.hittingWater) {
+				// System.out.println("Plant: " + this.hittingPlant);
+				// System.out.println("Timer: " + runOffTimer.getTime());
+				// System.out.println("Water: " + this.hittingWater );
+				if (!this.hittingPlant && runOffTimer.getTime() >= 1 && this.hittingWater) {
 					int newAlpha = this.dirtyWater.getAlpha() + 10;
-					if(newAlpha >= 250) {
+					if (newAlpha >= 250) {
 						newAlpha = 250;
 					}
-					this.dirtyWater = new Color(this.dirtyWater.getRed(),this.dirtyWater.getGreen(),
+					this.dirtyWater = new Color(this.dirtyWater.getRed(), this.dirtyWater.getGreen(),
 							this.dirtyWater.getBlue(), newAlpha);
-					//System.out.println("changing color!!!");
+					// System.out.println("changing color!!!");
 				}
-				
+
 				if (runOff.getRect().getWidth() > 0) {
 					spawner.getRunOffInRow().set(runOff.getRunOff().getRowNum(), false);
-					
 
-				} 
+				}
 			} else {
 				runOff.setRect(new Rectangle2D.Double(runOff.getRunOff().getX(), runOff.getRunOff().getY(),
 						runOff.getRect().getWidth(), runOff.getRect().getHeight()));
 				this.hittingWater = false;
-	
+
 			}
 			if (runOff.getRect().getWidth() <= 0) {
 				it.remove();
 				System.out.println("runOff size: " + this.getRunOff().size());
 			}
-		
+
 		}
-		
-		
+
 		if (!this.hittingWater) {
 			cleanWaterTimer.countUp(5);
 			int newAlpha = this.dirtyWater.getAlpha();
 			if (cleanWaterTimer.getTime() >= 5) {
 				newAlpha = this.dirtyWater.getAlpha() - 10;
 			}
-			if(newAlpha <= 0) {
+			if (newAlpha <= 0) {
 				newAlpha = 0;
 			}
-			this.dirtyWater = new Color(this.dirtyWater.getRed(),this.dirtyWater.getGreen(),
-					this.dirtyWater.getBlue(), newAlpha);
+			this.dirtyWater = new Color(this.dirtyWater.getRed(), this.dirtyWater.getGreen(), this.dirtyWater.getBlue(),
+					newAlpha);
 		}
-		
-		for (Iterator<OysterController> it = oysters.iterator();it.hasNext();) {
+
+		for (Iterator<OysterController> it = oysters.iterator(); it.hasNext();) {
 			OysterController oyster = it.next();
 			if (!oyster.getOyster().isVisible()) {
 				it.remove();
@@ -520,8 +527,9 @@ public class GameLoopController {
 		switch (this.currentGameState) {
 		case TUTORIAL:
 			// UIBOX Sky
-			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(), (int) UIBOX.getWidth(),
-					(int) (UIBOX.getHeight()), null);
+			
+			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(),
+					(int) UIBOX.getWidth(), (int) (UIBOX.getHeight()), null);
 			// GAMEBOX
 			g2.setColor(new Color(163, 232, 255));
 			g2.draw(GAMEBOX);
@@ -537,10 +545,10 @@ public class GameLoopController {
 			// UI
 			// ---------------------------
 			// Gabion builder/Plant builder
-			this.renderGabionBuilder(g2);
+			//this.renderGabionBuilder(g2);
 
 			// GabionBuilder Meter
-			this.renderGabionMeter(g2);
+			//this.renderGabionMeter(g2);
 			this.renderUIGabion(g2);
 			this.renderDragGabion(g2);
 			this.renderNumberOfGabions(g2);
@@ -554,7 +562,7 @@ public class GameLoopController {
 
 			this.renderRunoff(g2);
 
-			//this.renderCrabFishMeter(g2);
+			// this.renderCrabFishMeter(g2);
 
 			this.renderAnimation(g2);
 			switch (this.currentTutorialState) {
@@ -563,7 +571,14 @@ public class GameLoopController {
 			case WAVES:
 				break;
 			case GABIONS:
-				ac.playGabionPlacementAnimation(g2);
+//				for (int i = 0; i < this.numOfWavesInRow.size(); i++) {
+//					if(this.numOfWavesInRow.get(i) > 0) {
+//						ac.playGabionPlacementAnimation(g2, i);
+//					}
+//				}
+//				ac.playGabionPlacementAnimation(g2, 1);
+//				ac.playGabionPlacementAnimation(g2, 4);
+				
 				break;
 			case RUNOFF:
 				break;
@@ -577,8 +592,8 @@ public class GameLoopController {
 			break;
 		case GAME:
 			// UIBOX Sky
-			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(), (int) UIBOX.getWidth(),
-					(int) (UIBOX.getHeight()), null);
+			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(),
+					(int) UIBOX.getWidth(), (int) (UIBOX.getHeight()), null);
 			// GAMEBOX
 			g2.setColor(new Color(163, 232, 255));
 			g2.draw(GAMEBOX);
@@ -595,10 +610,10 @@ public class GameLoopController {
 			// ---------------------------
 			// Gabion builder/Plant builder
 			this.renderGameTimer(g2);
-			this.renderGabionBuilder(g2);
+			//this.renderGabionBuilder(g2);
 
 			// GabionBuilder Meter
-			this.renderGabionMeter(g2);
+			//this.renderGabionMeter(g2);
 			this.renderUIGabion(g2);
 			this.renderDragGabion(g2);
 			this.renderNumberOfGabions(g2);
@@ -612,15 +627,16 @@ public class GameLoopController {
 
 			this.renderRunoff(g2);
 
-			//this.renderCrabFishMeter(g2);
+			// this.renderCrabFishMeter(g2);
 
 			this.renderAnimation(g2);
 			break;
 		case MENU:
 			// UIBOX Sky
-			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(), (int) UIBOX.getWidth(),
-					(int) (UIBOX.getHeight()), null);
-			//System.out.println(Image.HAND.getIndex() + " " + Image.HAND.getPath() + " " + bic.getImages().get(2));
+			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(),
+					(int) UIBOX.getWidth(), (int) (UIBOX.getHeight()), null);
+			// System.out.println(Image.HAND.getIndex() + " " +
+			// Image.HAND.getPath() + " " + bic.getImages().get(2));
 			// GAMEBOX
 			g2.setColor(new Color(163, 232, 255));
 			g2.draw(GAMEBOX);
@@ -635,6 +651,45 @@ public class GameLoopController {
 			this.renderMenu(g2);
 			break;
 		case PAUSED:
+			// UIBOX Sky
+			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(),
+					(int) UIBOX.getWidth(), (int) (UIBOX.getHeight()), null);
+			// GAMEBOX
+			g2.setColor(new Color(163, 232, 255));
+			g2.draw(GAMEBOX);
+			g2.fill(GAMEBOX);
+			this.renderDirtyWater(g2);
+			this.renderGabions(g2);
+			this.renderWaves(g2);
+			this.renderConcreteWalls(g2);
+			this.renderSun(g2);
+			this.renderShore(g2);
+			this.renderPlants(g2);
+
+			// UI
+			// ---------------------------
+			// Gabion builder/Plant builder
+			this.renderGameTimer(g2);
+			//this.renderGabionBuilder(g2);
+
+			// GabionBuilder Meter
+			//this.renderGabionMeter(g2);
+			this.renderUIGabion(g2);
+			this.renderDragGabion(g2);
+			this.renderNumberOfGabions(g2);
+
+			this.renderOysters(g2);
+
+			// plant meter
+			this.renderPlantMeter(g2);
+			this.renderNumberOfPlants(g2);
+			this.renderDragPlant(g2);
+
+			this.renderRunoff(g2);
+
+			// this.renderCrabFishMeter(g2);
+
+			this.renderAnimation(g2);
 			break;
 		case LOADING:
 			break;
@@ -644,19 +699,21 @@ public class GameLoopController {
 		}
 
 	}
-	
+
 	public void renderDirtyWater(Graphics2D g2) {
 		g2.setColor(this.dirtyWater);
 		double width = this.GAMEBOX.getWidth() - this.shore.getRect().getWidth();
 		double height = this.GAMEBOX.getHeight();
-		Rectangle2D dirtywaterRect = new Rectangle2D.Double(this.shore.getRect().getX()+this.shore.getRect().getWidth(),
-				this.UIBOX.getY()+this.UIBOX.getHeight(), width ,height);
+		Rectangle2D dirtywaterRect = new Rectangle2D.Double(
+				this.shore.getRect().getX() + this.shore.getRect().getWidth(),
+				this.UIBOX.getY() + this.UIBOX.getHeight(), width, height);
 		g2.draw(dirtywaterRect);
 		g2.fill(dirtywaterRect);
 	}
 
 	public void renderGabions(Graphics2D g2) {
 		for (int i = 0; i < gabions.size(); i++) {
+			Rectangle2D gabion = gabions.get(i).getRect();
 			if (gabions.get(i).getGabion().getHealth() == 2) {
 				g2.setColor(new Color(0, 0, 0, 175));
 			} else if (gabions.get(i).getGabion().getHealth() == 1) {
@@ -665,21 +722,33 @@ public class GameLoopController {
 				// 3
 				g2.setColor(Color.BLACK);
 			}
-			g2.draw(gabions.get(i).getRect());
-			g2.fill(gabions.get(i).getRect());
+			// g2.draw(gabions.get(i).getRect());
+			// g2.fill(gabions.get(i).getRect());
+			g2.drawImage(bic.getImageAtIndex(Image.GABION.getIndex()), (int) gabion.getX(), (int) gabion.getY(),
+					(int) gabion.getWidth(), (int) gabion.getHeight(), null);
 		}
 	}
 
 	public void renderWaves(Graphics2D g2) {
 		g2.setColor(Color.cyan);
-		for(Iterator<WaveController> it = waves.iterator(); it.hasNext();) {
+		for (Iterator<WaveController> it = waves.iterator(); it.hasNext();) {
 			WaveController wc = it.next();
 			// g2.draw(wc.getRect());
 			// g2.fill(wc.getRect());
-			g2.drawImage(bic.getImageAtIndex(Image.WAVE.getIndex()), (int) wc.getRect().getX(), (int) wc.getRect().getY(), (int) wc.getRect().getWidth(),
-					(int) wc.getRect().getHeight(), null);
+			if(game.getFramePerSecond()%3 == 0) {
+				g2.drawImage(bic.getImageAtIndex(Image.WAVE1.getIndex()), (int) wc.getRect().getX(),
+						(int) wc.getRect().getY(), (int) wc.getRect().getWidth(), (int) wc.getRect().getHeight(), null);
+			} else if(game.getFramePerSecond()%3 == 1) {
+				g2.drawImage(bic.getImageAtIndex(Image.WAVE2.getIndex()), (int) wc.getRect().getX(),
+						(int) wc.getRect().getY(), (int) wc.getRect().getWidth(), (int) wc.getRect().getHeight(), null);
+			} else{
+				g2.drawImage(bic.getImageAtIndex(Image.WAVE3.getIndex()), (int) wc.getRect().getX(),
+						(int) wc.getRect().getY(), (int) wc.getRect().getWidth(), (int) wc.getRect().getHeight(), null);
+			}
+//			g2.drawImage(bic.getImageAtIndex(Image.WAVE1.getIndex()), (int) wc.getRect().getX(),
+//					(int) wc.getRect().getY(), (int) wc.getRect().getWidth(), (int) wc.getRect().getHeight(), null);
 		}
-		
+
 	}
 
 	public void renderConcreteWalls(Graphics2D g2) {
@@ -703,10 +772,11 @@ public class GameLoopController {
 		for (HorseshoeCrabController hsCrab : hsCrab) {
 			// g2.draw(hsCrab);
 			// g2.fill(hsCrab);
-			g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB.getIndex()), (int) hsCrab.getRect().getX(), (int) hsCrab.getRect().getY(), 
-					(int) hsCrab.getRect().getWidth(), (int) hsCrab.getRect().getHeight(), null);
+			g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB.getIndex()), (int) hsCrab.getRect().getX(),
+					(int) hsCrab.getRect().getY(), (int) hsCrab.getRect().getWidth(),
+					(int) hsCrab.getRect().getHeight(), null);
 			g2.setColor(Color.WHITE);
-			g2.setFont(new Font("Arial", 1, (int)(game.getScale().getWidth()*0.015)));
+			g2.setFont(new Font("Arial", Font.ITALIC, (int) (game.getScale().getWidth() * 0.015)));
 			// g2.drawString("" + this.message,
 			// (int)(hsCrab.getX()+hsCrab.getWidth()),
 			// (int)(hsCrab.getCenterY() - game.getScale().getHeight() *
@@ -726,11 +796,11 @@ public class GameLoopController {
 
 	public void renderPlants(Graphics2D g2) {
 		for (PlantController plant : plants) {
-			if(plant.getPlant().getHealth() < 200) {
+			if (plant.getPlant().getHealth() < 200) {
 				g2.setColor(Color.pink);
 			} else if (plant.getPlant().getHealth() < 150) {
 				g2.setColor(Color.MAGENTA);
-			} else if(plant.getPlant().getHealth() < 50) {
+			} else if (plant.getPlant().getHealth() < 50) {
 				g2.setColor(Color.ORANGE);
 			} else {
 				g2.setColor(Color.red);
@@ -739,8 +809,9 @@ public class GameLoopController {
 				g2.draw(plant.getRect());
 				g2.fill(plant.getRect());
 
-				g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) plant.getRect().getX(), (int) plant.getRect().getY(),
-						(int) (plant.getRect().getWidth() * 1.8), (int) (plant.getRect().getHeight() * 1.9), null);
+				g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) plant.getRect().getX(),
+						(int) plant.getRect().getY(), (int) (plant.getRect().getWidth() * 1.8),
+						(int) (plant.getRect().getHeight() * 1.9), null);
 
 			}
 		}
@@ -771,8 +842,28 @@ public class GameLoopController {
 		} else {
 			g2.setColor(new Color(0, 0, 0, 255));
 		}
-		g2.draw(uiGabion);
-		g2.fill(uiGabion);
+		//g2.draw(uiGabion);
+		//g2.fill(uiGabion);
+
+		if (this.gb.getGb().getNumberOfOysters() == 0 && this.gb.getGb().getGabions() == 0) {
+			g2.drawImage(bic.getImageAtIndex(Image.GABION1.getIndex()), (int) uiGabion.getX(), (int) uiGabion.getY(),
+					(int) uiGabion.getWidth(), (int) uiGabion.getHeight(), null);
+		} else if (this.gb.getGb().getNumberOfOysters() == 1) {
+			g2.drawImage(bic.getImageAtIndex(Image.GABION2.getIndex()), (int) uiGabion.getX(), (int) uiGabion.getY(),
+					(int) uiGabion.getWidth(), (int) uiGabion.getHeight(), null);
+		} else if (this.gb.getGb().getNumberOfOysters() == 2) {
+			g2.drawImage(bic.getImageAtIndex(Image.GABION3.getIndex()), (int) uiGabion.getX(), (int) uiGabion.getY(),
+					(int) uiGabion.getWidth(), (int) uiGabion.getHeight(), null);
+		} else if (this.gb.getGb().getNumberOfOysters() == 3) {
+			g2.drawImage(bic.getImageAtIndex(Image.GABION4.getIndex()), (int) uiGabion.getX(), (int) uiGabion.getY(),
+					(int) uiGabion.getWidth(), (int) uiGabion.getHeight(), null);
+		} else if(this.gb.getGb().getNumberOfOysters() == 4 || this.gb.getGb().getNumberOfOysters() == 5) {
+			g2.drawImage(bic.getImageAtIndex(Image.GABION5.getIndex()), (int) uiGabion.getX(), (int) uiGabion.getY(),
+					(int) uiGabion.getWidth(), (int) uiGabion.getHeight(), null);
+		} else {
+			g2.drawImage(bic.getImageAtIndex(Image.GABIONFULL.getIndex()), (int) uiGabion.getX(), (int) uiGabion.getY(),
+					(int) uiGabion.getWidth(), (int) uiGabion.getHeight(), null);
+		}
 	}
 
 	public void renderDragGabion(Graphics2D g2) {
@@ -794,15 +885,23 @@ public class GameLoopController {
 			if (oyster.getOyster().isCollected()) {
 
 			}
-			g2.drawImage(bic.getImageAtIndex(Image.OYSTER.getIndex()), (int) oyster.getRect().getX(), 
-					(int) oyster.getRect().getY(), (int) oyster.getRect().getWidth(), (int) (oyster.getRect().getHeight() / 1.5), null);
+			g2.drawImage(bic.getImageAtIndex(Image.OYSTER.getIndex()), (int) oyster.getRect().getX(),
+					(int) oyster.getRect().getY(), (int) oyster.getRect().getWidth(),
+					(int) (oyster.getRect().getHeight()), null);
 		}
 	}
 
 	public void renderNumberOfGabions(Graphics2D g2) {
+		g2.setFont(f1);
 		g2.setColor(Color.WHITE);
-		g2.drawString("" + gb.getGb().getGabions(), (int) uiGabion.getX() + (f1.getSize() / 2),
-				(int) uiGabion.getCenterY() + (f1.getSize() / 2));
+		if (gb.getGb().getGabions() >= 10) {
+			g2.drawString("x" + gb.getGb().getGabions(), 
+					(int) ((int)(gb.getRect().getCenterX() + (this.uiGabion.getWidth()/2))- (f1.getSize()*.75)), 
+					(int) uiGabion.getCenterY() + (f1.getSize() / 2));
+		} else {
+			g2.drawString("x" + gb.getGb().getGabions(), (int)(gb.getRect().getCenterX() + (this.uiGabion.getWidth()/2))
+				- (f1.getSize() / 2), (int) uiGabion.getCenterY() + (f1.getSize() / 2));
+		}
 	}
 
 	public void renderPlantMeter(Graphics2D g2) {
@@ -823,13 +922,14 @@ public class GameLoopController {
 		// g2.draw(uiPlant);
 		// g2.fill(uiPlant);
 
-		g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) uiPlant.getX(), (int) uiPlant.getY(), (int) uiPlant.getWidth(),
-				(int) (uiPlant.getHeight()), null);
+		g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) uiPlant.getX(), (int) uiPlant.getY(),
+				(int) uiPlant.getWidth(), (int) (uiPlant.getHeight()), null);
 
 	}
 
 	public void renderNumberOfPlants(Graphics g2) {
 		g2.setColor(Color.BLACK);
+		g2.setFont(f1);
 		g2.drawString(pb.getPb().getNumberOfPlants() + "",
 				(int) (pb.getRect().getX() + pb.getRect().getWidth() + (f1.getSize() / 2)),
 				(int) pb.getRect().getCenterY());
@@ -841,8 +941,8 @@ public class GameLoopController {
 			// g2.setColor(Color.GREEN);
 			// g2.draw(this.renderDragPlant(game.getMouseCords()));
 			Rectangle2D r = this.createDragPlant(game.getMouseCords());
-			g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) r.getX(), (int) r.getY(), (int) r.getWidth(),
-					(int) r.getHeight(), null);
+			g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) r.getX(), (int) r.getY(),
+					(int) r.getWidth(), (int) r.getHeight(), null);
 			g2.setColor(Color.LIGHT_GRAY);
 			for (Rectangle2D row : plantRows) {
 				g2.draw(row);
@@ -869,7 +969,8 @@ public class GameLoopController {
 		g2.fill(cfMeter.getRect());
 
 		g2.setColor(Color.WHITE);
-		g2.drawString("" + cfMeter.getCfm().getPhLevels(), (int) cfMeter.getRect().getCenterX(), (int) cfMeter.getRect().getCenterY());
+		g2.drawString("" + cfMeter.getCfm().getPhLevels(), (int) cfMeter.getRect().getCenterX(),
+				(int) cfMeter.getRect().getCenterY());
 		g2.setColor(Color.YELLOW);
 	}
 
@@ -911,7 +1012,8 @@ public class GameLoopController {
 				ac.playCollectOysterAnimation(g2);
 				break;
 			case PLACEGABION:
-				ac.playGabionPlacementAnimation(g2);
+				 ac.playGabionPlacementAnimation(g2);
+				 ac.playGabionPlacementAnimation(g2);
 				break;
 			default:
 				break;
@@ -944,12 +1046,13 @@ public class GameLoopController {
 					this.eroded = true;
 					this.ShoreColor = new Color(255, 200, 100);
 					shore.setRect(new Rectangle2D.Double(shore.getRect().getX(), shore.getRect().getY(),
-							(shore.getRect().getWidth() - this.gabionWidth - this.gbPadding), shore.getRect().getHeight()));
+							(shore.getRect().getWidth() - this.gabionWidth - this.gbPadding),
+							shore.getRect().getHeight()));
 					for (Rectangle2D plantRow : plantRows) {
-						plantRow.setRect(shore.getRect().getWidth() - plantRow.getWidth(), plantRow.getY(), plantRow.getWidth(),
-								plantRow.getHeight());
+						plantRow.setRect(shore.getRect().getWidth() - plantRow.getWidth(), plantRow.getY(),
+								plantRow.getWidth(), plantRow.getHeight());
 					}
-					
+
 					for (PlantController plant : plants) {
 						plant.setRect(new Rectangle2D.Double(plant.getRect().getX() - this.gabionWidth - this.gbPadding,
 								plant.getRect().getY(), plant.getRect().getWidth(), plant.getRect().getHeight()));
@@ -963,12 +1066,12 @@ public class GameLoopController {
 			}
 			for (Iterator<GabionController> itg = gabions.iterator(); itg.hasNext();) {
 				GabionController gabion = itg.next();
-				
+
 				if (gabion.getRect().intersects(wave.getRect())) {
 					itw.remove();
 					gabion.getGabion().changeHealth(gabion.getGabion().getHealth() - 1);
 					System.out.println("wave hit gabion");
-					
+
 					if (gabion.getGabion().getHealth() <= 0) {
 						itg.remove();
 						// debugging only
@@ -984,7 +1087,7 @@ public class GameLoopController {
 					}
 				}
 			}
-			
+
 			for (Iterator<ConcreteWallController> itc = concreteWalls.iterator(); itc.hasNext();) {
 				ConcreteWallController concreteWall = itc.next();
 				if (concreteWall.getRect().intersects(wave.getRect())) {
@@ -992,7 +1095,7 @@ public class GameLoopController {
 					itw.remove();
 				}
 			}
-			
+
 		}
 		for (Iterator<RunOffController> itr = runOff.iterator(); itr.hasNext();) {
 			RunOffController runOff = itr.next();
@@ -1002,70 +1105,74 @@ public class GameLoopController {
 					// this.setIsRunOff(true, i);
 					this.hittingPlant = true;
 					plant.getPlant().changeHealth(plant.getPlant().getHealth() - 1);
-					//System.out.println(plant.getPlant().getHealth());
+					// System.out.println(plant.getPlant().getHealth());
 					runOff.getRect().setRect(runOff.getRect().getX(), runOff.getRect().getY(),
-							runOff.getRect().getWidth()-10, runOff.getRect().getHeight());
+							runOff.getRect().getWidth() - 10, runOff.getRect().getHeight());
 					if (plant.getPlant().getHealth() <= 0) {
 						itp.remove();
 					}
 				} else {
-					// LOOK IT THIS---------------------------------------------------------------------------------
-					//this.setIsRunOff(false, i);
+					// LOOK IT
+					// THIS---------------------------------------------------------------------------------
+					// this.setIsRunOff(false, i);
 					this.hittingPlant = false;
-					//System.out.println("not intersecting plant");
+					// System.out.println("not intersecting plant");
 
 				}
 
 			}
-			
+
 		}
-		
-		
-//		boolean intersectingRow = false;
-//		ArrayList<Integer> rowIndexes = new ArrayList<Integer>();
-//		for (Iterator<RunOffController> itr = runOff.iterator(); itr.hasNext();) {
-//			RunOffController runOff = itr.next();
-//			for (int i = 0; i < plantRows.size(); i++) {
-//				Rectangle2D row = plantRows.get(i);
-//				if(row.getX() <= runOff.getRect().getX()+runOff.getRect().getWidth() &&
-//						runOff.getRect().getY() >= row.getY() 
-//						&& runOff.getRect().getY()+runOff.getRect().getHeight() <= row.getY()+row.getHeight()) {
-//					intersectingRow = true;
-//					rowIndexes.add(i);
-//				}
-//		
-//			}
-//		}
-//		
-//		if(intersectingRow) {
-//			for(Iterator<PlantController>itp = plants.iterator(); itp.hasNext();) {
-//				PlantController plant = itp.next();
-//				for (Integer rowIndex : rowIndexes) {
-//					if(plant.getRect().getY() >= plantRows.get(rowIndex).getY() &&
-//							plant.getPlant().getY() <= plantRows.get(rowIndex).getY() + plantRows.get(rowIndex).getHeight()) {
-//						this.hittingPlant = true;
-//						plant.getPlant().changeHealth(plant.getPlant().getHealth()-1);
-//						
-//						if (plant.getPlant().getHealth()<=0) {
-//							itp.remove();
-//						}
-//						System.out.println("itersecting");
-//						
-//					} else {
-//						System.out.println("Row: " + rowIndex );
-//						System.out.println("Row Bounds: " + plantRows.get(rowIndex).getBounds());
-//						System.out.println("Plant Bounds: " + plant.getRect().getBounds());
-//						this.hittingPlant = false;
-//					}
-//				}
-//			}
-//			System.out.println(this.hittingPlant);
-//		}
-//		
+
+		// boolean intersectingRow = false;
+		// ArrayList<Integer> rowIndexes = new ArrayList<Integer>();
+		// for (Iterator<RunOffController> itr = runOff.iterator();
+		// itr.hasNext();) {
+		// RunOffController runOff = itr.next();
+		// for (int i = 0; i < plantRows.size(); i++) {
+		// Rectangle2D row = plantRows.get(i);
+		// if(row.getX() <= runOff.getRect().getX()+runOff.getRect().getWidth()
+		// &&
+		// runOff.getRect().getY() >= row.getY()
+		// && runOff.getRect().getY()+runOff.getRect().getHeight() <=
+		// row.getY()+row.getHeight()) {
+		// intersectingRow = true;
+		// rowIndexes.add(i);
+		// }
+		//
+		// }
+		// }
+		//
+		// if(intersectingRow) {
+		// for(Iterator<PlantController>itp = plants.iterator(); itp.hasNext();)
+		// {
+		// PlantController plant = itp.next();
+		// for (Integer rowIndex : rowIndexes) {
+		// if(plant.getRect().getY() >= plantRows.get(rowIndex).getY() &&
+		// plant.getPlant().getY() <= plantRows.get(rowIndex).getY() +
+		// plantRows.get(rowIndex).getHeight()) {
+		// this.hittingPlant = true;
+		// plant.getPlant().changeHealth(plant.getPlant().getHealth()-1);
+		//
+		// if (plant.getPlant().getHealth()<=0) {
+		// itp.remove();
+		// }
+		// System.out.println("itersecting");
+		//
+		// } else {
+		// System.out.println("Row: " + rowIndex );
+		// System.out.println("Row Bounds: " +
+		// plantRows.get(rowIndex).getBounds());
+		// System.out.println("Plant Bounds: " + plant.getRect().getBounds());
+		// this.hittingPlant = false;
+		// }
+		// }
+		// }
+		// System.out.println(this.hittingPlant);
+		// }
+		//
 
 	}
-	
-	
 
 	public void handlePlacePlant(Point p) {
 		if (pb.getPb().getNumberOfPlants() != 0) {
@@ -1090,14 +1197,26 @@ public class GameLoopController {
 				if (row.contains(p) && this.numOfGabionsInRow.get(i) < 5) {
 					double y = row.getCenterY() - ((gabionHeight) / 2);
 					double x = ((gabionWidth + gbPadding) * this.numOfGabionsInRow.get(i)) + row.getX();
-					
+
 					Gabion gab = new Gabion((int) x, (int) y, i);
 					Rectangle2D gabRect = new Rectangle.Double(x + gbPadding, y, gabionWidth, gabionHeight);
 					gabions.add(new GabionController(gab, gabRect));
 					gb.getGb().setGabions(gb.getGb().getGabions() - 1);
 					this.numOfGabionsInRow.set(i, this.numOfGabionsInRow.get(i) + 1);
-					if (this.currentGameState != GameState.MENU) {
-						this.placedFirstGabion = true;
+					if (this.currentGameState != GameState.MENU && this.currentGameState == GameState.TUTORIAL 
+							&& this.currentTutorialState == TutorialState.GABIONS) {
+						System.out.println("waves: " + this.getNumOfWavesInRow().get(i));
+						System.out.println("Gabions: " +  this.numOfGabionsInRow.get(i));
+						if (this.getNumOfWavesInRow().get(i) > 0 && this.numOfGabionsInRow.get(i) == 1) {
+							if(this.gabions.size() == 2) {
+								this.placedFirstGabion = true;
+							}
+						} else{
+							this.gabions.remove(this.gabions.size()-1);
+							this.placedWrongGabion = true;
+							gb.getGb().setGabions(gb.getGb().getGabions()+1);
+							this.numOfGabionsInRow.set(i, this.numOfGabionsInRow.get(i) - 1);
+						}
 					}
 				}
 			}
@@ -1112,7 +1231,7 @@ public class GameLoopController {
 		Rectangle2D o = oysters.get(i).getRect();
 		gb.getGb().build(numOfClusters);
 		// this.oysters.get(i).setCollected(true);
-		this.animations.add(new AnimationController(this, this.bic, Animation.OYSTER, o));
+		this.animations.add(new AnimationController(this, this.bic, Animation.OYSTER, o, 0));
 		oysters.get(i).getOyster().setVisible(false);
 
 	}
@@ -1154,6 +1273,9 @@ public class GameLoopController {
 				this.currentGameState = GameState.TUTORIAL;
 				// this shouldn't be necessary
 				this.waves.clear();
+				for(int i = 0; i < this.numOfWavesInRow.size(); i++) {
+					this.numOfWavesInRow.set(i, 0);
+				}
 
 			} else if (this.instructionButton.contains(p)) {
 
@@ -1278,6 +1400,10 @@ public class GameLoopController {
 
 	public GameState getCurrentGameState() {
 		return currentGameState;
+	}
+
+	public void setCurrentGameState(GameState gs) {
+		this.currentGameState = gs;
 	}
 
 }

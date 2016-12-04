@@ -57,8 +57,8 @@ public class Spawner {
 	
 	public void spawnOysters(int intensity, int time) {
 		Random rand = new Random();
-		int width = 50;
-		int height = 50;
+		int width = (int) (game.getWidth() * 0.03);
+		int height = (int) (game.getWidth() * 0.03);
 		int padding = 10;
 		int max = 0;
 		
@@ -97,6 +97,29 @@ public class Spawner {
 			Rectangle2D rect = new Rectangle2D.Double(x,y,waveWidth, waveHeight );
 			glc.getWaves().add(new WaveController(w, rect));
 			glc.getNumOfWavesInRow().set(numRow, glc.getNumOfWavesInRow().get(numRow)+1);
+		}
+	}
+	
+	public void TutorialSpawnWaves() {
+		Random rand = new Random();
+		int padding = 35;
+		double waveHeight = (glc.getWaveRows().get(0).getHeight() - padding);
+		double waveWidth = glc.getWaveRows().get(0).getHeight() - padding;
+		int row1 = 1;
+		int row2 = 4;
+		int y1 = (int) ((glc.getWaveRows().get(row1).getCenterY()) - (waveHeight/2));
+		int y2 = (int) ((glc.getWaveRows().get(row2).getCenterY()) - (waveHeight/2));
+		int x = game.getWidth();
+		if (glc.getWaves().size() < 2) {
+			Wave w = new Wave(rand.nextInt(intensity - (intensity-3)) + 3,x,y1);
+			Rectangle2D rect = new Rectangle2D.Double(x,y1,waveWidth, waveHeight );
+			glc.getWaves().add(new WaveController(w, rect));
+			glc.getNumOfWavesInRow().set(row1, glc.getNumOfWavesInRow().get(row1)+1);
+			
+			Wave w2 = new Wave(rand.nextInt(intensity - (intensity-3)) + 3,x,y2);
+			Rectangle2D rect2 = new Rectangle2D.Double(x,y2,waveWidth, waveHeight );
+			glc.getWaves().add(new WaveController(w2, rect2));
+			glc.getNumOfWavesInRow().set(row2, glc.getNumOfWavesInRow().get(row2)+1);
 		}
 	}
 	

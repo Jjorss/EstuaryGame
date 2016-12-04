@@ -55,80 +55,131 @@ public class Game extends JPanel{
 	private Point mouseCords = new Point(0,0);
 	
 	private int fontSize = (int)(WIDTH*0.1);
+	private int framePerSecond = 0;
+	
+	private GameState oldState;
 	
 	
 	static Scale scale = new Scale(WIDTH, HEIGHT, 8);
 	GameLoopController glc = new GameLoopController(this, scale);
 	
 	
+	public Game() {
+		super();
+		JFrame frame = new JFrame("Game");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(WIDTH, HEIGHT);
+        frame.setFocusable(true);
+        frame.getContentPane().add(this);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        frame.setUndecorated(true);
+        //frame.setVisible(true);
+        frame.setVisible(true);
+        frame.addKeyListener(new KeyListener() {
+
+        	@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					System.exit(0);
+					
+				}
+				if (e.getKeyCode() == KeyEvent.VK_P && !isGameOver()) {
+					System.out.println("PauSED");
+					togglePaused();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_R && !isPaused()) {
+					setRestart(true);
+				}
+				System.out.println("IM PRESING A KEY");
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+        	
+        });
+        scale = new Scale((int)this.getBounds().getWidth(), (int)this.getBounds().getHeight(), 8);
+        
+        System.out.println("started");
+        
+	}
+	
 	public static void main(String[] args) throws InvocationTargetException, InterruptedException {
 		
 		Game game = new Game();
 		game.started = true;
 		System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getWidth());
-		EventQueue.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-                    ex.printStackTrace();
-                }
-                
-                JFrame frame = new JFrame("Game");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(WIDTH, HEIGHT);
-                frame.setFocusable(true);
-                frame.getContentPane().add(game);
-                frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-                frame.setUndecorated(true);
-                //frame.setVisible(true);
-                frame.setVisible(true);
-                frame.addKeyListener(new KeyListener() {
-
-                	@Override
-        			public void keyPressed(KeyEvent e) {
-        				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-        					System.exit(0);
-        					
-        				}
-        				if (e.getKeyCode() == KeyEvent.VK_P && !game.gameOver) {
-        					System.out.println("PauSED");
-        					
-        					if (game.isPaused) {
-            					game.isPaused = false;
-            				} else {
-            					game.isPaused = true;
-            				}
-        					
-        				}
-        				if (e.getKeyCode() == KeyEvent.VK_R && !game.isPaused) {
-        					game.restart = true;
-        				}
-        				System.out.println("IM PRESING A KEY");
-        			}
-
-					@Override
-					public void keyReleased(KeyEvent arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void keyTyped(KeyEvent arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-                	
-                });
-                scale = new Scale((int)game.getBounds().getWidth(), (int)game.getBounds().getHeight(), 8);
-                
-                System.out.println("started");
-                
-                
-            }
-            
-        });
+//		EventQueue.invokeAndWait(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+//                    ex.printStackTrace();
+//                }
+//                
+//                JFrame frame = new JFrame("Game");
+//                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                frame.setSize(WIDTH, HEIGHT);
+//                frame.setFocusable(true);
+//                frame.getContentPane().add(game);
+//                frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+//                frame.setUndecorated(true);
+//                //frame.setVisible(true);
+//                frame.setVisible(true);
+//                frame.addKeyListener(new KeyListener() {
+//
+//                	@Override
+//        			public void keyPressed(KeyEvent e) {
+//        				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+//        					System.exit(0);
+//        					
+//        				}
+//        				if (e.getKeyCode() == KeyEvent.VK_P && !game.gameOver) {
+//        					System.out.println("PauSED");
+//        					
+//        					if (game.isPaused) {
+//            					game.isPaused = false;
+//            				} else {
+//            					game.isPaused = true;
+//            				}
+//        					
+//        				}
+//        				if (e.getKeyCode() == KeyEvent.VK_R && !game.isPaused) {
+//        					game.restart = true;
+//        				}
+//        				System.out.println("IM PRESING A KEY");
+//        			}
+//
+//					@Override
+//					public void keyReleased(KeyEvent arg0) {
+//						// TODO Auto-generated method stub
+//						
+//					}
+//
+//					@Override
+//					public void keyTyped(KeyEvent arg0) {
+//						// TODO Auto-generated method stub
+//						
+//					}
+//                	
+//                });
+//                scale = new Scale((int)game.getBounds().getWidth(), (int)game.getBounds().getHeight(), 8);
+//                
+//                System.out.println("started");
+//                
+//                
+//            }
+//            
+//        });
 		// loop
 		
 		game.mouseClick(game);
@@ -185,19 +236,111 @@ public class Game extends JPanel{
 	
 	public void start() {
 		while(true) {
-			if (this.started) {
+			switch(glc.getCurrentGameState()) {
+			case LOADING:
 				this.setInit(true);
 				repaint();
-				if (!this.isPaused && !this.gameOver) {
-					glc.loop();
+				this.framePerSecond++;
+				glc.loop();
+				if (this.framePerSecond*50 >=1000 ) {
+					//System.out.println("Frames per second: " + this.framePerSecond);
+					this.framePerSecond = 0;
+					
 				}
+				break;
+			case GAME:
+				repaint();
+				this.framePerSecond++;
+				
+				glc.loop();
+				
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				if (this.framePerSecond*50 >=1000 ) {
+					//System.out.println("Frames per second: " + this.framePerSecond);
+					this.framePerSecond = 0;
+					
+				}
+				break;
+			case MENU:
+				repaint();
+				this.framePerSecond++;
+				
+				glc.loop();
+				
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				if (this.framePerSecond*50 >=1000 ) {
+					System.out.println("Frames per second: " + this.framePerSecond);
+					this.framePerSecond = 0;
+					
+				}
+				break;
+			case PAUSED:
+				repaint();
+				this.framePerSecond++;
+				if (this.framePerSecond*50 >=1000 ) {
+					//System.out.println("Frames per second: " + this.framePerSecond);
+					this.framePerSecond = 0;
+					
+				}
+				break;
+			case TUTORIAL:
+				repaint();
+				this.framePerSecond++;
+				glc.loop();
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				if (this.framePerSecond*50 >=1000 ) {
+					//System.out.println("Frames per second: " + this.framePerSecond);
+					this.framePerSecond = 0;
+					
+				}
+				break;
+			case OVER:
+				repaint();
+				this.framePerSecond++;
+				if (this.framePerSecond*50 >=1000 ) {
+					//System.out.println("Frames per second: " + this.framePerSecond);
+					this.framePerSecond = 0;
+					
+				}
+				break;
+			default:
+				break;
+			
 			}
+			System.out.println("Frames per second: " + this.framePerSecond);
+//			if (this.started) {
+//				this.setInit(true);
+//				repaint();
+//				this.framePerSecond++;
+//				if (!this.isPaused && !this.gameOver) {
+//					glc.loop();
+//				}
+//				try {
+//					Thread.sleep(50);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			if (this.framePerSecond*50 >=1000 ) {
+//				System.out.println("Frames per second: " + this.framePerSecond);
+//				this.framePerSecond = 0;
+//				
+//			}
 		}
+		
+		
 	}
 
 	/**
@@ -250,8 +393,8 @@ public class Game extends JPanel{
 			this.restart = false;
 			glc = new GameLoopController(this, scale);
 			this.gameOver = false;
-			this.init = newInit;
 			glc.init();
+			this.init = newInit;
 			System.out.println("Initialized");
 		}
 	}
@@ -295,5 +438,23 @@ public class Game extends JPanel{
 	public void setRestart(boolean restart) {
 		this.restart = restart;
 	}
+
+	public int getFramePerSecond() {
+		return framePerSecond;
+	}
+
+	public void setFramePerSecond(int framePerSecond) {
+		this.framePerSecond = framePerSecond;
+	}
 	
+	public void togglePaused() {
+		if(this.isPaused) {
+			this.isPaused = false;
+			glc.setCurrentGameState(this.oldState);
+		} else {
+			this.isPaused = true;
+			this.oldState = glc.getCurrentGameState();
+			glc.setCurrentGameState(GameState.PAUSED);
+		}
+	}
 }

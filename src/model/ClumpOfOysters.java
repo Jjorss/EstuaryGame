@@ -7,7 +7,7 @@ public class ClumpOfOysters extends Entity{
 	private boolean isVisible = true;
 	private boolean collected = false;
 	
-	private int numOfOystersInClump= 0;
+	private int numOfOystersInClump= 1;
 	private int minimum = 3;
 	private int maximum = 5;
 	
@@ -24,7 +24,7 @@ public class ClumpOfOysters extends Entity{
 	
 	public void spawn() {
 		Random rand = new Random();
-		this.numOfOystersInClump = rand.nextInt((maximum - minimum) + 1) + minimum;
+		this.numOfOystersInClump = 1;//rand.nextInt((maximum - minimum) + 1) + minimum;
 	}
 	
 	

@@ -17,6 +17,7 @@ public class AnimationController {
 	private int textAnimationState = 0;
 	private int picNum = 0;
 	private int textCounter = 0;
+	private int index = 0;
 	
 	private double currentX = 0;
 	private double currentY = 0;
@@ -44,11 +45,12 @@ public class AnimationController {
 	private String message;
 	
 	
-	public AnimationController(GameLoopController glc, BufferedImageController bic, Animation animation, Rectangle2D rect) {
+	public AnimationController(GameLoopController glc, BufferedImageController bic, Animation animation, Rectangle2D rect, int index) {
 		this.glc = glc;
 		this.bic = bic;
 		this.setAnimation(animation);
 		this.rect = rect;
+		this.index = index;
 	}
 	
 	public void playGabionPlacementAnimation(Graphics2D g2) {
@@ -56,7 +58,7 @@ public class AnimationController {
 		switch(gabionAnimationstate) {
 		case 0 :
 			start = new Point((int)glc.getUiGabion().getCenterX(), (int)glc.getUiGabion().getCenterY());
-			end = new Point((int) ((int) glc.getWaveRows().get(0).getX()),
+			end = new Point((int) ((int) glc.getWaveRows().get(index).getX()),
 					(int)glc.getWaves().get(0).getRect().getCenterY());
 			startTime = System.currentTimeMillis();
 			currentX = (int)start.getX();
@@ -64,9 +66,8 @@ public class AnimationController {
 			this.gabionAnimationstate = 1;
 			break;
 		case 1:
-			picNum = (picNum + 1) % 2;
-			picNum += 6;
-			g2.drawImage(bic.getImageAtIndex(picNum), (int)currentX, (int)currentY, 100, 150, null);
+			
+			g2.drawImage(bic.getImageAtIndex(Image.HAND.getIndex()), (int)currentX, (int)currentY, 100, 150, null);
 			//System.out.println("drew image: " + currentX + "\t" + currentY + "\t" + progress);
 			duration = System.currentTimeMillis() - startTime;
 			progress = duration / 2000.0;
@@ -99,13 +100,13 @@ public class AnimationController {
 			oyster.setRect(currentXOyster, currentYOyster, oyster.getWidth(),
 					oyster.getHeight());
 			this.durationOyster = System.currentTimeMillis() - this.startTimeOyster;
-			this.progressOyster = this.durationOyster / 1000.0;
+			this.progressOyster = this.durationOyster / 5000.0;
 			this.currentXOyster = (this.currentXOyster + ((this.endOyster.getX() - this.currentXOyster) * this.progressOyster));
 			this.currentYOyster = (this.currentYOyster + ((this.endOyster.getY() - this.currentYOyster) * this.progressOyster));
 			g2.setColor(Color.red);
 			g2.drawLine((int)this.currentXOyster, (int)this.currentYOyster, this.endOyster.x, this.endOyster.y);
 			g2.drawImage(bic.getImageAtIndex(Image.OYSTER.getIndex()), (int)oyster.getX(), (int)oyster.getY(), 
-					(int)oyster.getWidth(), (int)(oyster.getHeight()/1.5), null);
+					(int)oyster.getWidth(), (int)(oyster.getHeight()), null);
 			
 			if (glc.getUiGabion().intersects(oyster)) {
 				this.played = true;
