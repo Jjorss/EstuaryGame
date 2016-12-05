@@ -92,6 +92,7 @@ public class GameLoopController {
 	private boolean placedFirstGabion;
 	private boolean placedWrongGabion;
 	private boolean placedFirstPlant;
+	private boolean ableToPlaceGabion;
 	private boolean init;
 	private boolean hittingPlant;
 	private boolean hittingWater;
@@ -182,6 +183,7 @@ public class GameLoopController {
 		placedFirstGabion = false;
 		placedWrongGabion = false;
 		placedFirstPlant = false;
+		ableToPlaceGabion = false;
 		init = false;
 		hittingPlant = false;
 		hittingWater = false;
@@ -320,6 +322,7 @@ public class GameLoopController {
 					this.animations.add(new AnimationController(this, bic, Animation.PLACEGABION, null, 4));
 					this.currentTutorialState = TutorialState.GABIONS;
 					textTimer = new Timer();
+					this.ableToPlaceGabion = true;
 				}
 				break;
 			case GABIONS:
@@ -337,6 +340,7 @@ public class GameLoopController {
 					textTimer.countUp(2);
 					if (textTimer.getTime() >= 2) {
 						textTimer = new Timer();
+						animations.clear();
 						this.currentTutorialState = TutorialState.RUNOFF;
 
 					}
@@ -570,15 +574,7 @@ public class GameLoopController {
 				break;
 			case WAVES:
 				break;
-			case GABIONS:
-//				for (int i = 0; i < this.numOfWavesInRow.size(); i++) {
-//					if(this.numOfWavesInRow.get(i) > 0) {
-//						ac.playGabionPlacementAnimation(g2, i);
-//					}
-//				}
-//				ac.playGabionPlacementAnimation(g2, 1);
-//				ac.playGabionPlacementAnimation(g2, 4);
-				
+			case GABIONS:				
 				break;
 			case RUNOFF:
 				break;
@@ -1013,7 +1009,7 @@ public class GameLoopController {
 				break;
 			case PLACEGABION:
 				 ac.playGabionPlacementAnimation(g2);
-				 ac.playGabionPlacementAnimation(g2);
+				 //ac.playGabionPlacementAnimation(g2);
 				break;
 			default:
 				break;
@@ -1191,7 +1187,7 @@ public class GameLoopController {
 		// System.out.println(p.getX() + ", " + p.getY());
 
 		// spawn gabion
-		if (gb.getGb().getGabions() != 0) {
+		if (gb.getGb().getGabions() != 0 && this.ableToPlaceGabion) {
 			for (int i = 0; i < waveRows.size(); i++) {
 				Rectangle2D row = waveRows.get(i);
 				if (row.contains(p) && this.numOfGabionsInRow.get(i) < 5) {

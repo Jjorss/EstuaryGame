@@ -260,7 +260,7 @@ public class Game extends JPanel{
 					e.printStackTrace();
 				}
 				if (this.framePerSecond*50 >=1000 ) {
-					//System.out.println("Frames per second: " + this.framePerSecond);
+					System.out.println("Frames per second: " + this.framePerSecond);
 					this.framePerSecond = 0;
 					
 				}
@@ -319,7 +319,7 @@ public class Game extends JPanel{
 				break;
 			
 			}
-			System.out.println("Frames per second: " + this.framePerSecond);
+			//System.out.println("Frames per second: " + this.framePerSecond);
 //			if (this.started) {
 //				this.setInit(true);
 //				repaint();

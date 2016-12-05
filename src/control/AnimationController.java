@@ -59,7 +59,7 @@ public class AnimationController {
 		case 0 :
 			start = new Point((int)glc.getUiGabion().getCenterX(), (int)glc.getUiGabion().getCenterY());
 			end = new Point((int) ((int) glc.getWaveRows().get(index).getX()),
-					(int)glc.getWaves().get(0).getRect().getCenterY());
+					(int) glc.getWaveRows().get(index).getCenterY());
 			startTime = System.currentTimeMillis();
 			currentX = (int)start.getX();
 			currentY = (int)start.getY();
