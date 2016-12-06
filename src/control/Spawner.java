@@ -23,7 +23,7 @@ public class Spawner {
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	private boolean increasedIntensity = false;
-	private int intensity = 1;
+	private int intensity = 12;
 	
 	public  Spawner(GameLoopController glc, Game game, Timer timer) {
 		this.glc = glc;
@@ -79,7 +79,7 @@ public class Spawner {
 			ClumpOfOysters clump = new ClumpOfOysters(x, y);
 			Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
 			glc.getOysters().add(new OysterController(clump, rect));
-			System.out.println("spawned");
+			System.out.println("Spawned oyster");
 		}
 		
 	}
@@ -237,6 +237,24 @@ public class Spawner {
 			glc.getRunOff().add(new RunOffController(r, rect));
 			this.runOffInRow.set(numRow, true);
 //			System.out.println("spawning runOff");
+		}
+	}
+	
+	public void spawnTutorialRunOff() {
+		Random rand = new Random();
+		double max = game.getScale().getWidth() * 0.75;
+		double min = game.getScale().getWidth() * 0.10;
+		double rfHeight = glc.getPlantRows().get(0).getHeight() *0.2 ;
+		int rfWidth = rand.nextInt((int)max - (int)min + 1) + (int)min;
+		int numRow = 2;
+		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
+		int x = 0 - rfWidth;
+		if (glc.getRunOff().size() < 1) {
+			RunOff r = new RunOff(8,x,y, numRow);
+			Rectangle2D rect = new Rectangle2D.Double(x,y,rfWidth, rfHeight );
+			glc.getRunOff().add(new RunOffController(r, rect));
+			this.runOffInRow.set(numRow, true);
+
 		}
 	}
 	

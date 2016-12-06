@@ -298,7 +298,7 @@ public class GameLoopController {
 			collision();
 			switch (this.currentTutorialState) {
 			case OYSTERS:
-				System.out.println(this.waves.size());
+				//System.out.println(this.waves.size());
 				this.message = "Collect Oyster Shells!";
 				spawner.spawnOysters(1, 0);
 				if (gb.getGb().getGabions() >= 2) {
@@ -316,7 +316,7 @@ public class GameLoopController {
 				spawner.TutorialSpawnWaves();
 				spawner.spawnOysters(2, 0);
 				textTimer.countUp(3);
-				System.out.println(textTimer.getTime());
+				//System.out.println(textTimer.getTime());
 				if (textTimer.getTime() >= 3) {
 					this.animations.add(new AnimationController(this, bic, Animation.PLACEGABION, null, 1));
 					this.animations.add(new AnimationController(this, bic, Animation.PLACEGABION, null, 4));
@@ -351,11 +351,12 @@ public class GameLoopController {
 			case RUNOFF:
 				plantTimer.countUp(5);
 				// textTimer.countUpStop(3);
-				spawner.spawnRunOff(1, 0);
+				spawner.spawnTutorialRunOff();
 				if (this.runOff.get(0).getRect().getX() + this.runOff.get(0).getRect()
 						.getWidth() >= (shore.getRect().getX() + shore.getRect().getWidth()) / 3) {
 					this.message = "Oh no! Runoff!";
 					textTimer = new Timer();
+					this.animations.add(new AnimationController(this, bic, Animation.PLACEPLANT, null, 2));
 					this.currentTutorialState = TutorialState.PLANTS;
 				} else {
 					this.message = "Look, your Plants have grown!";
@@ -372,6 +373,7 @@ public class GameLoopController {
 					if (this.placedFirstPlant) {
 						textTimer = new Timer();
 						this.message = "Good Job! The water is clean! You now know how to defend your estuary!";
+						this.animations.clear();
 						this.currentTutorialState = TutorialState.END;
 					}
 				}
@@ -422,7 +424,7 @@ public class GameLoopController {
 		case LOADING:
 			System.out.println(this.init);
 			if (this.init) {
-				System.out.println("Entered");
+				//System.out.println("Entered");
 				this.currentGameState = GameState.MENU;
 				gb.getGb().setGabions(this.numOfRows);
 				for (int i = 0; i < this.numOfRows; i++) {
@@ -485,7 +487,7 @@ public class GameLoopController {
 			}
 			if (runOff.getRect().getWidth() <= 0) {
 				it.remove();
-				System.out.println("runOff size: " + this.getRunOff().size());
+				//System.out.println("runOff size: " + this.getRunOff().size());
 			}
 
 		}
@@ -1011,6 +1013,9 @@ public class GameLoopController {
 				 ac.playGabionPlacementAnimation(g2);
 				 //ac.playGabionPlacementAnimation(g2);
 				break;
+			case PLACEPLANT:
+				ac.playPlantPlacementAnimation(g2);
+				break;
 			default:
 				break;
 			}
@@ -1201,8 +1206,8 @@ public class GameLoopController {
 					this.numOfGabionsInRow.set(i, this.numOfGabionsInRow.get(i) + 1);
 					if (this.currentGameState != GameState.MENU && this.currentGameState == GameState.TUTORIAL 
 							&& this.currentTutorialState == TutorialState.GABIONS) {
-						System.out.println("waves: " + this.getNumOfWavesInRow().get(i));
-						System.out.println("Gabions: " +  this.numOfGabionsInRow.get(i));
+						//System.out.println("waves: " + this.getNumOfWavesInRow().get(i));
+						//System.out.println("Gabions: " +  this.numOfGabionsInRow.get(i));
 						if (this.getNumOfWavesInRow().get(i) > 0 && this.numOfGabionsInRow.get(i) == 1) {
 							if(this.gabions.size() == 2) {
 								this.placedFirstGabion = true;
@@ -1400,6 +1405,10 @@ public class GameLoopController {
 
 	public void setCurrentGameState(GameState gs) {
 		this.currentGameState = gs;
+	}
+
+	public Rectangle2D getUiPlant() {
+		return uiPlant;
 	}
 
 }

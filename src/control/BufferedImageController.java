@@ -25,11 +25,11 @@ public class BufferedImageController {
 			images.add(this.createImage(animationPaths[i]));
 		}
 		//this.createAnimation(6, 2, 325, 433);
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
+//		System.out.println();
+//		System.out.println();
+//		System.out.println();
+//		System.out.println();
+//		System.out.println();
 	}
 	public BufferedImage createImage(String path){
 		BufferedImage bufferedImage;

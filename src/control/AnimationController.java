@@ -14,6 +14,7 @@ public class AnimationController {
 	//
 	private int gabionAnimationstate = 0;
 	private int oysterAnimationState = 0;
+	private int plantAnimationState = 0;
 	private int textAnimationState = 0;
 	private int picNum = 0;
 	private int textCounter = 0;
@@ -25,16 +26,23 @@ public class AnimationController {
 	private double currentXOyster = 0;
 	private double currentYOyster = 0;
 	private double progressOyster = 0;
+	private double currentXPlant = 0;
+	private double currentYPlant = 0;
+	private double progressPlant = 0;
 	
 	private Point start;
 	private Point end;
 	private Point startOyster;
 	private Point endOyster;
+	private Point startPlant;
+	private Point endPlant;
 	
 	private long startTime = 0;
 	private long duration = 0;
 	private long startTimeOyster = 0;
 	private long durationOyster = 0;
+	private long startTimePlant = 0;
+	private long durationPlant = 0;
 	
 	private Rectangle2D oyster;
 	
@@ -83,6 +91,31 @@ public class AnimationController {
 		}
 	}
 	
+	public void playPlantPlacementAnimation(Graphics2D g2) {
+		switch(this.plantAnimationState){
+		case 0:
+			startPlant = new Point((int)glc.getUiPlant().getCenterX(), (int)glc.getUiPlant().getCenterY());
+			endPlant = new Point((int)glc.getPlantRows().get(index).getX(), (int)glc.getPlantRows().get(index).getCenterY());
+			startTimePlant = System.currentTimeMillis();
+			currentXPlant = (int)startPlant.getX();
+			currentYPlant = (int)startPlant.getY();
+			this.plantAnimationState = 1;
+			break;
+		case 1:
+			g2.drawImage(bic.getImageAtIndex(Image.HAND.getIndex()), (int)currentXPlant, (int)currentYPlant, 100, 150, null);
+			durationPlant = System.currentTimeMillis() - startTimePlant;
+			progressPlant = durationPlant / 2000.0;
+			currentXPlant = (currentXPlant + ((endPlant.getX() - currentXPlant) * progressPlant));
+			currentYPlant = (currentYPlant + ((endPlant.getY() - currentYPlant) * progressPlant));
+			if(currentYPlant >= endPlant.getY() && currentXPlant <= endPlant.getX()) {
+				this.plantAnimationState = 0;
+			}
+			break;
+		default:
+			
+		}
+	}
+	
 	public void playCollectOysterAnimation(Graphics2D g2) {
 		switch(this.oysterAnimationState) {
 		case 0:
@@ -110,7 +143,7 @@ public class AnimationController {
 			
 			if (glc.getUiGabion().intersects(oyster)) {
 				this.played = true;
-				System.out.println("OVER");
+				//System.out.println("OVER");
 			}
 			break;
 		default:

@@ -1,5 +1,5 @@
 package model;
 
 public enum Animation {
-	OYSTER, PLACEGABION
+	OYSTER, PLACEGABION, PLACEPLANT
 }
