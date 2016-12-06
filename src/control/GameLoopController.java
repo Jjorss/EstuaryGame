@@ -91,6 +91,7 @@ public class GameLoopController {
 	private boolean isRunOff;
 	private boolean placedFirstGabion;
 	private boolean placedWrongGabion;
+	private boolean placedWrongPlant;
 	private boolean placedFirstPlant;
 	private boolean ableToPlaceGabion;
 	private boolean init;
@@ -182,6 +183,7 @@ public class GameLoopController {
 		isRunOff = false;
 		placedFirstGabion = false;
 		placedWrongGabion = false;
+		placedWrongPlant = false;
 		placedFirstPlant = false;
 		ableToPlaceGabion = false;
 		init = false;
@@ -215,7 +217,7 @@ public class GameLoopController {
 		this.shore.setShore(new Shore((int) this.GAMEBOX.getX(), (int) this.GAMEBOX.getY()));
 		this.shore.setRect(new Rectangle2D.Double(shore.getShore().getX(), shore.getShore().getY(), (int) shoreWidth,
 				GAMEBOX.getHeight()));
-		
+
 		fontSize = (int) (width * 0.03);
 		f1 = new Font("Arial", Font.PLAIN, this.fontSize);
 
@@ -257,8 +259,8 @@ public class GameLoopController {
 		gY = UIBOX.getY();
 		gb.setRect(new Rectangle2D.Double(gX, gY, gWidth, UIBOX.getHeight()));
 
-		uiGabion = new Rectangle2D.Double(gb.getRect().getX(),
-				gb.getRect().getCenterY() - (gabionHeight / 2), gabionWidth, gabionHeight);
+		uiGabion = new Rectangle2D.Double(gb.getRect().getX(), gb.getRect().getCenterY() - (gabionHeight / 2),
+				gabionWidth, gabionHeight);
 
 		pb.setRect(
 				new Rectangle2D.Double(UIBOX.getX(), UIBOX.getY(), UIBOX.getHeight() * (2.0 / 3.0), UIBOX.getHeight()));
@@ -298,7 +300,7 @@ public class GameLoopController {
 			collision();
 			switch (this.currentTutorialState) {
 			case OYSTERS:
-				//System.out.println(this.waves.size());
+				// System.out.println(this.waves.size());
 				this.message = "Collect Oyster Shells!";
 				spawner.spawnOysters(1, 0);
 				if (gb.getGb().getGabions() >= 2) {
@@ -316,7 +318,7 @@ public class GameLoopController {
 				spawner.TutorialSpawnWaves();
 				spawner.spawnOysters(2, 0);
 				textTimer.countUp(3);
-				//System.out.println(textTimer.getTime());
+				// System.out.println(textTimer.getTime());
 				if (textTimer.getTime() >= 3) {
 					this.animations.add(new AnimationController(this, bic, Animation.PLACEGABION, null, 1));
 					this.animations.add(new AnimationController(this, bic, Animation.PLACEGABION, null, 4));
@@ -326,15 +328,15 @@ public class GameLoopController {
 				}
 				break;
 			case GABIONS:
-				if(this.placedWrongGabion) {
+				if (this.placedWrongGabion) {
 					this.message = "Make sure to place your gabions in front of waves.";
 				} else {
 					this.message = "Stop the waves by placing gabions!";
 				}
-				
-				//plantTimer.countUp(5);
+
+				// plantTimer.countUp(5);
 				pb.getPb().setNumberOfPlants(1);
-				// falshing gabion here
+				// flashing gabion here
 				if (this.placedFirstGabion) {
 					this.message = "Good Job";
 					textTimer.countUp(2);
@@ -369,7 +371,11 @@ public class GameLoopController {
 				plantTimer.countUp(5);
 				textTimer.countUpStop(2);
 				if (textTimer.getTime() >= 2) {
-					this.message = "Plant plants to filter the dirty runoff.";
+					if (!this.placedWrongPlant) {
+						this.message = "Plant plants to filter the dirty runoff.";
+					} else {
+						this.message = "Make sure to place your plants in front of runoff.";
+					}
 					if (this.placedFirstPlant) {
 						textTimer = new Timer();
 						this.message = "Good Job! The water is clean! You now know how to defend your estuary!";
@@ -424,7 +430,7 @@ public class GameLoopController {
 		case LOADING:
 			System.out.println(this.init);
 			if (this.init) {
-				//System.out.println("Entered");
+				// System.out.println("Entered");
 				this.currentGameState = GameState.MENU;
 				gb.getGb().setGabions(this.numOfRows);
 				for (int i = 0; i < this.numOfRows; i++) {
@@ -487,7 +493,8 @@ public class GameLoopController {
 			}
 			if (runOff.getRect().getWidth() <= 0) {
 				it.remove();
-				//System.out.println("runOff size: " + this.getRunOff().size());
+				// System.out.println("runOff size: " +
+				// this.getRunOff().size());
 			}
 
 		}
@@ -533,7 +540,7 @@ public class GameLoopController {
 		switch (this.currentGameState) {
 		case TUTORIAL:
 			// UIBOX Sky
-			
+
 			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(),
 					(int) UIBOX.getWidth(), (int) (UIBOX.getHeight()), null);
 			// GAMEBOX
@@ -551,10 +558,10 @@ public class GameLoopController {
 			// UI
 			// ---------------------------
 			// Gabion builder/Plant builder
-			//this.renderGabionBuilder(g2);
+			// this.renderGabionBuilder(g2);
 
 			// GabionBuilder Meter
-			//this.renderGabionMeter(g2);
+			// this.renderGabionMeter(g2);
 			this.renderUIGabion(g2);
 			this.renderDragGabion(g2);
 			this.renderNumberOfGabions(g2);
@@ -576,7 +583,7 @@ public class GameLoopController {
 				break;
 			case WAVES:
 				break;
-			case GABIONS:				
+			case GABIONS:
 				break;
 			case RUNOFF:
 				break;
@@ -608,10 +615,10 @@ public class GameLoopController {
 			// ---------------------------
 			// Gabion builder/Plant builder
 			this.renderGameTimer(g2);
-			//this.renderGabionBuilder(g2);
+			// this.renderGabionBuilder(g2);
 
 			// GabionBuilder Meter
-			//this.renderGabionMeter(g2);
+			// this.renderGabionMeter(g2);
 			this.renderUIGabion(g2);
 			this.renderDragGabion(g2);
 			this.renderNumberOfGabions(g2);
@@ -668,10 +675,10 @@ public class GameLoopController {
 			// ---------------------------
 			// Gabion builder/Plant builder
 			this.renderGameTimer(g2);
-			//this.renderGabionBuilder(g2);
+			// this.renderGabionBuilder(g2);
 
 			// GabionBuilder Meter
-			//this.renderGabionMeter(g2);
+			// this.renderGabionMeter(g2);
 			this.renderUIGabion(g2);
 			this.renderDragGabion(g2);
 			this.renderNumberOfGabions(g2);
@@ -733,18 +740,20 @@ public class GameLoopController {
 			WaveController wc = it.next();
 			// g2.draw(wc.getRect());
 			// g2.fill(wc.getRect());
-			if(game.getFramePerSecond()%3 == 0) {
+			if (game.getFramePerSecond() % 3 == 0) {
 				g2.drawImage(bic.getImageAtIndex(Image.WAVE1.getIndex()), (int) wc.getRect().getX(),
 						(int) wc.getRect().getY(), (int) wc.getRect().getWidth(), (int) wc.getRect().getHeight(), null);
-			} else if(game.getFramePerSecond()%3 == 1) {
+			} else if (game.getFramePerSecond() % 3 == 1) {
 				g2.drawImage(bic.getImageAtIndex(Image.WAVE2.getIndex()), (int) wc.getRect().getX(),
 						(int) wc.getRect().getY(), (int) wc.getRect().getWidth(), (int) wc.getRect().getHeight(), null);
-			} else{
+			} else {
 				g2.drawImage(bic.getImageAtIndex(Image.WAVE3.getIndex()), (int) wc.getRect().getX(),
 						(int) wc.getRect().getY(), (int) wc.getRect().getWidth(), (int) wc.getRect().getHeight(), null);
 			}
-//			g2.drawImage(bic.getImageAtIndex(Image.WAVE1.getIndex()), (int) wc.getRect().getX(),
-//					(int) wc.getRect().getY(), (int) wc.getRect().getWidth(), (int) wc.getRect().getHeight(), null);
+			// g2.drawImage(bic.getImageAtIndex(Image.WAVE1.getIndex()), (int)
+			// wc.getRect().getX(),
+			// (int) wc.getRect().getY(), (int) wc.getRect().getWidth(), (int)
+			// wc.getRect().getHeight(), null);
 		}
 
 	}
@@ -840,8 +849,8 @@ public class GameLoopController {
 		} else {
 			g2.setColor(new Color(0, 0, 0, 255));
 		}
-		//g2.draw(uiGabion);
-		//g2.fill(uiGabion);
+		// g2.draw(uiGabion);
+		// g2.fill(uiGabion);
 
 		if (this.gb.getGb().getNumberOfOysters() == 0 && this.gb.getGb().getGabions() == 0) {
 			g2.drawImage(bic.getImageAtIndex(Image.GABION1.getIndex()), (int) uiGabion.getX(), (int) uiGabion.getY(),
@@ -855,7 +864,7 @@ public class GameLoopController {
 		} else if (this.gb.getGb().getNumberOfOysters() == 3) {
 			g2.drawImage(bic.getImageAtIndex(Image.GABION4.getIndex()), (int) uiGabion.getX(), (int) uiGabion.getY(),
 					(int) uiGabion.getWidth(), (int) uiGabion.getHeight(), null);
-		} else if(this.gb.getGb().getNumberOfOysters() == 4 || this.gb.getGb().getNumberOfOysters() == 5) {
+		} else if (this.gb.getGb().getNumberOfOysters() == 4 || this.gb.getGb().getNumberOfOysters() == 5) {
 			g2.drawImage(bic.getImageAtIndex(Image.GABION5.getIndex()), (int) uiGabion.getX(), (int) uiGabion.getY(),
 					(int) uiGabion.getWidth(), (int) uiGabion.getHeight(), null);
 		} else {
@@ -877,12 +886,10 @@ public class GameLoopController {
 
 	public void renderOysters(Graphics2D g2) {
 		g2.setColor(Color.GRAY);
-		for (OysterController oyster : oysters) {
+		for (OysterController oyster : oysters.toArray(new OysterController[0])) {
+			// OysterController oyster = oysters.get(i);
 			// g2.draw(oyster.getRect());
 			// g2.fill(oyster.getRect());
-			if (oyster.getOyster().isCollected()) {
-
-			}
 			g2.drawImage(bic.getImageAtIndex(Image.OYSTER.getIndex()), (int) oyster.getRect().getX(),
 					(int) oyster.getRect().getY(), (int) oyster.getRect().getWidth(),
 					(int) (oyster.getRect().getHeight()), null);
@@ -893,12 +900,13 @@ public class GameLoopController {
 		g2.setFont(f1);
 		g2.setColor(Color.WHITE);
 		if (gb.getGb().getGabions() >= 10) {
-			g2.drawString("x" + gb.getGb().getGabions(), 
-					(int) ((int)(gb.getRect().getCenterX() + (this.uiGabion.getWidth()/2))- (f1.getSize()*.75)), 
+			g2.drawString("x" + gb.getGb().getGabions(),
+					(int) ((int) (gb.getRect().getCenterX() + (this.uiGabion.getWidth() / 2)) - (f1.getSize() * .75)),
 					(int) uiGabion.getCenterY() + (f1.getSize() / 2));
 		} else {
-			g2.drawString("x" + gb.getGb().getGabions(), (int)(gb.getRect().getCenterX() + (this.uiGabion.getWidth()/2))
-				- (f1.getSize() / 2), (int) uiGabion.getCenterY() + (f1.getSize() / 2));
+			g2.drawString("x" + gb.getGb().getGabions(),
+					(int) (gb.getRect().getCenterX() + (this.uiGabion.getWidth() / 2)) - (f1.getSize() / 2),
+					(int) uiGabion.getCenterY() + (f1.getSize() / 2));
 		}
 	}
 
@@ -1010,8 +1018,8 @@ public class GameLoopController {
 				ac.playCollectOysterAnimation(g2);
 				break;
 			case PLACEGABION:
-				 ac.playGabionPlacementAnimation(g2);
-				 //ac.playGabionPlacementAnimation(g2);
+				ac.playGabionPlacementAnimation(g2);
+				// ac.playGabionPlacementAnimation(g2);
 				break;
 			case PLACEPLANT:
 				ac.playPlantPlacementAnimation(g2);
@@ -1181,7 +1189,16 @@ public class GameLoopController {
 				Rectangle2D row = plantRows.get(i);
 				if (row.contains(p)) {
 					spawner.spawnPlants(i);
-					this.placedFirstPlant = true;
+					if (this.currentGameState == GameState.TUTORIAL
+							&& this.currentTutorialState == TutorialState.PLANTS) {
+						if (i == spawner.getRowForRunOff()) {
+							this.placedFirstPlant = true;
+						} else {
+							this.placedWrongPlant = true;
+							this.plants.remove(this.plants.size() - 1);
+							this.pb.getPb().setNumberOfPlants(this.pb.getPb().getNumberOfPlants() + 1);
+						}
+					}
 				}
 			}
 		}
@@ -1204,18 +1221,20 @@ public class GameLoopController {
 					gabions.add(new GabionController(gab, gabRect));
 					gb.getGb().setGabions(gb.getGb().getGabions() - 1);
 					this.numOfGabionsInRow.set(i, this.numOfGabionsInRow.get(i) + 1);
-					if (this.currentGameState != GameState.MENU && this.currentGameState == GameState.TUTORIAL 
+					if (this.currentGameState != GameState.MENU && this.currentGameState == GameState.TUTORIAL
 							&& this.currentTutorialState == TutorialState.GABIONS) {
-						//System.out.println("waves: " + this.getNumOfWavesInRow().get(i));
-						//System.out.println("Gabions: " +  this.numOfGabionsInRow.get(i));
+						// System.out.println("waves: " +
+						// this.getNumOfWavesInRow().get(i));
+						// System.out.println("Gabions: " +
+						// this.numOfGabionsInRow.get(i));
 						if (this.getNumOfWavesInRow().get(i) > 0 && this.numOfGabionsInRow.get(i) == 1) {
-							if(this.gabions.size() == 2) {
+							if (this.gabions.size() == 2) {
 								this.placedFirstGabion = true;
 							}
-						} else{
-							this.gabions.remove(this.gabions.size()-1);
+						} else {
+							this.gabions.remove(this.gabions.size() - 1);
 							this.placedWrongGabion = true;
-							gb.getGb().setGabions(gb.getGb().getGabions()+1);
+							gb.getGb().setGabions(gb.getGb().getGabions() + 1);
 							this.numOfGabionsInRow.set(i, this.numOfGabionsInRow.get(i) - 1);
 						}
 					}
@@ -1274,7 +1293,7 @@ public class GameLoopController {
 				this.currentGameState = GameState.TUTORIAL;
 				// this shouldn't be necessary
 				this.waves.clear();
-				for(int i = 0; i < this.numOfWavesInRow.size(); i++) {
+				for (int i = 0; i < this.numOfWavesInRow.size(); i++) {
 					this.numOfWavesInRow.set(i, 0);
 				}
 

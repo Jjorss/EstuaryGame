@@ -2,6 +2,7 @@ package control;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 import model.ClumpOfOysters;
@@ -23,7 +24,8 @@ public class Spawner {
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	private boolean increasedIntensity = false;
-	private int intensity = 12;
+	private int intensity = 1;
+	private int rowForRunOff = 2;
 	
 	public  Spawner(GameLoopController glc, Game game, Timer timer) {
 		this.glc = glc;
@@ -246,7 +248,7 @@ public class Spawner {
 		double min = game.getScale().getWidth() * 0.10;
 		double rfHeight = glc.getPlantRows().get(0).getHeight() *0.2 ;
 		int rfWidth = rand.nextInt((int)max - (int)min + 1) + (int)min;
-		int numRow = 2;
+		int numRow = this.rowForRunOff;
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
 		if (glc.getRunOff().size() < 1) {
@@ -293,6 +295,11 @@ public class Spawner {
 
 	public void setTimer(Timer timer) {
 		this.timer = timer;
+	}
+
+
+	public int getRowForRunOff() {
+		return rowForRunOff;
 	}
 	
 }
