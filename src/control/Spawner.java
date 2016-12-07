@@ -24,7 +24,7 @@ public class Spawner {
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	private boolean increasedIntensity = false;
-	private int intensity = 1;
+	private int intensity = 10;
 	private int rowForRunOff = 2;
 	
 	public  Spawner(GameLoopController glc, Game game, Timer timer) {
@@ -59,8 +59,8 @@ public class Spawner {
 	
 	public void spawnOysters(int intensity, int time) {
 		Random rand = new Random();
-		int width = (int) (game.getWidth() * 0.03);
-		int height = (int) (game.getWidth() * 0.03);
+		int width = (int) (game.getWidth() * 0.035);
+		int height = (int) (game.getWidth() * 0.035);
 		int padding = 10;
 		int max = 0;
 		double spawnTime = ((11 - this.intensity)/10)*2000 + 1000;
@@ -88,8 +88,8 @@ public class Spawner {
 	}
 	public void tutorialSpawnOysters() {
 		Random rand = new Random();
-		int width = (int) (game.getWidth() * 0.03);
-		int height = (int) (game.getWidth() * 0.03);
+		int width = (int) (game.getWidth() * 0.035);
+		int height = (int) (game.getWidth() * 0.035);
 		int padding = 10;
 		int max = 0;
 		

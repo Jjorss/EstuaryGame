@@ -6,7 +6,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineMetrics;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -73,6 +76,7 @@ public class GameLoopController {
 	private Rectangle2D GAMEBOX;
 	private Rectangle2D UIBOX;
 	private Rectangle2D MENU;
+	private Rectangle2D gameOverBox;
 	// private Rectangle2D gabionBuilder;
 	// private Rectangle2D plantBuilder;
 	private Rectangle2D uiGabion;
@@ -169,6 +173,7 @@ public class GameLoopController {
 		GAMEBOX = new Rectangle2D.Double(0, 0, 0, 0);
 		UIBOX = new Rectangle2D.Double(0, 0, 0, 0);
 		MENU = new Rectangle2D.Double(0, 0, 0, 0);
+		gameOverBox = new Rectangle2D.Double(0,0,0,0);
 		uiGabion = new Rectangle2D.Double(0, 0, 0, 0);
 		uiPlant = new Rectangle2D.Double(0, 0, 0, 0);
 		helperHorseRect = new Rectangle2D.Double(0, 0, 0, 0);
@@ -210,6 +215,10 @@ public class GameLoopController {
 		GAMEBOX = new Rectangle2D.Double(0, this.UIBOX.getHeight(), width, height - this.UIBOX.getHeight());
 		MENU = new Rectangle2D.Double((width / 2) - (menuWidth / 2), (height / 2) - (menuHeight / 2), menuWidth,
 				menuHeight);
+		double goWidth = game.getScale().getWidth() * 0.4;
+		double goHeight = game.getScale().getHeight() * 0.4;
+		gameOverBox = new Rectangle2D.Double((game.getScale().getWidth()/2) - (goWidth/2),
+				(game.getScale().getHeight()/2) - (goHeight/2),goWidth,goHeight);
 		playButton = new Rectangle2D.Double(MENU.getX(), MENU.getY(), menuWidth, menuHeight / 3);
 		instructionButton = new Rectangle2D.Double(MENU.getX(), MENU.getY() + menuHeight / 3, menuWidth,
 				menuHeight / 3);
@@ -403,6 +412,22 @@ public class GameLoopController {
 
 			if (timer.getTime() == 0 || shore.getShore().getHealth() <= 25 || this.dirtyWater.getAlpha() >= 200) {
 				game.setGameOver(true);
+				
+//				int fontSize = (int)(game.getScale().getWidth() * 0.05);
+//				Font f = new Font("Arial", Font.BOLD, fontSize);
+//				BufferedImage string = this.textToImage("You Win!", f, 100);
+//				bic.getStringImages().add(string);
+//
+//				BufferedImage score = this.textToImage("Grade: " + this.calculateScore(shore.getShore().getHealth(), 
+//						this.dirtyWater.getAlpha()), f, 100);
+//				bic.getStringImages().add(score);
+//			
+//				fontSize = (int)gameOverBox.getWidth();
+//				String helperSentence = this.calculateHelperSentece(this.calculateScore(shore.getShore().getHealth(),
+//						dirtyWater.getAlpha()));
+//				BufferedImage helperString = this.textToImage(helperSentence, f, fontSize);
+//				System.out.println(helperSentence);
+//				bic.getStringImages().add(helperString);
 				this.currentGameState = GameState.OVER;
 			}
 			collision();
@@ -439,6 +464,7 @@ public class GameLoopController {
 			}
 			break;
 		case OVER:
+			game.setGameOver(true);
 			break;
 		default:
 			System.out.println("STATES NOT WORKING, CURRENT STATE: " + this.currentGameState);
@@ -730,6 +756,7 @@ public class GameLoopController {
 			this.renderRunoff(g2);
 
 			this.renderAnimation(g2);
+			this.renderOver(g2);
 		default:
 			break;
 
@@ -791,10 +818,12 @@ public class GameLoopController {
 
 	public void renderConcreteWalls(Graphics2D g2) {
 		for (ConcreteWallController wall : concreteWalls) {
-			g2.setColor(Color.LIGHT_GRAY);
-			g2.draw(wall.getRect());
-			g2.setColor(Color.DARK_GRAY);
-			g2.fill(wall.getRect());
+			//g2.setColor(Color.LIGHT_GRAY);
+			//g2.draw(wall.getRect());
+			//g2.setColor(Color.DARK_GRAY);
+			//g2.fill(wall.getRect());
+			g2.drawImage(bic.getImageAtIndex(Image.WALL.getIndex()), (int)wall.getRect().getX(),
+					(int)wall.getRect().getY(), (int)wall.getRect().getWidth(), (int)wall.getRect().getHeight(), null);
 		}
 	}
 
@@ -1008,10 +1037,12 @@ public class GameLoopController {
 	}
 
 	public void renderRunoff(Graphics2D g2) {
-		g2.setColor(runOffColor);
+		//g2.setColor(runOffColor);
 		for (RunOffController runOff : runOff) {
-			g2.draw(runOff.getRect());
-			g2.fill(runOff.getRect());
+//			g2.draw(runOff.getRect());
+//			g2.fill(runOff.getRect());
+			g2.drawImage(bic.getImageAtIndex(Image.RUNOFF.getIndex()), (int)runOff.getRect().getX(),
+					(int)runOff.getRect().getY(), (int)runOff.getRect().getWidth(), (int)runOff.getRect().getHeight(), null);
 		}
 	}
 
@@ -1056,6 +1087,61 @@ public class GameLoopController {
 		g2.drawImage(bic.getImageAtIndex(Image.SUN.getIndex()), (int) sunX, (int) y, (int) sunDim, (int) sunDim, null);
 
 	}
+	
+	public void renderOver(Graphics2D g2) {
+		g2.setColor(new Color(211,211,211,200));
+		
+		g2.fill(gameOverBox);
+		g2.draw(gameOverBox);
+		
+		g2.setColor(Color.WHITE);
+//		int x = (int)((gameOverBox.getX()-(bic.getStringImages().get(0).getWidth()/2))+(gameOverBox.getWidth()/2));
+//		int y = (int)gameOverBox.getY();
+//		g2.drawImage(bic.getStringImages().get(0), x, y, bic.getStringImages().get(0).getWidth(), bic.getStringImages().get(0).getHeight(), null);
+//		
+//		int scoreY = (y+bic.getStringImages().get(0).getHeight());
+//		int scoreX = (int)((gameOverBox.getX()-(bic.getStringImages().get(1).getWidth()/2))+(gameOverBox.getWidth()/2));
+//		g2.drawImage(bic.getStringImages().get(1), scoreX, scoreY, bic.getStringImages().get(1).getWidth(), 
+//				bic.getStringImages().get(1).getHeight(), null);
+//		
+//		int helperY = (scoreY+bic.getStringImages().get(2).getHeight());
+//		int helperX = (int)((gameOverBox.getX()-(bic.getStringImages().get(2).getWidth()/2))+(gameOverBox.getWidth()/2));
+//		g2.drawImage(bic.getStringImages().get(2), helperX, helperY, bic.getStringImages().get(2).getWidth(),
+//				bic.getStringImages().get(2).getHeight(), null);
+		
+	}
+	
+	public BufferedImage textToImage(String Text, Font f, float Size){
+	    //Derives font to new specified size, can be removed if not necessary.
+	    f = f.deriveFont(Size);
+
+	    FontRenderContext frc = new FontRenderContext(null, true, true);
+
+	    //Calculate size of buffered image.
+	    LineMetrics lm = f.getLineMetrics(Text, frc);
+
+	    Rectangle2D r2d = f.getStringBounds(Text, frc);
+
+	    BufferedImage img = new BufferedImage((int)Math.ceil(r2d.getWidth()),
+	    		(int)Math.ceil(r2d.getHeight()), BufferedImage.TYPE_INT_ARGB);
+
+	    Graphics2D g2d = img.createGraphics();
+
+//	    g2d.setRenderingHints(RenderingProperties);
+
+	    g2d.setBackground(new Color(0,0,0,0));
+	    g2d.setColor(Color.WHITE);
+
+	    g2d.clearRect(0, 0, img.getWidth(), img.getHeight());
+
+	    g2d.setFont(f);
+
+	    g2d.drawString(Text, 0, lm.getAscent());
+
+	    g2d.dispose();
+
+	    return img;
+	}
 
 	public void renderAnimation(Graphics2D g2) {
 		for (AnimationController ac : animations) {
@@ -1077,18 +1163,24 @@ public class GameLoopController {
 	}
 
 	public void renderMenu(Graphics2D g2) {
-		g2.setColor(Color.red);
-		g2.draw(MENU);
-		g2.fill(MENU);
+//		g2.setColor(Color.red);
+//		g2.draw(MENU);
+//		g2.fill(MENU);
 		g2.setColor(Color.ORANGE);
-		g2.draw(this.playButton);
-		g2.fill(this.playButton);
+//		g2.draw(this.playButton);
+//		g2.fill(this.playButton);
+		g2.drawImage(bic.getImageAtIndex(Image.TUTORIAL.getIndex()), (int)playButton.getX(), (int)playButton.getY(),
+				(int)playButton.getWidth(), (int)playButton.getHeight(), null);
 		g2.setColor(Color.PINK);
-		g2.draw(this.instructionButton);
-		g2.fill(this.instructionButton);
+//		g2.draw(this.instructionButton);
+//		g2.fill(this.instructionButton);
+		g2.drawImage(bic.getImageAtIndex(Image.PLAY.getIndex()), (int)instructionButton.getX(), (int)instructionButton.getY(),
+				(int)instructionButton.getWidth(), (int)instructionButton.getHeight(), null);
 		g2.setColor(Color.MAGENTA);
-		g2.draw(this.creditButton);
-		g2.fill(this.creditButton);
+//		g2.draw(this.creditButton);
+//		g2.fill(this.creditButton);
+		g2.drawImage(bic.getImageAtIndex(Image.CREDITS.getIndex()), (int)creditButton.getX(), (int)creditButton.getY(),
+				(int)creditButton.getWidth(), (int)creditButton.getHeight(), null);
 	}
 
 	public void collision() {
@@ -1346,7 +1438,16 @@ public class GameLoopController {
 				}
 
 			} else if (this.instructionButton.contains(p)) {
-
+				this.init();
+				this.currentGameState = GameState.GAME;
+				// this shouldn't be necessary
+				this.waves.clear();
+				for (int i = 0; i < this.numOfWavesInRow.size(); i++) {
+					this.numOfWavesInRow.set(i, 0);
+				}
+				this.ableToPlaceGabion = true;
+				this.ableToPlacePlant = true;
+				
 			} else if (this.creditButton.contains(p)) {
 
 			}
@@ -1374,6 +1475,34 @@ public class GameLoopController {
 		} else {
 			return "D";
 		}
+	}
+	
+	public String calculateHelperSentece(String grade) {
+		switch(grade) {
+		case "A+":
+			return "You did great! You can defend any kind of estuary!";
+		case "A":
+			String shoreHealth = shore.getShore().getHealth() + "";
+			String waterHealth = (255 - this.dirtyWater.getAlpha()) + "";
+			if (shoreHealth.equals("100")) {
+				return "You did Great! Next time try make sure to not let waves hit your shore.";
+			} else if (waterHealth.equals("255")) {
+				return "You did Great! Next time try make sure to not let run off hit the water.";
+			} else {
+				return "You did Great! Try to keep an eye on both run off and waves.";
+			}
+		case "B":
+			return "You did fine. Try to plan a head on what to defend next.";
+		case "C":
+			return "You did okay. Remember to be constantly picking up oyster shells";
+		case "D":
+			return "Your made it! Defending an estuary is hard work!";
+		case "F":
+			return "You tried your best. Remember to watch both run off and waves.";
+		default:
+			break;
+		}
+		return"";
 	}
 	
 
