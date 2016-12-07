@@ -10,14 +10,7 @@ public class ClumpOfOystersTest {
 	@Test
 	public void numberOfOystersTest() {
 		ClumpOfOysters tester = new ClumpOfOysters(0, 0);
-		tester.spawn();
 		assertTrue(3 <= tester.getNumOfOystersInClump() || tester.getNumOfOystersInClump() <= 5);
-		
-		ClumpOfOysters tester2 = new ClumpOfOysters(0, 0);
-		tester2.spawn();
-		tester2.spawn();
-		tester2.spawn();
-		assertTrue(3 <= tester2.getNumOfOystersInClump() || tester2.getNumOfOystersInClump() <= 5);
 	}
 	@Test
 	public void moveTest() {
@@ -31,5 +24,20 @@ public class ClumpOfOystersTest {
 	public void exceptionTest() {
 		ClumpOfOysters tester = new ClumpOfOysters(0, 0);
 	    tester.move();
+	}
+	
+	@Test
+	public void visibilityTest() {
+		ClumpOfOysters tester = new ClumpOfOysters(0, 0);
+		assertTrue(tester.isVisible());
+		tester.setVisible(false);
+		assertFalse(tester.isVisible());
+	}
+	
+	public void collectTest() {
+		ClumpOfOysters tester = new ClumpOfOysters(0, 0);
+		assertFalse(tester.isCollected());
+		tester.setCollected(true);
+		assertTrue(tester.isCollected());
 	}
 }

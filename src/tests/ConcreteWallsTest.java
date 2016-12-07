@@ -10,7 +10,7 @@ import model.ConcreteWalls;
 public class ConcreteWallsTest {
 	
 	@Test
-	public void test(){
+	public void healthTest(){
 		ConcreteWalls tester = new ConcreteWalls(0, 0);
 		
 		tester.setHealth(0);
@@ -20,5 +20,13 @@ public class ConcreteWallsTest {
 		
 		assertTrue(health1 == health2);
 		
+	}
+	@Test
+	public void visibilityTest(){
+		ConcreteWalls tester = new ConcreteWalls(0, 0);
+		
+		assertTrue(tester.isVisible());
+		tester.setVisible(false);
+		assertFalse(tester.isVisible());
 	}
 }

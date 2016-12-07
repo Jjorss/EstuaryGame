@@ -11,20 +11,17 @@ public class GabionTest {
 	@Test
 	public void changeHealthTest() {
 		Gabion tester = new Gabion(0, 0, 0);
-		int oldHealth = tester.getHealth();
 		tester.changeHealth(1);
-		assertEquals(tester.getHealth(), oldHealth+1);
+		assertEquals(tester.getHealth(), 1);
+
+	}
+	
+	@Test
+	public void visibilityTest() {
+		Gabion tester = new Gabion(0, 0, 0);
 		
-		oldHealth = tester.getHealth();
-		tester.changeHealth(-1);
-		assertEquals(tester.getHealth(), oldHealth-1);
-		
-		oldHealth = tester.getHealth();
-		tester.changeHealth(200);
-		assertEquals(tester.getHealth(), oldHealth+200);
-		
-		oldHealth = tester.getHealth();
-		tester.changeHealth(-200);
-		assertEquals(tester.getHealth(), oldHealth-200);
+		assertTrue(tester.isVisible());
+		tester.setVisible(false);
+		assertFalse(tester.isVisible());
 	}
 }

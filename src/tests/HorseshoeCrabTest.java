@@ -10,9 +10,8 @@ public class HorseshoeCrabTest {
 	@Test
 	public void moveTest() {
 		HorseshoeCrab tester = new HorseshoeCrab(0, 0);
-		int oldX = tester.getX();
-		int oldY = tester.getY();
 		tester.move();
-		assertTrue(tester.getX()!= oldX || tester.getY()!= oldY);
+		assertEquals(tester.getX(), 2);
+		assertEquals(tester.getY(), 0);
 	}
 }

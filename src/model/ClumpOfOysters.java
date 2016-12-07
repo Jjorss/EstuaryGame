@@ -8,12 +8,10 @@ public class ClumpOfOysters extends Entity{
 	private boolean collected = false;
 	
 	private int numOfOystersInClump= 1;
-	private int minimum = 3;
-	private int maximum = 5;
 	
 	public ClumpOfOysters(int x, int y) {
 		super(x, y);
-		this.spawn();
+
 	}
 
 	@Override
@@ -21,12 +19,7 @@ public class ClumpOfOysters extends Entity{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-	
-	public void spawn() {
-		Random rand = new Random();
-		this.numOfOystersInClump = 1;//rand.nextInt((maximum - minimum) + 1) + minimum;
-	}
-	
+
 	
 	public int getX() {
 		return x;
