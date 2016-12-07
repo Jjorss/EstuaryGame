@@ -437,6 +437,10 @@ public class Game extends JPanel{
 
 	public void setRestart(boolean restart) {
 		this.restart = restart;
+		if (restart) {
+			glc.setCurrentGameState(GameState.GAME);
+			glc.init();
+		}
 	}
 
 	public int getFramePerSecond() {

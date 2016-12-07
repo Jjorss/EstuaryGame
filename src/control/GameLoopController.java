@@ -1141,7 +1141,7 @@ public class GameLoopController {
 					plant.getPlant().changeHealth(plant.getPlant().getHealth() - 1);
 					// System.out.println(plant.getPlant().getHealth());
 					runOff.getRect().setRect(runOff.getRect().getX(), runOff.getRect().getY(),
-							runOff.getRect().getWidth() - 10, runOff.getRect().getHeight());
+							runOff.getRect().getWidth() - runOff.getRunOff().getSpeed(), runOff.getRect().getHeight());
 					if (plant.getPlant().getHealth() <= 0) {
 						itp.remove();
 					}
