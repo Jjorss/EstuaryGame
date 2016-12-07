@@ -83,8 +83,8 @@ public class GameLoopController {
 	private Rectangle2D uiPlant;
 	private Rectangle2D helperHorseRect;
 
+	private Rectangle2D tutorialButton;
 	private Rectangle2D playButton;
-	private Rectangle2D instructionButton;
 	private Rectangle2D creditButton;
 
 	private boolean renderDragGabion;
@@ -118,6 +118,7 @@ public class GameLoopController {
 
 	private String time;
 	private String message = "";
+	private String grade = "";
 
 	private GameState currentGameState = GameState.LOADING;
 
@@ -178,8 +179,8 @@ public class GameLoopController {
 		uiPlant = new Rectangle2D.Double(0, 0, 0, 0);
 		helperHorseRect = new Rectangle2D.Double(0, 0, 0, 0);
 
+		tutorialButton = new Rectangle2D.Double(0, 0, 0, 0);
 		playButton = new Rectangle2D.Double(0, 0, 0, 0);
-		instructionButton = new Rectangle2D.Double(0, 0, 0, 0);
 		creditButton = new Rectangle2D.Double(0, 0, 0, 0);
 
 		renderDragGabion = false;
@@ -204,8 +205,8 @@ public class GameLoopController {
 		double height = this.game.getScale().getHeight();
 		double uiBoxHeight = this.game.getScale().getHeight() * 0.165;
 		double shoreWidth = this.game.getScale().getWidth() * 0.35;
-		double menuWidth = width * 0.4;
-		double menuHeight = height * 0.4;
+		double menuWidth = width * 0.2;
+		double menuHeight = height * 0.2;
 
 		concreteWallWidth = width * 0.01;
 		gbPadding = width * 0.015;
@@ -219,8 +220,8 @@ public class GameLoopController {
 		double goHeight = game.getScale().getHeight() * 0.4;
 		gameOverBox = new Rectangle2D.Double((game.getScale().getWidth()/2) - (goWidth/2),
 				(game.getScale().getHeight()/2) - (goHeight/2),goWidth,goHeight);
-		playButton = new Rectangle2D.Double(MENU.getX(), MENU.getY(), menuWidth, menuHeight / 3);
-		instructionButton = new Rectangle2D.Double(MENU.getX(), MENU.getY() + menuHeight / 3, menuWidth,
+		tutorialButton = new Rectangle2D.Double(MENU.getX(), MENU.getY(), menuWidth, menuHeight / 3);
+		playButton = new Rectangle2D.Double(MENU.getX(), MENU.getY() + menuHeight / 3, menuWidth,
 				menuHeight / 3);
 		creditButton = new Rectangle2D.Double(MENU.getX(), MENU.getY() + ((menuHeight / 3) * 2), menuWidth,
 				menuHeight / 3);
@@ -412,22 +413,7 @@ public class GameLoopController {
 
 			if (timer.getTime() == 0 || shore.getShore().getHealth() <= 25 || this.dirtyWater.getAlpha() >= 200) {
 				game.setGameOver(true);
-				
-//				int fontSize = (int)(game.getScale().getWidth() * 0.05);
-//				Font f = new Font("Arial", Font.BOLD, fontSize);
-//				BufferedImage string = this.textToImage("You Win!", f, 100);
-//				bic.getStringImages().add(string);
-//
-//				BufferedImage score = this.textToImage("Grade: " + this.calculateScore(shore.getShore().getHealth(), 
-//						this.dirtyWater.getAlpha()), f, 100);
-//				bic.getStringImages().add(score);
-//			
-//				fontSize = (int)gameOverBox.getWidth();
-//				String helperSentence = this.calculateHelperSentece(this.calculateScore(shore.getShore().getHealth(),
-//						dirtyWater.getAlpha()));
-//				BufferedImage helperString = this.textToImage(helperSentence, f, fontSize);
-//				System.out.println(helperSentence);
-//				bic.getStringImages().add(helperString);
+				this.grade = this.calculateScore(shore.getShore().getHealth(), this.dirtyWater.getAlpha());
 				this.currentGameState = GameState.OVER;
 			}
 			collision();
@@ -1090,25 +1076,19 @@ public class GameLoopController {
 	
 	public void renderOver(Graphics2D g2) {
 		g2.setColor(new Color(211,211,211,200));
-		
 		g2.fill(gameOverBox);
 		g2.draw(gameOverBox);
+		int width = (int)(gameOverBox.getWidth()*0.8);
+		int height = (int) (gameOverBox.getHeight()*0.33);
+		int youWinX = (int) ((gameOverBox.getX()+(gameOverBox.getWidth()/2)) - (width/2));
+		g2.drawImage(bic.getImageAtIndex(Image.YOUWIN.getIndex()), youWinX, (int)gameOverBox.getY(), width, height, null);
+		int gradeWidth = (int) (gameOverBox.getWidth()*0.2);
+		int gradeHeight = (int) (gameOverBox.getHeight()*0.3);
+		int gradeX = (int)((gameOverBox.getX() + (gameOverBox.getWidth()/2)) - (gradeWidth/2));
+		int gradeY = (int) (gameOverBox.getY()+height);
+		g2.drawImage(bic.getImageAtIndex(Image.APLUS.getIndex()), gradeX, gradeY, gradeWidth, gradeHeight, null);
 		
-		g2.setColor(Color.WHITE);
-//		int x = (int)((gameOverBox.getX()-(bic.getStringImages().get(0).getWidth()/2))+(gameOverBox.getWidth()/2));
-//		int y = (int)gameOverBox.getY();
-//		g2.drawImage(bic.getStringImages().get(0), x, y, bic.getStringImages().get(0).getWidth(), bic.getStringImages().get(0).getHeight(), null);
-//		
-//		int scoreY = (y+bic.getStringImages().get(0).getHeight());
-//		int scoreX = (int)((gameOverBox.getX()-(bic.getStringImages().get(1).getWidth()/2))+(gameOverBox.getWidth()/2));
-//		g2.drawImage(bic.getStringImages().get(1), scoreX, scoreY, bic.getStringImages().get(1).getWidth(), 
-//				bic.getStringImages().get(1).getHeight(), null);
-//		
-//		int helperY = (scoreY+bic.getStringImages().get(2).getHeight());
-//		int helperX = (int)((gameOverBox.getX()-(bic.getStringImages().get(2).getWidth()/2))+(gameOverBox.getWidth()/2));
-//		g2.drawImage(bic.getStringImages().get(2), helperX, helperY, bic.getStringImages().get(2).getWidth(),
-//				bic.getStringImages().get(2).getHeight(), null);
-		
+	
 	}
 	
 	public BufferedImage textToImage(String Text, Font f, float Size){
@@ -1169,13 +1149,13 @@ public class GameLoopController {
 		g2.setColor(Color.ORANGE);
 //		g2.draw(this.playButton);
 //		g2.fill(this.playButton);
-		g2.drawImage(bic.getImageAtIndex(Image.TUTORIAL.getIndex()), (int)playButton.getX(), (int)playButton.getY(),
-				(int)playButton.getWidth(), (int)playButton.getHeight(), null);
+		g2.drawImage(bic.getImageAtIndex(Image.TUTORIAL.getIndex()), (int)tutorialButton.getX(), (int)tutorialButton.getY(),
+				(int)tutorialButton.getWidth(), (int)tutorialButton.getHeight(), null);
 		g2.setColor(Color.PINK);
 //		g2.draw(this.instructionButton);
 //		g2.fill(this.instructionButton);
-		g2.drawImage(bic.getImageAtIndex(Image.PLAY.getIndex()), (int)instructionButton.getX(), (int)instructionButton.getY(),
-				(int)instructionButton.getWidth(), (int)instructionButton.getHeight(), null);
+		g2.drawImage(bic.getImageAtIndex(Image.PLAY.getIndex()), (int)playButton.getX(), (int)playButton.getY(),
+				(int)playButton.getWidth(), (int)playButton.getHeight(), null);
 		g2.setColor(Color.MAGENTA);
 //		g2.draw(this.creditButton);
 //		g2.fill(this.creditButton);
@@ -1428,7 +1408,7 @@ public class GameLoopController {
 
 	public void handlePressed(Point p) {
 		if (this.currentGameState == GameState.MENU) {
-			if (this.playButton.contains(p)) {
+			if (this.tutorialButton.contains(p)) {
 				this.init();
 				this.currentGameState = GameState.TUTORIAL;
 				// this shouldn't be necessary
@@ -1437,7 +1417,7 @@ public class GameLoopController {
 					this.numOfWavesInRow.set(i, 0);
 				}
 
-			} else if (this.instructionButton.contains(p)) {
+			} else if (this.playButton.contains(p)) {
 				this.init();
 				this.currentGameState = GameState.GAME;
 				// this shouldn't be necessary

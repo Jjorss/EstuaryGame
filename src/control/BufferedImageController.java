@@ -19,7 +19,8 @@ public class BufferedImageController {
 			"img/wave1.png", "img/wave2.png", "img/wave3.png", "img/gabionfull.png", "img/hand.png",
 			"img/cordgrass2.png", "img/cordgrass3.png", "img/BlueCrab2.png","img/BlueCrab3.png",
 			"img/concreteWall-01.png", "img/runOff.png", "img/tutorialButton.png", "img/playButton.png", 
-			"img/creditsButton.png"};
+			"img/creditsButton.png", "img/a.png", "img/aPlus.png", "img/b.png", "img/c.png", "img/d.png",
+			"img/youWin.png"};
 	private ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
 	private ArrayList<BufferedImage> animations = new ArrayList<BufferedImage>();
 	private ArrayList<BufferedImage> stringImages = new ArrayList<BufferedImage>();
