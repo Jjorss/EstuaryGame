@@ -17,7 +17,7 @@ public class BufferedImageController {
 			"img/sky.jpg", "img/sun.png", "img/gabionwater2-01.png", "img/gabion1-01.png", 
 			"img/gabion2-01.png", "img/gabion3-01s.png", "img/gabion4-01s.png", "img/gabion5-01s.png",
 			"img/wave1.png", "img/wave2.png", "img/wave3.png", "img/gabionfull-01s.png", "img/hand.png",
-			"img/cordgrass2.png", "img/cordgrass3.png"};
+			"img/cordgrass2.png", "img/cordgrass3.png", "img/BlueCrab2.png"};
 	ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
 	ArrayList<BufferedImage> animations = new ArrayList<BufferedImage>();
 	

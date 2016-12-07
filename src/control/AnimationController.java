@@ -168,10 +168,12 @@ public class AnimationController {
 			if (this.textCounter == message.length()) {
 				this.textAnimationState = 1;
 			}
+			glc.setSpeaking(true);
 			g2.drawString(m, x, y);
 			break;
 		case 1:
 			g2.drawString(this.message, x, y);
+			glc.setSpeaking(false);
 			if (this.message != glc.getMessage()) {
 				this.textAnimationState = 0;
 				this.textCounter = 0;

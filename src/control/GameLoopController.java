@@ -47,6 +47,7 @@ public class GameLoopController {
 	private Timer textTimer;
 	private Timer runOffTimer;
 	private Timer cleanWaterTimer;
+	private Timer crabSpeakingTimer;
 	private PlantBuilderController pb;
 	private HorseshoeCrabController helperHorse;
 	private AnimationController ac;
@@ -91,9 +92,11 @@ public class GameLoopController {
 	private boolean placedWrongPlant;
 	private boolean placedFirstPlant;
 	private boolean ableToPlaceGabion;
+	private boolean ableToPlacePlant;
 	private boolean init;
 	private boolean hittingPlant;
 	private boolean hittingWater;
+	private boolean speaking;
 
 	private double gX;
 	private double gY;
@@ -142,6 +145,7 @@ public class GameLoopController {
 		textTimer = new Timer();
 		runOffTimer = new Timer();
 		cleanWaterTimer = new Timer();
+		crabSpeakingTimer = new Timer();
 		pb = new PlantBuilderController(new PlantBuilder(plantTimer), new Rectangle2D.Double(0, 0, 0, 0));
 
 		numOfGabionsInRow = new ArrayList<Integer>();
@@ -182,9 +186,11 @@ public class GameLoopController {
 		placedWrongPlant = false;
 		placedFirstPlant = false;
 		ableToPlaceGabion = false;
+		ableToPlacePlant = false;
 		init = false;
 		hittingPlant = false;
 		hittingWater = false;
+		speaking = false;
 
 		time = "" + timer.getTime();
 
@@ -293,7 +299,7 @@ public class GameLoopController {
 			case OYSTERS:
 				// System.out.println(this.waves.size());
 				this.message = "Collect Oyster Shells!";
-				spawner.spawnOysters(1, 0);
+				spawner.tutorialSpawnOysters();
 				if (gb.getGb().getGabions() >= 2) {
 					this.message = "Good Job!";
 					// after 3 seconds go to the next state
@@ -307,7 +313,6 @@ public class GameLoopController {
 			case WAVES:
 				this.message = "Oh no, waves!";
 				spawner.TutorialSpawnWaves();
-				spawner.spawnOysters(2, 0);
 				textTimer.countUp(3);
 				// System.out.println(textTimer.getTime());
 				if (textTimer.getTime() >= 3) {
@@ -329,7 +334,7 @@ public class GameLoopController {
 				pb.getPb().setNumberOfPlants(1);
 				// flashing gabion here
 				if (this.placedFirstGabion) {
-					this.message = "Good Job";
+					this.message = "Good Job!";
 					textTimer.countUp(2);
 					if (textTimer.getTime() >= 2) {
 						textTimer = new Timer();
@@ -359,6 +364,7 @@ public class GameLoopController {
 
 				break;
 			case PLANTS:
+				this.ableToPlacePlant = true;
 				plantTimer.countUp(5);
 				textTimer.countUpStop(2);
 				if (textTimer.getTime() >= 2) {
@@ -804,16 +810,31 @@ public class GameLoopController {
 		for (HorseshoeCrabController hsCrab : hsCrab) {
 			// g2.draw(hsCrab);
 			// g2.fill(hsCrab);
-			g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB.getIndex()), (int) hsCrab.getRect().getX(),
-					(int) hsCrab.getRect().getY(), (int) hsCrab.getRect().getWidth(),
-					(int) hsCrab.getRect().getHeight(), null);
+			if(this.speaking) {
+				this.crabSpeakingTimer.countUp(1000.0);
+				if(this.crabSpeakingTimer.getTimeMili() % 3 == 0) {
+					g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB.getIndex()), (int) hsCrab.getRect().getX(),
+							(int) hsCrab.getRect().getY(), (int) hsCrab.getRect().getWidth(),
+							(int) hsCrab.getRect().getHeight(), null);
+				} else if(this.crabSpeakingTimer.getTimeMili() % 3 == 1) {
+					g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB2.getIndex()), (int) hsCrab.getRect().getX(),
+							(int) hsCrab.getRect().getY(), (int) hsCrab.getRect().getWidth(),
+							(int) hsCrab.getRect().getHeight(), null);
+				} else {
+					g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB2.getIndex()), (int) hsCrab.getRect().getX(),
+							(int) hsCrab.getRect().getY(), (int) hsCrab.getRect().getWidth(),
+							(int) hsCrab.getRect().getHeight(), null);
+				}
+			} else{
+				g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB.getIndex()), (int) hsCrab.getRect().getX(),
+						(int) hsCrab.getRect().getY(), (int) hsCrab.getRect().getWidth(),
+						(int) hsCrab.getRect().getHeight(), null);
+			}
+			
 			g2.setColor(Color.WHITE);
 			g2.setFont(new Font("Arial", Font.ITALIC, (int) (game.getScale().getWidth() * 0.015)));
-			// g2.drawString("" + this.message,
-			// (int)(hsCrab.getX()+hsCrab.getWidth()),
-			// (int)(hsCrab.getCenterY() - game.getScale().getHeight() *
-			// 0.01));
-			ac.playTextAnimation(g2, (int) (hsCrab.getRect().getX() + hsCrab.getRect().getWidth()),
+			
+			ac.playTextAnimation(g2, (int) (hsCrab.getRect().getX() + hsCrab.getRect().getWidth() + g2.getFont().getSize()),
 					(int) (hsCrab.getRect().getCenterY() - game.getScale().getHeight() * 0.01));
 		}
 
@@ -1078,9 +1099,9 @@ public class GameLoopController {
 				// erode shore
 				if (shore.getShore().erode()) {
 					this.eroded = true;
-					this.ShoreColor = new Color(255, 200, 100);
+					//this.ShoreColor = new Color(255, 200, 100);
 					shore.setRect(new Rectangle2D.Double(shore.getRect().getX(), shore.getRect().getY(),
-							(shore.getRect().getWidth() - this.gabionWidth - this.gbPadding),
+							(shore.getRect().getWidth() - ((this.gabionWidth - this.gbPadding)/2)),
 							shore.getRect().getHeight()));
 					for (Rectangle2D plantRow : plantRows) {
 						plantRow.setRect(shore.getRect().getWidth() - plantRow.getWidth(), plantRow.getY(),
@@ -1097,6 +1118,8 @@ public class GameLoopController {
 				}
 				System.out.println("Wave Hit Shore");
 				itw.remove();
+				break;
+				
 			}
 			for (Iterator<GabionController> itg = gabions.iterator(); itg.hasNext();) {
 				GabionController gabion = itg.next();
@@ -1105,20 +1128,22 @@ public class GameLoopController {
 					itw.remove();
 					gabion.getGabion().changeHealth(gabion.getGabion().getHealth() - 1);
 					System.out.println("wave hit gabion");
-
+					
 					if (gabion.getGabion().getHealth() <= 0) {
 						itg.remove();
 						// debugging only
-						try {
-							this.numOfGabionsInRow.set(gabion.getGabion().getRowNum(),
-									this.numOfGabionsInRow.get(gabion.getGabion().getRowNum()) - 1);
-						} catch (IndexOutOfBoundsException e) {
-							System.out.println(gabion.getGabion().getRowNum());
-							System.out.println("BAD");
-							e.printStackTrace();
-						}
+						this.numOfGabionsInRow.set(gabion.getGabion().getRowNum(),
+								this.numOfGabionsInRow.get(gabion.getGabion().getRowNum()) - 1);
+//						try {
+//							
+//						} catch (IndexOutOfBoundsException e) {
+//							System.out.println(gabion.getGabion().getRowNum());
+//							System.out.println("BAD");
+//							e.printStackTrace();
+//						}
 
 					}
+					break;
 				}
 			}
 
@@ -1127,6 +1152,7 @@ public class GameLoopController {
 				if (concreteWall.getRect().intersects(wave.getRect())) {
 					itc.remove();
 					itw.remove();
+					break;
 				}
 			}
 
@@ -1146,9 +1172,6 @@ public class GameLoopController {
 						itp.remove();
 					}
 				} else {
-					// LOOK IT
-					// THIS---------------------------------------------------------------------------------
-					// this.setIsRunOff(false, i);
 					this.hittingPlant = false;
 					// System.out.println("not intersecting plant");
 
@@ -1209,7 +1232,7 @@ public class GameLoopController {
 	}
 
 	public void handlePlacePlant(Point p) {
-		if (pb.getPb().getNumberOfPlants() != 0) {
+		if (pb.getPb().getNumberOfPlants() != 0 && this.ableToPlacePlant) {
 			for (int i = 0; i < plantRows.size(); i++) {
 				Rectangle2D row = plantRows.get(i);
 				if (row.contains(p)) {
@@ -1448,6 +1471,14 @@ public class GameLoopController {
 
 	public Rectangle2D getUiPlant() {
 		return uiPlant;
+	}
+
+	public boolean isSpeaking() {
+		return speaking;
+	}
+
+	public void setSpeaking(boolean speaking) {
+		this.speaking = speaking;
 	}
 
 }

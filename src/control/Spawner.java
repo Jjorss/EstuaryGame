@@ -86,6 +86,28 @@ public class Spawner {
 		}
 		
 	}
+	public void tutorialSpawnOysters() {
+		Random rand = new Random();
+		int width = (int) (game.getWidth() * 0.03);
+		int height = (int) (game.getWidth() * 0.03);
+		int padding = 10;
+		int max = 0;
+		
+		double xLeftBound = glc.getWaveRows().get(0).getX() + width + padding + (max * (glc.getGabionWidth()+glc.getGbPadding()));
+		double xRightBound = glc.getGAMEBOX().getWidth() - width - padding;
+		int x = (int) (rand.nextInt((int) ((xRightBound - xLeftBound) + 1)) + xLeftBound);
+		double yTopBound = glc.getGAMEBOX().getY() + height + padding;
+		double yBottomBound = glc.getGAMEBOX().getHeight() - height - padding;
+		int y = (int) (rand.nextInt((int) ((yBottomBound - yTopBound) + 1)) + yTopBound);
+		
+		if (glc.getOysters().size() < 1) {
+			ClumpOfOysters clump = new ClumpOfOysters(x, y);
+			Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
+			glc.getOysters().add(new OysterController(clump, rect));
+			System.out.println("Spawned oyster");
+		}
+		
+	}
 	
 	public void spawnWaves(int intensity, int time) {
 		Random rand = new Random();

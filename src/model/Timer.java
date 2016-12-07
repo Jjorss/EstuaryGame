@@ -57,7 +57,7 @@ public class Timer {
 			}
 			this.timeMili = System.currentTimeMillis() - startGameTime;
 			this.time = (int) timeMili/1000;
-			System.out.println(this.getTime());
+			//System.out.println(this.getTime());
 		}
 	}
 	

@@ -440,6 +440,7 @@ public class Game extends JPanel{
 		if (restart) {
 			glc.setCurrentGameState(GameState.GAME);
 			glc.init();
+			this.gameOver = false;
 		}
 	}
 
