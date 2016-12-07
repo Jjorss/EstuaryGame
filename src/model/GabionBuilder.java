@@ -5,29 +5,28 @@ import java.util.Collection;
 
 public class GabionBuilder extends Builder {
 
-	
-	private int gabions = 0;
+	private int gabions = 10;
 	private int numOfOysters = 0;
 	private int maxGabionCapacity = 5;
-	
+
 	@Override
-	public void build(){
-	}
-	
-	public void build(int numOfOystersCollected) {
-		this.numOfOysters += numOfOystersCollected;
-		
-		if(this.numOfOysters >= this.maxGabionCapacity){
+	public void build() {
+		this.numOfOysters ++;
+		if (this.numOfOysters >= this.maxGabionCapacity) {
 			this.numOfOysters -= this.maxGabionCapacity;
 			this.gabions += 1;
 		}
-		//System.out.println("Num of Gabions: " + this.gabions);
-		//System.out.println("Num of Oysters Collected: " + numOfOystersCollected);
-		//System.out.println("Num of Oysters TOTAL: " + this.numOfOysters);
-		
 	}
 
-	
+//	public void build(int numOfOystersCollected) {
+//		this.numOfOysters += numOfOystersCollected;
+//
+//		if (this.numOfOysters >= this.maxGabionCapacity) {
+//			this.numOfOysters -= this.maxGabionCapacity;
+//			this.gabions += 1;
+//		}
+//	}
+
 	public int getGabions() {
 		return gabions;
 	}
@@ -47,8 +46,5 @@ public class GabionBuilder extends Builder {
 	public int getMaxGabionCapacity() {
 		return maxGabionCapacity;
 	}
-
-	
-	
 
 }

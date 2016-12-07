@@ -133,11 +133,11 @@ public class AnimationController {
 			oyster.setRect(currentXOyster, currentYOyster, oyster.getWidth(),
 					oyster.getHeight());
 			this.durationOyster = System.currentTimeMillis() - this.startTimeOyster;
-			this.progressOyster = this.durationOyster / 5000.0;
+			this.progressOyster = this.durationOyster / 4000.0;
 			this.currentXOyster = (this.currentXOyster + ((this.endOyster.getX() - this.currentXOyster) * this.progressOyster));
 			this.currentYOyster = (this.currentYOyster + ((this.endOyster.getY() - this.currentYOyster) * this.progressOyster));
-			g2.setColor(Color.red);
-			g2.drawLine((int)this.currentXOyster, (int)this.currentYOyster, this.endOyster.x, this.endOyster.y);
+			//g2.setColor(Color.red);
+			//g2.drawLine((int)this.currentXOyster, (int)this.currentYOyster, this.endOyster.x, this.endOyster.y);
 			g2.drawImage(bic.getImageAtIndex(Image.OYSTER.getIndex()), (int)oyster.getX(), (int)oyster.getY(), 
 					(int)oyster.getWidth(), (int)(oyster.getHeight()), null);
 			

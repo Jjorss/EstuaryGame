@@ -14,7 +14,6 @@ import java.util.Random;
 
 import model.Animation;
 import model.ConcreteWalls;
-import model.CrabFishMeter;
 import model.Gabion;
 import model.GabionBuilder;
 import model.GameState;
@@ -49,7 +48,6 @@ public class GameLoopController {
 	private Timer runOffTimer;
 	private Timer cleanWaterTimer;
 	private PlantBuilderController pb;
-	private CrabFishMeterController cfMeter;
 	private HorseshoeCrabController helperHorse;
 	private AnimationController ac;
 
@@ -78,7 +76,6 @@ public class GameLoopController {
 	// private Rectangle2D plantBuilder;
 	private Rectangle2D uiGabion;
 	private Rectangle2D uiPlant;
-	// private Rectangle2D crabFishMeter;
 	private Rectangle2D helperHorseRect;
 
 	private Rectangle2D playButton;
@@ -146,7 +143,6 @@ public class GameLoopController {
 		runOffTimer = new Timer();
 		cleanWaterTimer = new Timer();
 		pb = new PlantBuilderController(new PlantBuilder(plantTimer), new Rectangle2D.Double(0, 0, 0, 0));
-		cfMeter = new CrabFishMeterController(new CrabFishMeter(), new Rectangle2D.Double(0, 0, 0, 0));
 
 		numOfGabionsInRow = new ArrayList<Integer>();
 		numOfWavesInRow = new ArrayList<Integer>();
@@ -268,15 +264,11 @@ public class GameLoopController {
 		uiPlant = new Rectangle2D.Double(pb.getRect().getCenterX() - (uiPlantWidth / 2),
 				pb.getRect().getCenterY() - (uiPlantHeight / 2.0), uiPlantWidth, uiPlantHeight);
 
-		double cfWidth = UIBOX.getWidth() * 0.05;
-		double cfX = UIBOX.getX() + pb.getRect().getX() + pb.getRect().getWidth() + (this.fontSize * 2);
-		cfMeter.setRect(new Rectangle2D.Double(cfX, UIBOX.getY(), cfWidth, UIBOX.getHeight()));
-
+		double cWidth = UIBOX.getWidth() * 0.05;
+		double cX = UIBOX.getWidth()*0.2;
 		double helperHorseWidth = width * 0.1;
 		double helperHorseHeight = height * 0.15;
-
-		HorseshoeCrab helperHorseCrab = new HorseshoeCrab(
-				(int) (this.cfMeter.getRect().getX() + this.cfMeter.getRect().getWidth()), (int) (UIBOX.getY()));
+		HorseshoeCrab helperHorseCrab = new HorseshoeCrab((int) (cX + cWidth), (int) (UIBOX.getY()));
 
 		Rectangle2D helperHorseRect = new Rectangle2D.Double(helperHorseCrab.getX(), helperHorseCrab.getY(),
 				helperHorseWidth, helperHorseHeight);
@@ -383,7 +375,7 @@ public class GameLoopController {
 						this.currentTutorialState = TutorialState.END;
 					}
 				}
-				//spawner.spawnRunOff(1, 0);
+				// spawner.spawnRunOff(1, 0);
 				break;
 			case END:
 				textTimer.countUpStop(5);
@@ -406,6 +398,7 @@ public class GameLoopController {
 
 			if (timer.getTime() == 0 || shore.getShore().getHealth() <= 25 || this.dirtyWater.getAlpha() >= 200) {
 				game.setGameOver(true);
+				this.currentGameState = GameState.OVER;
 			}
 			collision();
 			break;
@@ -439,6 +432,8 @@ public class GameLoopController {
 							new Point((int) this.waveRows.get(i).getX() + 1, (int) this.waveRows.get(i).getY() - 1));
 				}
 			}
+			break;
+		case OVER:
 			break;
 		default:
 			System.out.println("STATES NOT WORKING, CURRENT STATE: " + this.currentGameState);
@@ -575,8 +570,6 @@ public class GameLoopController {
 
 			this.renderRunoff(g2);
 
-			// this.renderCrabFishMeter(g2);
-
 			this.renderAnimation(g2);
 			switch (this.currentTutorialState) {
 			case OYSTERS:
@@ -600,6 +593,7 @@ public class GameLoopController {
 			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(),
 					(int) UIBOX.getWidth(), (int) (UIBOX.getHeight()), null);
 			// GAMEBOX
+			this.renderSun(g2);
 			g2.setColor(new Color(163, 232, 255));
 			g2.draw(GAMEBOX);
 			g2.fill(GAMEBOX);
@@ -607,7 +601,6 @@ public class GameLoopController {
 			this.renderGabions(g2);
 			this.renderWaves(g2);
 			this.renderConcreteWalls(g2);
-			this.renderSun(g2);
 			this.renderShore(g2);
 			this.renderPlants(g2);
 
@@ -631,8 +624,6 @@ public class GameLoopController {
 			this.renderDragPlant(g2);
 
 			this.renderRunoff(g2);
-
-			// this.renderCrabFishMeter(g2);
 
 			this.renderAnimation(g2);
 			break;
@@ -692,12 +683,48 @@ public class GameLoopController {
 
 			this.renderRunoff(g2);
 
-			// this.renderCrabFishMeter(g2);
-
 			this.renderAnimation(g2);
 			break;
 		case LOADING:
 			break;
+		case OVER:
+			// UIBOX Sky
+			g2.drawImage(bic.getImageAtIndex(Image.SKY.getIndex()), (int) UIBOX.getX(), (int) UIBOX.getY(),
+					(int) UIBOX.getWidth(), (int) (UIBOX.getHeight()), null);
+			// GAMEBOX
+			this.renderSun(g2);
+			g2.setColor(new Color(163, 232, 255));
+			g2.draw(GAMEBOX);
+			g2.fill(GAMEBOX);
+			this.renderDirtyWater(g2);
+			this.renderGabions(g2);
+			this.renderWaves(g2);
+			this.renderConcreteWalls(g2);
+			this.renderShore(g2);
+			this.renderPlants(g2);
+
+			// UI
+			// ---------------------------
+			// Gabion builder/Plant builder
+			this.renderGameTimer(g2);
+			// this.renderGabionBuilder(g2);
+
+			// GabionBuilder Meter
+			// this.renderGabionMeter(g2);
+			this.renderUIGabion(g2);
+			this.renderDragGabion(g2);
+			this.renderNumberOfGabions(g2);
+
+			this.renderOysters(g2);
+
+			// plant meter
+			this.renderPlantMeter(g2);
+			this.renderNumberOfPlants(g2);
+			this.renderDragPlant(g2);
+
+			this.renderRunoff(g2);
+
+			this.renderAnimation(g2);
 		default:
 			break;
 
@@ -802,23 +829,22 @@ public class GameLoopController {
 
 	public void renderPlants(Graphics2D g2) {
 		for (PlantController plant : plants) {
-			if (plant.getPlant().getHealth() < 200) {
-				g2.setColor(Color.pink);
-			} else if (plant.getPlant().getHealth() < 150) {
-				g2.setColor(Color.MAGENTA);
-			} else if (plant.getPlant().getHealth() < 50) {
-				g2.setColor(Color.ORANGE);
-			} else {
-				g2.setColor(Color.red);
-			}
 			if (plant.getPlant().isVisible()) {
-				g2.draw(plant.getRect());
-				g2.fill(plant.getRect());
-
-				g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) plant.getRect().getX(),
-						(int) plant.getRect().getY(), (int) (plant.getRect().getWidth() * 1.8),
-						(int) (plant.getRect().getHeight() * 1.9), null);
-
+				// g2.draw(plant.getRect());
+				// g2.fill(plant.getRect());
+				if (plant.getPlant().getHealth() > (int) (plant.getPlant().getMaxHealth() * .66)) {
+					g2.drawImage(bic.getImageAtIndex(Image.GRASS1.getIndex()), (int) plant.getRect().getX(),
+							(int) plant.getRect().getY(), (int) (plant.getRect().getWidth() * 1.8),
+							(int) (plant.getRect().getHeight() * 1.9), null);
+				} else if (plant.getPlant().getHealth() > plant.getPlant().getMaxHealth() * 0.33) {
+					g2.drawImage(bic.getImageAtIndex(Image.GRASS2.getIndex()), (int) plant.getRect().getX(),
+							(int) plant.getRect().getY(), (int) (plant.getRect().getWidth() * 1.8),
+							(int) (plant.getRect().getHeight() * 1.9), null);
+				} else {
+					g2.drawImage(bic.getImageAtIndex(Image.GRASS3.getIndex()), (int) plant.getRect().getX(),
+							(int) plant.getRect().getY(), (int) (plant.getRect().getWidth() * 1.8),
+							(int) (plant.getRect().getHeight() * 1.9), null);
+				}
 			}
 		}
 	}
@@ -927,7 +953,7 @@ public class GameLoopController {
 		// g2.draw(uiPlant);
 		// g2.fill(uiPlant);
 
-		g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) uiPlant.getX(), (int) uiPlant.getY(),
+		g2.drawImage(bic.getImageAtIndex(Image.GRASS1.getIndex()), (int) uiPlant.getX(), (int) uiPlant.getY(),
 				(int) uiPlant.getWidth(), (int) (uiPlant.getHeight()), null);
 
 	}
@@ -946,7 +972,7 @@ public class GameLoopController {
 			// g2.setColor(Color.GREEN);
 			// g2.draw(this.renderDragPlant(game.getMouseCords()));
 			Rectangle2D r = this.createDragPlant(game.getMouseCords());
-			g2.drawImage(bic.getImageAtIndex(Image.GRASS.getIndex()), (int) r.getX(), (int) r.getY(),
+			g2.drawImage(bic.getImageAtIndex(Image.GRASS1.getIndex()), (int) r.getX(), (int) r.getY(),
 					(int) r.getWidth(), (int) r.getHeight(), null);
 			g2.setColor(Color.LIGHT_GRAY);
 			for (Rectangle2D row : plantRows) {
@@ -968,21 +994,21 @@ public class GameLoopController {
 		}
 	}
 
-	public void renderCrabFishMeter(Graphics2D g2) {
-		g2.setColor(Color.DARK_GRAY);
-		g2.draw(cfMeter.getRect());
-		g2.fill(cfMeter.getRect());
-
-		g2.setColor(Color.WHITE);
-		g2.drawString("" + cfMeter.getCfm().getPhLevels(), (int) cfMeter.getRect().getCenterX(),
-				(int) cfMeter.getRect().getCenterY());
-		g2.setColor(Color.YELLOW);
-	}
+//	public void renderCrabFishMeter(Graphics2D g2) {
+//		g2.setColor(Color.DARK_GRAY);
+//		g2.draw(cfMeter.getRect());
+//		g2.fill(cfMeter.getRect());
+//
+//		g2.setColor(Color.WHITE);
+//		g2.drawString("" + cfMeter.getCfm().getPhLevels(), (int) cfMeter.getRect().getCenterX(),
+//				(int) cfMeter.getRect().getCenterY());
+//		g2.setColor(Color.YELLOW);
+//	}
 
 	public void renderSun(Graphics2D g2) {
 
 		double sunDim = game.getScale().getWidth() * 0.06;
-		double startX = this.cfMeter.getRect().getX() + this.cfMeter.getRect().getWidth();
+		double startX = UIBOX.getX() + pb.getRect().getX() + pb.getRect().getWidth() + UIBOX.getWidth() * 0.05;
 		double maxX = this.gb.getRect().getX() - (sunDim / 2);
 		double sunX = ((((180 * 1000) - timer.getTimeMili()) / (180.0 * 1000)) * (maxX - startX)) + startX;
 		double maxY = 0;
@@ -1245,10 +1271,10 @@ public class GameLoopController {
 	}
 
 	public void handleCollectOyster(Point p, int i) {
-		int numOfClusters = 0;
-		numOfClusters = oysters.get(i).getOyster().getNumOfOystersInClump();
+		//int numOfClusters = 0;
+//		numOfClusters = oysters.get(i).getOyster().getNumOfOystersInClump();
 		Rectangle2D o = oysters.get(i).getRect();
-		gb.getGb().build(numOfClusters);
+		gb.getGb().build();
 		// this.oysters.get(i).setCollected(true);
 		this.animations.add(new AnimationController(this, this.bic, Animation.OYSTER, o, 0));
 		oysters.get(i).getOyster().setVisible(false);
@@ -1312,26 +1338,7 @@ public class GameLoopController {
 
 	}
 
-	public void setIsRunOff(boolean newB, int i) {
-		if (newB != this.isRunOff) {
-			this.isRunOff = newB;
-			// System.out.println("RunnOff Hit Plants");
-			// bug happens when two runOffs hit two plants at the same time / or
-			// there are two runOffs in game at one time
-			if (newB) {
-				if (spawner.getPlantsInRow().get(i) > 2) {
-					cfMeter.getCfm().setPhLevels(cfMeter.getCfm().getPhLevels() + 1);
-				} else if (spawner.getPlantsInRow().get(i) == 1) {
-					cfMeter.getCfm().setPhLevels(cfMeter.getCfm().getPhLevels() - 1);
-				} else if (spawner.getPlantsInRow().get(i) == 0) {
-					cfMeter.getCfm().setPhLevels(cfMeter.getCfm().getPhLevels() - 2);
-				}
-				if (cfMeter.getCfm().getPhLevels() < 0) {
-					cfMeter.getCfm().setPhLevels(0);
-				}
-			}
-		}
-	}
+	
 
 	public ArrayList<WaveController> getWaves() {
 		return waves;

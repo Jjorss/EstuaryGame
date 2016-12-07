@@ -4,7 +4,8 @@ public class Plants extends Wall{
 
 	private int x;
 	private int y;
-	private int health = 300;
+	private int maxHealth = 200;
+	private int health = maxHealth;
 	private boolean isVisible = false;
 
 	public Plants(int x, int y, boolean isVisible) {
@@ -46,6 +47,14 @@ public class Plants extends Wall{
 
 	public void setVisible(boolean isVisible) {
 		this.isVisible = isVisible;
+	}
+
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
 	}
 	
 	

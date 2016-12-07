@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.Random;
 
 import model.ClumpOfOysters;
-import model.CrabFishMeter;
 import model.Plants;
 import model.RunOff;
 import model.Timer;
@@ -24,7 +23,7 @@ public class Spawner {
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	private boolean increasedIntensity = false;
-	private int intensity = 10;
+	private int intensity = 1;
 	private int rowForRunOff = 2;
 	
 	public  Spawner(GameLoopController glc, Game game, Timer timer) {
@@ -112,18 +111,22 @@ public class Spawner {
 		int padding = 35;
 		double waveHeight = (glc.getWaveRows().get(0).getHeight() - padding);
 		double waveWidth = (glc.getWaveRows().get(0).getHeight())*1.4 - padding;
+		int min = (int)(game.getScale().getWidth() * 0.0014);
+		double interval = this.intensity * 0.00032;
+		int max = (int)((min+interval)*game.getScale().getWidth());
+		int waveSpeed = rand.nextInt(max - (max-min)) + min; 
 		int row1 = 1;
 		int row2 = 4;
 		int y1 = (int) ((glc.getWaveRows().get(row1).getCenterY()) - (waveHeight/2));
 		int y2 = (int) ((glc.getWaveRows().get(row2).getCenterY()) - (waveHeight/2));
 		int x = game.getWidth();
 		if (glc.getWaves().size() < 2) {
-			Wave w = new Wave(rand.nextInt(intensity - (intensity-3)) + 3,x,y1);
+			Wave w = new Wave(waveSpeed,x,y1);
 			Rectangle2D rect = new Rectangle2D.Double(x,y1,waveWidth, waveHeight );
 			glc.getWaves().add(new WaveController(w, rect));
 			glc.getNumOfWavesInRow().set(row1, glc.getNumOfWavesInRow().get(row1)+1);
 			
-			Wave w2 = new Wave(rand.nextInt(intensity - (intensity-3)) + 3,x,y2);
+			Wave w2 = new Wave(waveSpeed,x,y2);
 			Rectangle2D rect2 = new Rectangle2D.Double(x,y2,waveWidth, waveHeight );
 			glc.getWaves().add(new WaveController(w2, rect2));
 			glc.getNumOfWavesInRow().set(row2, glc.getNumOfWavesInRow().get(row2)+1);
@@ -152,32 +155,32 @@ public class Spawner {
 		
 		if (pattern == 1) {
 			x1 = (int)(rowX + (rowWidth * 0.1));
-			y1 = (int)(rowY + (rowHeight * 0.1));
+			y1 = (int)(rowY + (rowHeight * 0.0));
 			
 			x2 = (int)(rowX + (rowWidth * 0.4));
-			y2 = (int)(rowY + (rowHeight * 0.35));
+			y2 = (int)(rowY + (rowHeight * 0.15));
 			
-			x3 = (int)(rowX + (rowWidth * 0.7));
-			y3 = (int)(rowY + (rowHeight * 0.6));
+			x3 = (int)(rowX + (rowWidth * 0.6));
+			y3 = (int)(rowY + (rowHeight * 0.4));
 			
 		} else if (pattern == 2) {
 			x1 = (int)(rowX + (rowWidth * 0.1));
-			y1 = (int)(rowY + (rowHeight * 0.2));
+			y1 = (int)(rowY + (rowHeight * 0.1));
 			
 			x2 = (int)(rowX + (rowWidth * 0.4));
-			y2 = (int)(rowY + (rowHeight * 0.6));
+			y2 = (int)(rowY + (rowHeight * 0.4));
 			
-			x3 = (int)(rowX + (rowWidth * 0.7));
+			x3 = (int)(rowX + (rowWidth * 0.6));
 			y3 = (int)(rowY + (rowHeight * 0.1));
 		} else {
 			x1 = (int)(rowX + (rowWidth * 0.1));
-			y1 = (int)(rowY + (rowHeight * 0.5));
+			y1 = (int)(rowY + (rowHeight * 0.3));
 			
 			x2 = (int)(rowX + (rowWidth * 0.4));
-			y2 = (int)(rowY + (rowHeight * 0.1));
+			y2 = (int)(rowY + (rowHeight * 0.0));
 			
-			x3 = (int)(rowX + (rowWidth * 0.7));
-			y3 = (int)(rowY + (rowHeight * 0.6));
+			x3 = (int)(rowX + (rowWidth * 0.6));
+			y3 = (int)(rowY + (rowHeight * 0.4));
 		}
 		
 		boolean first = false;
@@ -238,8 +241,9 @@ public class Spawner {
 		int numRow = rand.nextInt(7);
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
+		int speed = (int) (game.getScale().getWidth()*0.003);
 		if (glc.getRunOff().size() < this.intensity/3 && /*!this.runOffInRow.get(numRow) &&*/ time < 170) {
-			RunOff r = new RunOff(6,x,y, numRow);
+			RunOff r = new RunOff(speed,x,y, numRow);
 			Rectangle2D rect = new Rectangle2D.Double(x,y,rfWidth, rfHeight );
 			glc.getRunOff().add(new RunOffController(r, rect));
 			this.runOffInRow.set(numRow, true);
@@ -256,8 +260,9 @@ public class Spawner {
 		int numRow = this.rowForRunOff;
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
+		int speed = (int) (game.getScale().getWidth()*0.003);
 		if (glc.getRunOff().size() < 1) {
-			RunOff r = new RunOff(6,x,y, numRow);
+			RunOff r = new RunOff(speed,x,y, numRow);
 			Rectangle2D rect = new Rectangle2D.Double(x,y,rfWidth, rfHeight );
 			glc.getRunOff().add(new RunOffController(r, rect));
 			this.runOffInRow.set(numRow, true);
