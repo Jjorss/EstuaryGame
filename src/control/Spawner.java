@@ -24,7 +24,7 @@ public class Spawner {
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	private boolean increasedIntensity = false;
-	private int intensity = 1;
+	private int intensity = 10;
 	private int rowForRunOff = 2;
 	
 	public  Spawner(GameLoopController glc, Game game, Timer timer) {
@@ -90,12 +90,17 @@ public class Spawner {
 		Random rand = new Random();
 		int padding = 35;
 		double waveHeight = (glc.getWaveRows().get(0).getHeight() - padding);
-		double waveWidth = glc.getWaveRows().get(0).getHeight() - padding;
+		double waveWidth = (glc.getWaveRows().get(0).getHeight()*1.4) - padding;
+		int min = (int)(game.getScale().getWidth() * 0.0014);
+		double interval = this.intensity * 0.00032;
+		int max = (int)((min+interval)*game.getScale().getWidth());
+		
+		int waveSpeed = rand.nextInt(max - (max-min)) + min; 
 		int  numRow = rand.nextInt(7);
 		int y = (int) ((glc.getWaveRows().get(numRow).getCenterY()) - (waveHeight/2));
 		int x = game.getWidth();
 		if (glc.getWaves().size() < intensity) {
-			Wave w = new Wave(rand.nextInt(intensity - (intensity-3)) + 3,x,y);
+			Wave w = new Wave(waveSpeed,x,y);
 			Rectangle2D rect = new Rectangle2D.Double(x,y,waveWidth, waveHeight );
 			glc.getWaves().add(new WaveController(w, rect));
 			glc.getNumOfWavesInRow().set(numRow, glc.getNumOfWavesInRow().get(numRow)+1);
@@ -106,7 +111,7 @@ public class Spawner {
 		Random rand = new Random();
 		int padding = 35;
 		double waveHeight = (glc.getWaveRows().get(0).getHeight() - padding);
-		double waveWidth = glc.getWaveRows().get(0).getHeight() - padding;
+		double waveWidth = (glc.getWaveRows().get(0).getHeight())*1.4 - padding;
 		int row1 = 1;
 		int row2 = 4;
 		int y1 = (int) ((glc.getWaveRows().get(row1).getCenterY()) - (waveHeight/2));
@@ -226,15 +231,15 @@ public class Spawner {
 	
 	public void spawnRunOff(int intensity, int time) {
 		Random rand = new Random();
-		double max = game.getScale().getWidth() * 0.75;
+		double max = game.getScale().getWidth() * 0.50;
 		double min = game.getScale().getWidth() * 0.10;
 		double rfHeight = glc.getPlantRows().get(0).getHeight() *0.2 ;
 		int rfWidth = rand.nextInt((int)max - (int)min + 1) + (int)min;
 		int numRow = rand.nextInt(7);
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
-		if (glc.getRunOff().size() < 2/*this.intensity/3*/ && /*!this.runOffInRow.get(numRow) &&*/ time < 180) {
-			RunOff r = new RunOff(8,x,y, numRow);
+		if (glc.getRunOff().size() < this.intensity/3 && /*!this.runOffInRow.get(numRow) &&*/ time < 170) {
+			RunOff r = new RunOff(6,x,y, numRow);
 			Rectangle2D rect = new Rectangle2D.Double(x,y,rfWidth, rfHeight );
 			glc.getRunOff().add(new RunOffController(r, rect));
 			this.runOffInRow.set(numRow, true);
@@ -252,7 +257,7 @@ public class Spawner {
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
 		if (glc.getRunOff().size() < 1) {
-			RunOff r = new RunOff(8,x,y, numRow);
+			RunOff r = new RunOff(6,x,y, numRow);
 			Rectangle2D rect = new Rectangle2D.Double(x,y,rfWidth, rfHeight );
 			glc.getRunOff().add(new RunOffController(r, rect));
 			this.runOffInRow.set(numRow, true);

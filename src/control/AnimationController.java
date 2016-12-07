@@ -163,8 +163,8 @@ public class AnimationController {
 			}
 			m = message.substring(0, this.textCounter);
 			this.textCounter++;
-			System.out.println("string counter: " + this.textCounter + "/" + this.message.length());
-			System.out.println("message: " + m);
+			//System.out.println("string counter: " + this.textCounter + "/" + this.message.length());
+			//System.out.println("message: " + m);
 			if (this.textCounter == message.length()) {
 				this.textAnimationState = 1;
 			}

@@ -383,7 +383,7 @@ public class GameLoopController {
 						this.currentTutorialState = TutorialState.END;
 					}
 				}
-				spawner.spawnRunOff(1, 0);
+				//spawner.spawnRunOff(1, 0);
 				break;
 			case END:
 				textTimer.countUpStop(5);
@@ -736,8 +736,7 @@ public class GameLoopController {
 
 	public void renderWaves(Graphics2D g2) {
 		g2.setColor(Color.cyan);
-		for (Iterator<WaveController> it = waves.iterator(); it.hasNext();) {
-			WaveController wc = it.next();
+		for (WaveController wc : waves.toArray(new WaveController[0])) {
 			// g2.draw(wc.getRect());
 			// g2.fill(wc.getRect());
 			if (game.getFramePerSecond() % 3 == 0) {
