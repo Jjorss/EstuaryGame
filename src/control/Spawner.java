@@ -17,6 +17,7 @@ public class Spawner {
 	private GameLoopController glc;
 	private Game game;
 	private Timer timer;
+	private Timer spawnTimer = new Timer();
 	
 	private ArrayList<Integer>plantsInRow = new ArrayList<Integer>();
 	private ArrayList<Integer>patternInRow = new ArrayList<Integer>();
@@ -62,7 +63,8 @@ public class Spawner {
 		int height = (int) (game.getWidth() * 0.03);
 		int padding = 10;
 		int max = 0;
-		
+		double spawnTime = ((11 - this.intensity)/10)*2000 + 1000;
+		spawnTimer.countUp(spawnTime);
 		for (Integer i : glc.getNumOfGabionsInRow()) {
 			if (max < i.intValue()) {
 				max = i.intValue();
@@ -76,7 +78,7 @@ public class Spawner {
 		double yBottomBound = glc.getGAMEBOX().getHeight() - height - padding;
 		int y = (int) (rand.nextInt((int) ((yBottomBound - yTopBound) + 1)) + yTopBound);
 		
-		if (glc.getOysters().size() < intensity*1.5) {
+		if (spawnTimer.getTimeMili() >= spawnTime) {
 			ClumpOfOysters clump = new ClumpOfOysters(x, y);
 			Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
 			glc.getOysters().add(new OysterController(clump, rect));
@@ -137,7 +139,7 @@ public class Spawner {
 //		Random rand = new Random();
 		int pattern = this.getPatternInRow().get(indexOfRow);
 		double plantWidth = glc.getPlantRows().get(0).getWidth()  * 0.2;
-		double plantHeight = glc.getPlantRows().get(0).getHeight() * 0.35;
+		double plantHeight = glc.getPlantRows().get(0).getHeight() * 0.45;
 		
 		double rowX = glc.getPlantRows().get(indexOfRow).getX();
 		double rowY =glc.getPlantRows().get(indexOfRow).getY();

@@ -2,7 +2,8 @@ package model;
 
 public class Shore extends Entity {
 
-	private int health = 100;
+	private int maxHealth = 100;
+	private int health = maxHealth;
 	private int numberOfHorseshoeCrabs = 0;
 	private int x = 0;
 	private int y = 0;
@@ -80,6 +81,16 @@ public class Shore extends Entity {
 
 	public void setY(int y) {
 		this.y = y;
+	}
+
+
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
 	}
 
 	

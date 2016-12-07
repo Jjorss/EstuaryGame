@@ -36,6 +36,18 @@ public class Timer {
 		this.time = (int) timeMili/1000;
 		
 	}
+	
+	public void countUp(double stopTime) {
+		if (this.initStartTime) {
+			this.initStartTime = false;
+			startGameTime = System.currentTimeMillis();
+		}
+		if (timeMili >= stopTime) {
+			startGameTime = System.currentTimeMillis();
+		}
+		this.timeMili = System.currentTimeMillis() - startGameTime;
+		
+	}
 
 	public void countUpStop(int stopTime) {
 		if (time <= stopTime) {

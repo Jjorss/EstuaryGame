@@ -286,7 +286,6 @@ public class GameLoopController {
 	 * methods get called.
 	 */
 	public void loop() {
-
 		switch (this.currentGameState) {
 		case TUTORIAL:
 			collision();
@@ -828,22 +827,23 @@ public class GameLoopController {
 	}
 
 	public void renderPlants(Graphics2D g2) {
+		g2.setColor(Color.red);
 		for (PlantController plant : plants) {
 			if (plant.getPlant().isVisible()) {
-				// g2.draw(plant.getRect());
-				// g2.fill(plant.getRect());
+				g2.draw(plant.getRect());
+				g2.fill(plant.getRect());
 				if (plant.getPlant().getHealth() > (int) (plant.getPlant().getMaxHealth() * .66)) {
 					g2.drawImage(bic.getImageAtIndex(Image.GRASS1.getIndex()), (int) plant.getRect().getX(),
 							(int) plant.getRect().getY(), (int) (plant.getRect().getWidth() * 1.8),
-							(int) (plant.getRect().getHeight() * 1.9), null);
+							(int) (plant.getRect().getHeight() * 1.5), null);
 				} else if (plant.getPlant().getHealth() > plant.getPlant().getMaxHealth() * 0.33) {
 					g2.drawImage(bic.getImageAtIndex(Image.GRASS2.getIndex()), (int) plant.getRect().getX(),
 							(int) plant.getRect().getY(), (int) (plant.getRect().getWidth() * 1.8),
-							(int) (plant.getRect().getHeight() * 1.9), null);
+							(int) (plant.getRect().getHeight() * 1.5), null);
 				} else {
 					g2.drawImage(bic.getImageAtIndex(Image.GRASS3.getIndex()), (int) plant.getRect().getX(),
 							(int) plant.getRect().getY(), (int) (plant.getRect().getWidth() * 1.8),
-							(int) (plant.getRect().getHeight() * 1.9), null);
+							(int) (plant.getRect().getHeight() * 1.5), null);
 				}
 			}
 		}
@@ -959,9 +959,9 @@ public class GameLoopController {
 	}
 
 	public void renderNumberOfPlants(Graphics g2) {
-		g2.setColor(Color.BLACK);
+		g2.setColor(Color.WHITE);
 		g2.setFont(f1);
-		g2.drawString(pb.getPb().getNumberOfPlants() + "",
+		g2.drawString("x" + pb.getPb().getNumberOfPlants(),
 				(int) (pb.getRect().getX() + pb.getRect().getWidth() + (f1.getSize() / 2)),
 				(int) pb.getRect().getCenterY());
 	}
@@ -1338,6 +1338,20 @@ public class GameLoopController {
 
 	}
 
+	public String calculateScore(int shoreHealth, int alphaWater) {
+		double score = (((double)shoreHealth/(double)shore.getShore().getMaxHealth())*0.5) + (((255.0-(double)alphaWater)/255.0)*0.5);
+		if (score == 1) {
+			return "A+";
+		} else if (score >= 0.9 ) {
+			return "A";
+		} else if (score >= 0.8) {
+			return "B"; 
+		} else if (score >= 0.7) {
+			return "C";
+		} else {
+			return "D";
+		}
+	}
 	
 
 	public ArrayList<WaveController> getWaves() {
