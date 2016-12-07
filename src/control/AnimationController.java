@@ -153,21 +153,29 @@ public class AnimationController {
 	}
 	
 	public void playTextAnimation(Graphics2D g2, int x, int y) {
+		String m = message;
 		switch(this.textAnimationState) {
 		case 0:
-			this.message = glc.getMessage().substring(0, this.textCounter);
+			if (this.message != glc.getMessage()) {
+				this.textAnimationState = 0;
+				this.textCounter = 0;
+				this.message = glc.getMessage();
+			}
+			m = message.substring(0, this.textCounter);
 			this.textCounter++;
-			if (this.textCounter == glc.getMessage().length()+1) {
+			System.out.println("string counter: " + this.textCounter + "/" + this.message.length());
+			System.out.println("message: " + m);
+			if (this.textCounter == message.length()) {
 				this.textAnimationState = 1;
 			}
-			g2.drawString(this.message, x, y);
+			g2.drawString(m, x, y);
 			break;
 		case 1:
 			g2.drawString(this.message, x, y);
 			if (this.message != glc.getMessage()) {
 				this.textAnimationState = 0;
 				this.textCounter = 0;
-				this.message = "";
+				this.message = glc.getMessage();
 			}
 			break;
 			default:
