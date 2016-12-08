@@ -499,7 +499,10 @@ public class Game extends JPanel implements Serializable{
 		this.restart = restart;
 		if (restart) {
 			glc.setCurrentGameState(GameState.LOADING);
+			this.glc = null;
+			this.glc = new GameLoopController(this, this.scale);
 			glc.init();
+			
 			this.gameLost = false;
 		}
 	}
