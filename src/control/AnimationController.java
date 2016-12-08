@@ -75,7 +75,8 @@ public class AnimationController {
 			break;
 		case 1:
 			
-			g2.drawImage(bic.getImageAtIndex(Image.HAND.getIndex()), (int)currentX, (int)currentY, 100, 150, null);
+			g2.drawImage(bic.getImageAtIndex(Image.HAND.getIndex()), (int)currentX, (int)currentY,
+					(int)(glc.getGAMEBOX().getWidth() * 0.05), (int)(glc.getGAMEBOX().getWidth() * 0.075), null);
 			//System.out.println("drew image: " + currentX + "\t" + currentY + "\t" + progress);
 			duration = System.currentTimeMillis() - startTime;
 			progress = duration / 2000.0;
@@ -102,7 +103,8 @@ public class AnimationController {
 			this.plantAnimationState = 1;
 			break;
 		case 1:
-			g2.drawImage(bic.getImageAtIndex(Image.HAND.getIndex()), (int)currentXPlant, (int)currentYPlant, 100, 150, null);
+			g2.drawImage(bic.getImageAtIndex(Image.HAND.getIndex()), (int)currentXPlant, (int)currentYPlant,
+					(int)(glc.getGAMEBOX().getWidth() * 0.05), (int)(glc.getGAMEBOX().getWidth() * 0.075), null);
 			durationPlant = System.currentTimeMillis() - startTimePlant;
 			progressPlant = durationPlant / 2000.0;
 			currentXPlant = (currentXPlant + ((endPlant.getX() - currentXPlant) * progressPlant));

@@ -13,7 +13,7 @@ public class PlantBuilder extends Builder {
 	
 	@Override
 	public void build() {
-		if (timer.getTime() >= 5) {
+		if (timer.getTime() >= numOfSecondsPerPlant) {
 			this.setAddPlant(true);
 		} else {
 			this.addPlant = false;

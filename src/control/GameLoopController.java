@@ -52,6 +52,7 @@ public class GameLoopController {
 	private Timer runOffTimer;
 	private Timer cleanWaterTimer;
 	private Timer crabSpeakingTimer;
+	private Timer waveAnimationTimer;
 	private PlantBuilderController pb;
 	private HorseshoeCrabController helperHorse;
 	private AnimationController ac;
@@ -78,6 +79,7 @@ public class GameLoopController {
 	private Rectangle2D UIBOX;
 	private Rectangle2D MENU;
 	private RoundRectangle2D gameOverBox;
+	private RoundRectangle2D creditsBox;
 	// private Rectangle2D gabionBuilder;
 	// private Rectangle2D plantBuilder;
 	private Rectangle2D uiGabion;
@@ -87,6 +89,7 @@ public class GameLoopController {
 	private Rectangle2D tutorialButton;
 	private Rectangle2D playButton;
 	private Rectangle2D creditButton;
+	private Rectangle2D backButton;
 
 	private boolean renderDragGabion;
 	private boolean renderDragPlant;
@@ -102,6 +105,7 @@ public class GameLoopController {
 	private boolean hittingPlant;
 	private boolean hittingWater;
 	private boolean speaking;
+	private boolean renderCredits;
 
 	private double gX;
 	private double gY;
@@ -147,6 +151,7 @@ public class GameLoopController {
 		runOffTimer = new Timer();
 		cleanWaterTimer = new Timer();
 		crabSpeakingTimer = new Timer();
+		waveAnimationTimer = new Timer();
 		pb = new PlantBuilderController(new PlantBuilder(plantTimer), new Rectangle2D.Double(0, 0, 0, 0));
 
 		numOfGabionsInRow = new ArrayList<Integer>();
@@ -171,6 +176,7 @@ public class GameLoopController {
 		UIBOX = new Rectangle2D.Double(0, 0, 0, 0);
 		MENU = new Rectangle2D.Double(0, 0, 0, 0);
 		gameOverBox = new RoundRectangle2D.Double(0,0,0,0,0,0);
+		creditsBox = new RoundRectangle2D.Double(0,0,0,0,0,0);
 		uiGabion = new Rectangle2D.Double(0, 0, 0, 0);
 		uiPlant = new Rectangle2D.Double(0, 0, 0, 0);
 		helperHorseRect = new Rectangle2D.Double(0, 0, 0, 0);
@@ -178,6 +184,7 @@ public class GameLoopController {
 		tutorialButton = new Rectangle2D.Double(0, 0, 0, 0);
 		playButton = new Rectangle2D.Double(0, 0, 0, 0);
 		creditButton = new Rectangle2D.Double(0, 0, 0, 0);
+		backButton = new Rectangle2D.Double(0,0,0,0);
 
 		renderDragGabion = false;
 		renderDragPlant = false;
@@ -193,6 +200,7 @@ public class GameLoopController {
 		hittingPlant = false;
 		hittingWater = false;
 		speaking = false;
+		renderCredits = false;
 
 		time = "" + timer.getTime();
 
@@ -205,7 +213,7 @@ public class GameLoopController {
 		double uiBoxHeight = this.game.getScale().getHeight() * 0.165;
 		double shoreWidth = this.game.getScale().getWidth() * 0.35;
 		double menuWidth = width * 0.2;
-		double menuHeight = height * 0.2;
+		double menuHeight = height * 0.4;
 
 		concreteWallWidth = width * 0.01;
 		gbPadding = width * 0.015;
@@ -219,11 +227,17 @@ public class GameLoopController {
 		double goHeight = game.getScale().getHeight() * 0.4;
 		gameOverBox = new RoundRectangle2D.Double((game.getScale().getWidth()/2) - (goWidth/2),
 				(game.getScale().getHeight()/2) - (goHeight/2),goWidth,goHeight, 50, 50);
-		tutorialButton = new Rectangle2D.Double(MENU.getX(), MENU.getY(), menuWidth, menuHeight / 3);
+		creditsBox = new RoundRectangle2D.Double((game.getScale().getWidth()/2) - (goWidth/2),
+				(game.getScale().getHeight()/2) - (goHeight/2),goWidth,goHeight, 50, 50);
+		
+		backButton = new Rectangle2D.Double((int)creditsBox.getX(), (int)creditsBox.getY(),
+				(int)(creditsBox.getWidth()*0.2), (int)(creditsBox.getHeight()*0.18));
+				
+		tutorialButton = new Rectangle2D.Double(MENU.getX(), MENU.getY(), menuWidth, menuHeight*0.3);
 		playButton = new Rectangle2D.Double(MENU.getX(), MENU.getY() + menuHeight / 3, menuWidth,
-				menuHeight / 3);
+				menuHeight*0.3);
 		creditButton = new Rectangle2D.Double(MENU.getX(), MENU.getY() + ((menuHeight / 3) * 2), menuWidth,
-				menuHeight / 3);
+				menuHeight*0.3);
 
 		this.shore.setShore(new Shore((int) this.GAMEBOX.getX(), (int) this.GAMEBOX.getY()));
 		this.shore.setRect(new Rectangle2D.Double(shore.getShore().getX(), shore.getShore().getY(), (int) shoreWidth,
@@ -357,7 +371,7 @@ public class GameLoopController {
 
 				break;
 			case RUNOFF:
-				plantTimer.countUp(6);
+				plantTimer.countUp(pb.getPb().getNumOfSecondsPerPlant());
 				// textTimer.countUpStop(3);
 				spawner.spawnTutorialRunOff();
 				if (this.runOff.get(0).getRect().getX() + this.runOff.get(0).getRect()
@@ -375,7 +389,7 @@ public class GameLoopController {
 				break;
 			case PLANTS:
 				this.ableToPlacePlant = true;
-				plantTimer.countUp(6);
+				plantTimer.countUp(pb.getPb().getNumOfSecondsPerPlant());
 				textTimer.countUpStop(2);
 				if (textTimer.getTime() >= 2) {
 					if (!this.placedWrongPlant) {
@@ -444,11 +458,16 @@ public class GameLoopController {
 				// System.out.println("Entered");
 				this.currentGameState = GameState.MENU;
 				gb.getGb().setGabions(this.numOfRows);
+				this.ableToPlaceGabion = true;
+				this.ableToPlacePlant = true;
 				for (int i = 0; i < this.numOfRows; i++) {
 					spawner.spawnWaves(5, 0);
 					this.handlePlaceGabion(
 							new Point((int) this.waveRows.get(i).getX() + 1, (int) this.waveRows.get(i).getY() - 1));
+					spawner.spawnPlants((i*2)%(this.numOfRows+1));
 				}
+				this.ableToPlaceGabion = false;
+				this.ableToPlacePlant = false;
 			}
 			break;
 		case OVER:
@@ -766,21 +785,20 @@ public class GameLoopController {
 	}
 
 	public void renderGabions(Graphics2D g2) {
-		for (int i = 0; i < gabions.size(); i++) {
-			Rectangle2D gabion = gabions.get(i).getRect();
+		for (GabionController gabion : gabions.toArray(new GabionController[0])) {
 			
-			if (gabions.get(i).getGabion().getHealth() == 3) {
+			if (gabion.getGabion().getHealth() == 3) {
 				//g2.setColor(new Color(0, 0, 0, 175));
-				g2.drawImage(bic.getImageAtIndex(Image.GABION.getIndex()), (int) gabion.getX(), (int) gabion.getY(),
-						(int) gabion.getWidth(), (int) gabion.getHeight(), null);
-			} else if (gabions.get(i).getGabion().getHealth() == 2) {
+				g2.drawImage(bic.getImageAtIndex(Image.GABION.getIndex()), (int) gabion.getRect().getX(), (int) gabion.getRect().getY(),
+						(int) gabion.getRect().getWidth(), (int) gabion.getRect().getHeight(), null);
+			} else if (gabion.getGabion().getHealth() == 2) {
 				//g2.setColor(new Color(0, 0, 0, 100));
-				g2.drawImage(bic.getImageAtIndex(Image.GABIONFADE1.getIndex()), (int) gabion.getX(), (int) gabion.getY(),
-						(int) gabion.getWidth(), (int) gabion.getHeight(), null);
+				g2.drawImage(bic.getImageAtIndex(Image.GABIONFADE1.getIndex()), (int) gabion.getRect().getX(), 
+						(int) gabion.getRect().getY(),(int) gabion.getRect().getWidth(), (int) gabion.getRect().getHeight(), null);
 			} else {
 				//g2.setColor(Color.BLACK);
-				g2.drawImage(bic.getImageAtIndex(Image.GABIONFADE2.getIndex()), (int) gabion.getX(), (int) gabion.getY(),
-						(int) gabion.getWidth(), (int) gabion.getHeight(), null);
+				g2.drawImage(bic.getImageAtIndex(Image.GABIONFADE2.getIndex()), (int) gabion.getRect().getX(),
+						(int) gabion.getRect().getY(), (int) gabion.getRect().getWidth(), (int) gabion.getRect().getHeight(), null);
 			}
 			// g2.draw(gabions.get(i).getRect());
 			// g2.fill(gabions.get(i).getRect());
@@ -789,14 +807,16 @@ public class GameLoopController {
 	}
 
 	public void renderWaves(Graphics2D g2) {
-		g2.setColor(Color.cyan);
+		//g2.setColor(Color.cyan);
 		for (WaveController wc : waves.toArray(new WaveController[0])) {
 			// g2.draw(wc.getRect());
 			// g2.fill(wc.getRect());
-			if (game.getFramePerSecond() % 3 == 0) {
+			this.waveAnimationTimer.countUp(750.0);
+			//System.out.println(this.waveAnimationTimer.getTimeMili());
+			if (this.waveAnimationTimer.getTimeMili() < 250.0) {
 				g2.drawImage(bic.getImageAtIndex(Image.WAVE1.getIndex()), (int) wc.getRect().getX(),
 						(int) wc.getRect().getY(), (int) wc.getRect().getWidth(), (int) wc.getRect().getHeight(), null);
-			} else if (game.getFramePerSecond() % 3 == 1) {
+			} else if (this.waveAnimationTimer.getTimeMili() < 500.0) {
 				g2.drawImage(bic.getImageAtIndex(Image.WAVE2.getIndex()), (int) wc.getRect().getX(),
 						(int) wc.getRect().getY(), (int) wc.getRect().getWidth(), (int) wc.getRect().getHeight(), null);
 			} else {
@@ -812,7 +832,7 @@ public class GameLoopController {
 	}
 
 	public void renderConcreteWalls(Graphics2D g2) {
-		for (ConcreteWallController wall : concreteWalls) {
+		for (ConcreteWallController wall : concreteWalls.toArray(new ConcreteWallController[0])) {
 			//g2.setColor(Color.LIGHT_GRAY);
 			//g2.draw(wall.getRect());
 			//g2.setColor(Color.DARK_GRAY);
@@ -831,35 +851,35 @@ public class GameLoopController {
 	public void renderHorseshoeCrab(Graphics2D g2) {
 		// g2.setColor(Color.PINK);
 
-		for (HorseshoeCrabController hsCrab : hsCrab) {
+		for (HorseshoeCrabController crab : hsCrab.toArray(new HorseshoeCrabController[0])) {
 			// g2.draw(hsCrab);
 			// g2.fill(hsCrab);
 			if(this.speaking) {
 				this.crabSpeakingTimer.countUp(1000.0);
 				if(this.crabSpeakingTimer.getTimeMili() % 3 == 0) {
-					g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB.getIndex()), (int) hsCrab.getRect().getX(),
-							(int) hsCrab.getRect().getY(), (int) hsCrab.getRect().getWidth(),
-							(int) hsCrab.getRect().getHeight(), null);
+					g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB.getIndex()), (int) crab.getRect().getX(),
+							(int) crab.getRect().getY(), (int) crab.getRect().getWidth(),
+							(int) crab.getRect().getHeight(), null);
 				} else if(this.crabSpeakingTimer.getTimeMili() % 3 == 1) {
-					g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB2.getIndex()), (int) hsCrab.getRect().getX(),
-							(int) hsCrab.getRect().getY(), (int) hsCrab.getRect().getWidth(),
-							(int) hsCrab.getRect().getHeight(), null);
+					g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB2.getIndex()), (int) crab.getRect().getX(),
+							(int) crab.getRect().getY(), (int) crab.getRect().getWidth(),
+							(int) crab.getRect().getHeight(), null);
 				} else {
-					g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB2.getIndex()), (int) hsCrab.getRect().getX(),
-							(int) hsCrab.getRect().getY(), (int) hsCrab.getRect().getWidth(),
-							(int) hsCrab.getRect().getHeight(), null);
+					g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB3.getIndex()), (int) crab.getRect().getX(),
+							(int) crab.getRect().getY(), (int) crab.getRect().getWidth(),
+							(int) crab.getRect().getHeight(), null);
 				}
 			} else{
-				g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB.getIndex()), (int) hsCrab.getRect().getX(),
-						(int) hsCrab.getRect().getY(), (int) hsCrab.getRect().getWidth(),
-						(int) hsCrab.getRect().getHeight(), null);
+				g2.drawImage(bic.getImageAtIndex(Image.BLUECRAB.getIndex()), (int) crab.getRect().getX(),
+						(int) crab.getRect().getY(), (int) crab.getRect().getWidth(),
+						(int) crab.getRect().getHeight(), null);
 			}
 			
 			g2.setColor(Color.WHITE);
 			g2.setFont(new Font("Arial", Font.ITALIC, (int) (game.getScale().getWidth() * 0.015)));
 			
-			ac.playTextAnimation(g2, (int) (hsCrab.getRect().getX() + hsCrab.getRect().getWidth() + g2.getFont().getSize()),
-					(int) (hsCrab.getRect().getCenterY() - game.getScale().getHeight() * 0.01));
+			ac.playTextAnimation(g2, (int) (crab.getRect().getX() + crab.getRect().getWidth() + g2.getFont().getSize()),
+					(int) (crab.getRect().getCenterY() - game.getScale().getHeight() * 0.01));
 		}
 
 	}
@@ -873,7 +893,7 @@ public class GameLoopController {
 
 	public void renderPlants(Graphics2D g2) {
 		//g2.setColor(Color.red);
-		for (PlantController plant : plants) {
+		for (PlantController plant : plants.toArray(new PlantController[0])) {
 			if (plant.getPlant().isVisible()) {
 				//g2.draw(plant.getRect());
 				//g2.fill(plant.getRect());
@@ -1033,11 +1053,11 @@ public class GameLoopController {
 
 	public void renderRunoff(Graphics2D g2) {
 		//g2.setColor(runOffColor);
-		for (RunOffController runOff : runOff) {
+		for (RunOffController runOffs : runOff.toArray(new RunOffController[0])) {
 //			g2.draw(runOff.getRect());
 //			g2.fill(runOff.getRect());
-			g2.drawImage(bic.getImageAtIndex(Image.RUNOFF.getIndex()), (int)runOff.getRect().getX(),
-					(int)runOff.getRect().getY(), (int)runOff.getRect().getWidth(), (int)runOff.getRect().getHeight(), null);
+			g2.drawImage(bic.getImageAtIndex(Image.RUNOFF.getIndex()), (int)runOffs.getRect().getX(),
+					(int)runOffs.getRect().getY(), (int)runOffs.getRect().getWidth(), (int)runOffs.getRect().getHeight(), null);
 		}
 	}
 
@@ -1125,7 +1145,7 @@ public class GameLoopController {
 	
 
 	public void renderAnimation(Graphics2D g2) {
-		for (AnimationController ac : animations) {
+		for (AnimationController ac : animations.toArray(new AnimationController[0])) {
 			switch (ac.getAnimation()) {
 			case OYSTER:
 				ac.playCollectOysterAnimation(g2);
@@ -1144,24 +1164,37 @@ public class GameLoopController {
 	}
 
 	public void renderMenu(Graphics2D g2) {
-//		g2.setColor(Color.red);
-//		g2.draw(MENU);
-//		g2.fill(MENU);
-		g2.setColor(Color.ORANGE);
-//		g2.draw(this.playButton);
-//		g2.fill(this.playButton);
-		g2.drawImage(bic.getImageAtIndex(Image.TUTORIAL.getIndex()), (int)tutorialButton.getX(), (int)tutorialButton.getY(),
-				(int)tutorialButton.getWidth(), (int)tutorialButton.getHeight(), null);
-		g2.setColor(Color.PINK);
-//		g2.draw(this.instructionButton);
-//		g2.fill(this.instructionButton);
-		g2.drawImage(bic.getImageAtIndex(Image.PLAY.getIndex()), (int)playButton.getX(), (int)playButton.getY(),
-				(int)playButton.getWidth(), (int)playButton.getHeight(), null);
-		g2.setColor(Color.MAGENTA);
-//		g2.draw(this.creditButton);
-//		g2.fill(this.creditButton);
-		g2.drawImage(bic.getImageAtIndex(Image.CREDITS.getIndex()), (int)creditButton.getX(), (int)creditButton.getY(),
-				(int)creditButton.getWidth(), (int)creditButton.getHeight(), null);
+		if (!this.renderCredits) {
+			g2.setColor(Color.ORANGE);
+			g2.drawImage(bic.getImageAtIndex(Image.TUTORIAL.getIndex()), (int)tutorialButton.getX(), (int)tutorialButton.getY(),
+					(int)tutorialButton.getWidth(), (int)tutorialButton.getHeight(), null);
+			g2.setColor(Color.PINK);
+			g2.drawImage(bic.getImageAtIndex(Image.PLAY.getIndex()), (int)playButton.getX(), (int)playButton.getY(),
+					(int)playButton.getWidth(), (int)playButton.getHeight(), null);
+			g2.setColor(Color.MAGENTA);
+			g2.drawImage(bic.getImageAtIndex(Image.CREDITS.getIndex()), (int)creditButton.getX(), (int)creditButton.getY(),
+					(int)creditButton.getWidth(), (int)creditButton.getHeight(), null);
+		} else {
+			g2.setColor(new Color(255,255,255,220));
+			g2.fill(creditsBox);
+			g2.draw(creditsBox);
+			g2.setColor(Color.BLUE);
+			g2.draw(backButton);
+			g2.fill(backButton);
+			g2.setColor(Color.WHITE);
+			g2.setFont(f1);
+			g2.drawString("Back", (int)this.backButton.getX(), (int)(this.backButton.getY() + (this.backButton.getHeight()/2)));
+			g2.setColor(Color.BLACK);
+			g2.drawString("Jackson Jorss", (int)((creditsBox.getX()+(creditsBox.getWidth()/2)) - (f1.getSize()/2)), 
+					(int)(creditsBox.getY() + (creditsBox.getHeight()/4)*0.5));
+			g2.drawString("Robert Ley", (int)((creditsBox.getX()+(creditsBox.getWidth()/2)) - (f1.getSize()/2)), 
+					(int)(creditsBox.getY() + ((creditsBox.getHeight()/4)*1)));
+			g2.drawString("Ben Clark", (int)((creditsBox.getX()+(creditsBox.getWidth()/2)) - (f1.getSize()/2)), 
+					(int)(creditsBox.getY() + ((creditsBox.getHeight()/4)*1.5)));
+			g2.drawString("Jael Flaquer", (int)((creditsBox.getX()+(creditsBox.getWidth()/2)) - (f1.getSize()/2)), 
+					(int)(creditsBox.getY() + ((creditsBox.getHeight()/4)*2)));
+			
+		}
 	}
 
 	public void collision() {
@@ -1416,25 +1449,34 @@ public class GameLoopController {
 				this.currentGameState = GameState.TUTORIAL;
 				// this shouldn't be necessary
 				this.waves.clear();
+				this.plants.clear();
 				spawner.setTotalNumOfWaves(0);
+				spawner.setTotalNumOfPlants(0);
 				for (int i = 0; i < this.numOfWavesInRow.size(); i++) {
 					this.numOfWavesInRow.set(i, 0);
+					spawner.getPlantsInRow().set(i, 0);
 				}
 
 			} else if (this.playButton.contains(p)) {
 				this.init();
 				this.currentGameState = GameState.GAME;
-				// this shouldn't be necessary
 				this.waves.clear();
+				this.plants.clear();
 				spawner.setTotalNumOfWaves(0);
+				spawner.setTotalNumOfPlants(0);
 				for (int i = 0; i < this.numOfWavesInRow.size(); i++) {
 					this.numOfWavesInRow.set(i, 0);
+					spawner.getPlantsInRow().set(i, 0);
 				}
 				this.ableToPlaceGabion = true;
 				this.ableToPlacePlant = true;
 				
 			} else if (this.creditButton.contains(p)) {
-
+				this.renderCredits = true;
+			} else if (this.renderCredits) {
+				if(this.backButton.contains(p)) {
+					this.renderCredits = false;
+				}
 			}
 		}
 		for (int i = 0; i < oysters.size(); i++) {

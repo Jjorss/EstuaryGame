@@ -23,10 +23,10 @@ public class Shore extends Entity {
 
 	public boolean erode() {
 		// amount to decrement health by
-		this.health = health - 25;
+		this.health = health - 13;
 		System.out.println("Shore Health: " + this.health);
 		// erode shore
-		this.setX(this.getX() - 10);
+		//this.setX(this.getX() - 10);
 		return true;
 	}
 
