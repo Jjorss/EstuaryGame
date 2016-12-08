@@ -355,25 +355,25 @@ public class Game extends JPanel{
         if (this.init && glc.getCurrentGameState()!= GameState.LOADING) {
         	
         	glc.render(g);
-        	if (this.gameLost) {
-        		if (this.fontSize >= WIDTH * 0.1) {
-        			this.increase = false;
-        		} else if (this.fontSize <= WIDTH * 0.08) {
-        			this.increase = true;
-        		}
-        		if (this.increase) {
-        			this.fontSize++;
-        		} else {
-        			this.fontSize--;
-        		}
-        		Font f = new Font("Arial", 1, this.fontSize);
-        		Font f2 = new Font("Arial", 1, this.fontSize/2);
-            	g.setFont(f);
-            	g.setColor(Color.WHITE);
-            	g.drawString("GAME OVER",(scale.getWidth()/2) - f.getSize()*2 , scale.getHeight()/2);
-            	g.setFont(f2);
-            	g.drawString("PRESS R TO RESTART",(scale.getWidth()/2) - f2.getSize()*2 , (scale.getHeight()/2) + f.getSize());
-        	}
+//        	if (this.gameLost) {
+//        		if (this.fontSize >= WIDTH * 0.1) {
+//        			this.increase = false;
+//        		} else if (this.fontSize <= WIDTH * 0.08) {
+//        			this.increase = true;
+//        		}
+//        		if (this.increase) {
+//        			this.fontSize++;
+//        		} else {
+//        			this.fontSize--;
+//        		}
+//        		Font f = new Font("Arial", 1, this.fontSize);
+//        		Font f2 = new Font("Arial", 1, this.fontSize/2);
+//            	g.setFont(f);
+//            	g.setColor(Color.WHITE);
+//            	//g.drawString("GAME OVER",(scale.getWidth()/2) - f.getSize()*2 , scale.getHeight()/2);
+//            	g.setFont(f2);
+//            	//g.drawString("PRESS R TO RESTART",(scale.getWidth()/2) - f2.getSize()*2 , (scale.getHeight()/2) + f.getSize());
+//        	}
         } else {
         	Font f = new Font("Arial", Font.BOLD, 50);
         	g.setFont(f);
@@ -438,7 +438,7 @@ public class Game extends JPanel{
 	public void setRestart(boolean restart) {
 		this.restart = restart;
 		if (restart) {
-			glc.setCurrentGameState(GameState.GAME);
+			glc.setCurrentGameState(GameState.LOADING);
 			glc.init();
 			this.gameLost = false;
 		}

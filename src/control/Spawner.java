@@ -24,7 +24,7 @@ public class Spawner {
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	private boolean increasedIntensity = false;
-	private int intensity = 1;
+	private int intensity = 10;
 	private int rowForRunOff = 2;
 	
 	private int totalNumOfWaves = 0;

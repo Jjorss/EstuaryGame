@@ -763,9 +763,7 @@ public class GameLoopController {
 			this.renderRunoff(g2);
 
 			this.renderAnimation(g2);
-			if (!game.isGameLost()) {
-				this.renderOver(g2);
-			}
+			this.renderOver(g2);
 		default:
 			break;
 
@@ -1107,38 +1105,51 @@ public class GameLoopController {
 		g2.setColor(new Color(255,255,255,220));
 		g2.fill(gameOverBox);
 		g2.draw(gameOverBox);
-		int width = (int)(gameOverBox.getWidth()*0.8);
-		int height = (int) (gameOverBox.getHeight()*0.33);
-		int youWinX = (int) ((gameOverBox.getX()+(gameOverBox.getWidth()/2)) - (width/2));
-		g2.drawImage(bic.getImageAtIndex(Image.YOUWIN.getIndex()), youWinX, (int)gameOverBox.getY(), width, height, null);
-		int gradeWidth = (int) (gameOverBox.getWidth()*0.2);
-		int aPlusGradeWidth = (int) (gameOverBox.getWidth()*0.4);
-		int gradeHeight = (int) (gameOverBox.getHeight()*0.4);
-		int gradeX = (int)((gameOverBox.getX() + (gameOverBox.getWidth()/2)) - (gradeWidth/2));
-		int gradeY = (int) (gameOverBox.getY()+height);
-		switch(this.grade) {
-		case "A+":
-			g2.drawImage(bic.getImageAtIndex(Image.APLUS.getIndex()), gradeX, gradeY, aPlusGradeWidth, gradeHeight, null);
-			break;
-		case "A":
-			g2.drawImage(bic.getImageAtIndex(Image.A.getIndex()), gradeX, gradeY, gradeWidth, gradeHeight, null);
-			break;
-		case "B":
-			g2.drawImage(bic.getImageAtIndex(Image.B.getIndex()), gradeX, gradeY, gradeWidth, gradeHeight, null);
-			break;
-		case "C":
-			g2.drawImage(bic.getImageAtIndex(Image.C.getIndex()), gradeX, gradeY, gradeWidth, gradeHeight, null);
-			break;
-		case "D":
-			g2.drawImage(bic.getImageAtIndex(Image.D.getIndex()), gradeX, gradeY, gradeWidth, gradeHeight, null);
-			break;
+		if (!game.isGameLost()) {
+			int width = (int)(gameOverBox.getWidth()*0.8);
+			int height = (int) (gameOverBox.getHeight()*0.33);
+			int youWinX = (int) ((gameOverBox.getX()+(gameOverBox.getWidth()/2)) - (width/2));
+			g2.drawImage(bic.getImageAtIndex(Image.YOUWIN.getIndex()), youWinX, (int)gameOverBox.getY(), width, height, null);
+			int gradeWidth = (int) (gameOverBox.getWidth()*0.2);
+			int aPlusGradeWidth = (int) (gameOverBox.getWidth()*0.4);
+			int gradeHeight = (int) (gameOverBox.getHeight()*0.4);
+			int gradeX = (int)((gameOverBox.getX() + (gameOverBox.getWidth()/2)) - (gradeWidth/2));
+			int gradeY = (int) (gameOverBox.getY()+height);
+			switch(this.grade) {
+			case "A+":
+				g2.drawImage(bic.getImageAtIndex(Image.APLUS.getIndex()), gradeX, gradeY, aPlusGradeWidth, gradeHeight, null);
+				break;
+			case "A":
+				g2.drawImage(bic.getImageAtIndex(Image.A.getIndex()), gradeX, gradeY, gradeWidth, gradeHeight, null);
+				break;
+			case "B":
+				g2.drawImage(bic.getImageAtIndex(Image.B.getIndex()), gradeX, gradeY, gradeWidth, gradeHeight, null);
+				break;
+			case "C":
+				g2.drawImage(bic.getImageAtIndex(Image.C.getIndex()), gradeX, gradeY, gradeWidth, gradeHeight, null);
+				break;
+			case "D":
+				g2.drawImage(bic.getImageAtIndex(Image.D.getIndex()), gradeX, gradeY, gradeWidth, gradeHeight, null);
+				break;
+			}
+			g2.setFont(new Font("Arial", Font.BOLD, this.fontSize/2));
+			g2.setColor(Color.black);
+			g2.drawString("Waves: " + spawner.getTotalNumOfWaves() + "    " + "Gabions: " + this.totalNumOfGabions +
+					"    " + "Plants: " + spawner.getTotalNumOfPlants() + "    " + "Runoff: " + spawner.getTotalNumOfRunoff(),
+					(int)(gameOverBox.getX() + gameOverBox.getWidth()*0.1),
+					(int) ((gameOverBox.getY() + gameOverBox.getHeight()) - this.fontSize/2));
+		} else {
+			int width = (int)(gameOverBox.getWidth()*0.8);
+			int height = (int) (gameOverBox.getHeight()*0.33);
+			int youLoseX = (int) ((gameOverBox.getX()+(gameOverBox.getWidth()/2)) - (width/2));
+			g2.drawImage(bic.getImageAtIndex(Image.YOULOSE.getIndex()), youLoseX, (int)gameOverBox.getY(), width, height, null);
+			
+			int heightFail = (int) (gameOverBox.getHeight()*0.5);
+			int failX = (int)((gameOverBox.getX() + (gameOverBox.getWidth()/2)) - (width/2));
+			int failY = (int) (gameOverBox.getY()+heightFail);
+			
+			g2.drawImage(bic.getImageAtIndex(Image.FAIL.getIndex()), failX, (int)failY, width, heightFail, null);
 		}
-		g2.setFont(new Font("Arial", Font.BOLD, this.fontSize/2));
-		g2.setColor(Color.black);
-		g2.drawString("Waves: " + spawner.getTotalNumOfWaves() + "    " + "Gabions: " + this.totalNumOfGabions +
-				"    " + "Plants: " + spawner.getTotalNumOfPlants() + "    " + "Runoff: " + spawner.getTotalNumOfRunoff(),
-				(int)(gameOverBox.getX() + gameOverBox.getWidth()*0.1),
-				(int) ((gameOverBox.getY() + gameOverBox.getHeight()) - this.fontSize/2));
 	
 	}
 	
@@ -1619,6 +1630,26 @@ public class GameLoopController {
 
 	public GabionBuilderController getGb() {
 		return gb;
+	}
+
+
+	public boolean isAbleToPlaceGabion() {
+		return ableToPlaceGabion;
+	}
+
+
+	public void setAbleToPlaceGabion(boolean ableToPlaceGabion) {
+		this.ableToPlaceGabion = ableToPlaceGabion;
+	}
+
+
+	public boolean isAbleToPlacePlant() {
+		return ableToPlacePlant;
+	}
+
+
+	public void setAbleToPlacePlant(boolean ableToPlacePlant) {
+		this.ableToPlacePlant = ableToPlacePlant;
 	}
 
 }
