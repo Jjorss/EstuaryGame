@@ -42,11 +42,11 @@ public class Spawner {
 	public void determineIntensity(int currentIntensity, boolean eroded) {
 		
 		if (this.intensity < 10) {
-			if (timer.getTime() % 10 == 0 && !this.increasedIntensity && !eroded) {
+			if (timer.getTime() % 20 == 0 && !this.increasedIntensity && !eroded) {
 				this.increasedIntensity = true;
 				this.intensity++;
 				System.out.println("Intensity: " + this.intensity);
-			} else if (timer.getTime() % 10 != 0){
+			} else if (timer.getTime() % 20 != 0){
 				this.increasedIntensity = false;
 			} 
 			if (eroded) {
@@ -68,7 +68,7 @@ public class Spawner {
 		int height = (int) (game.getWidth() * 0.035);
 		int padding = 10;
 		int max = 0;
-		double spawnTime = ((11 - this.intensity)/10)*2000 + 1000;
+		double spawnTime = 1000;//((11 - this.intensity)/10)*2000 + 1000;
 		spawnTimer.countUp(spawnTime);
 		for (Integer i : glc.getNumOfGabionsInRow()) {
 			if (max < i.intValue()) {
@@ -83,7 +83,7 @@ public class Spawner {
 		double yBottomBound = glc.getGAMEBOX().getHeight() - height - padding;
 		int y = (int) (rand.nextInt((int) ((yBottomBound - yTopBound) + 1)) + yTopBound);
 		
-		if (spawnTimer.getTimeMili() >= spawnTime) {
+		if (spawnTimer.getTimeMili() >= spawnTime && glc.getGb().getGb().getGabions() < 2) {
 			ClumpOfOysters clump = new ClumpOfOysters(x, y);
 			Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
 			glc.getOysters().add(new OysterController(clump, rect));

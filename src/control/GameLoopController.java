@@ -127,7 +127,6 @@ public class GameLoopController {
 	private TutorialState currentTutorialState = TutorialState.OYSTERS;
 
 	private Color ShoreColor = new Color(255, 200, 100, 255);
-	private Color runOffColor = new Color(184, 138, 0, 127);
 	private Color dirtyWater = new Color(184, 138, 0, 0);
 
 	public GameLoopController(Game game, Scale scale) {
@@ -197,6 +196,9 @@ public class GameLoopController {
 
 		time = "" + timer.getTime();
 
+		ShoreColor = new Color(255, 200, 100, 255);
+		dirtyWater = new Color(184, 138, 0, 0);
+		
 		int scale = this.game.getScale().getGridSize();
 		double width = this.game.getScale().getWidth();
 		double height = this.game.getScale().getHeight();
@@ -355,7 +357,7 @@ public class GameLoopController {
 
 				break;
 			case RUNOFF:
-				plantTimer.countUp(5);
+				plantTimer.countUp(6);
 				// textTimer.countUpStop(3);
 				spawner.spawnTutorialRunOff();
 				if (this.runOff.get(0).getRect().getX() + this.runOff.get(0).getRect()
@@ -373,7 +375,7 @@ public class GameLoopController {
 				break;
 			case PLANTS:
 				this.ableToPlacePlant = true;
-				plantTimer.countUp(5);
+				plantTimer.countUp(6);
 				textTimer.countUpStop(2);
 				if (textTimer.getTime() >= 2) {
 					if (!this.placedWrongPlant) {
@@ -407,7 +409,7 @@ public class GameLoopController {
 		case GAME:
 			timer.countDown();
 			spawner.spawn(this.eroded);
-			plantTimer.countUp(5);
+			plantTimer.countUp(6);
 
 			if (timer.getTime() == 0) {
 				this.grade = this.calculateScore(shore.getShore().getHealth(), this.dirtyWater.getAlpha());
@@ -1090,12 +1092,13 @@ public class GameLoopController {
 		int youWinX = (int) ((gameOverBox.getX()+(gameOverBox.getWidth()/2)) - (width/2));
 		g2.drawImage(bic.getImageAtIndex(Image.YOUWIN.getIndex()), youWinX, (int)gameOverBox.getY(), width, height, null);
 		int gradeWidth = (int) (gameOverBox.getWidth()*0.2);
-		int gradeHeight = (int) (gameOverBox.getHeight()*0.3);
+		int aPlusGradeWidth = (int) (gameOverBox.getWidth()*0.4);
+		int gradeHeight = (int) (gameOverBox.getHeight()*0.4);
 		int gradeX = (int)((gameOverBox.getX() + (gameOverBox.getWidth()/2)) - (gradeWidth/2));
 		int gradeY = (int) (gameOverBox.getY()+height);
 		switch(this.grade) {
 		case "A+":
-			g2.drawImage(bic.getImageAtIndex(Image.APLUS.getIndex()), gradeX, gradeY, gradeWidth, gradeHeight, null);
+			g2.drawImage(bic.getImageAtIndex(Image.APLUS.getIndex()), gradeX, gradeY, aPlusGradeWidth, gradeHeight, null);
 			break;
 		case "A":
 			g2.drawImage(bic.getImageAtIndex(Image.A.getIndex()), gradeX, gradeY, gradeWidth, gradeHeight, null);
@@ -1564,6 +1567,16 @@ public class GameLoopController {
 
 	public void setSpeaking(boolean speaking) {
 		this.speaking = speaking;
+	}
+
+
+	public ArrayList<GabionController> getGabions() {
+		return gabions;
+	}
+
+
+	public GabionBuilderController getGb() {
+		return gb;
 	}
 
 }

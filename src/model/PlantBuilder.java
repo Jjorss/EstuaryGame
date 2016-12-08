@@ -4,7 +4,7 @@ public class PlantBuilder extends Builder {
 
 	private int numberOfPlants = 0;
 	private Timer timer;
-	private int numOfSecondsPerPlant = 5;
+	private int numOfSecondsPerPlant = 6;
 	private boolean addPlant = false;
 
 	public PlantBuilder(Timer timer) {
