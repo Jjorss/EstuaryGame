@@ -766,18 +766,23 @@ public class GameLoopController {
 	public void renderGabions(Graphics2D g2) {
 		for (int i = 0; i < gabions.size(); i++) {
 			Rectangle2D gabion = gabions.get(i).getRect();
-			if (gabions.get(i).getGabion().getHealth() == 2) {
-				g2.setColor(new Color(0, 0, 0, 175));
-			} else if (gabions.get(i).getGabion().getHealth() == 1) {
-				g2.setColor(new Color(0, 0, 0, 100));
+			
+			if (gabions.get(i).getGabion().getHealth() == 3) {
+				//g2.setColor(new Color(0, 0, 0, 175));
+				g2.drawImage(bic.getImageAtIndex(Image.GABION.getIndex()), (int) gabion.getX(), (int) gabion.getY(),
+						(int) gabion.getWidth(), (int) gabion.getHeight(), null);
+			} else if (gabions.get(i).getGabion().getHealth() == 2) {
+				//g2.setColor(new Color(0, 0, 0, 100));
+				g2.drawImage(bic.getImageAtIndex(Image.GABIONFADE1.getIndex()), (int) gabion.getX(), (int) gabion.getY(),
+						(int) gabion.getWidth(), (int) gabion.getHeight(), null);
 			} else {
-				// 3
-				g2.setColor(Color.BLACK);
+				//g2.setColor(Color.BLACK);
+				g2.drawImage(bic.getImageAtIndex(Image.GABIONFADE2.getIndex()), (int) gabion.getX(), (int) gabion.getY(),
+						(int) gabion.getWidth(), (int) gabion.getHeight(), null);
 			}
 			// g2.draw(gabions.get(i).getRect());
 			// g2.fill(gabions.get(i).getRect());
-			g2.drawImage(bic.getImageAtIndex(Image.GABION.getIndex()), (int) gabion.getX(), (int) gabion.getY(),
-					(int) gabion.getWidth(), (int) gabion.getHeight(), null);
+			
 		}
 	}
 

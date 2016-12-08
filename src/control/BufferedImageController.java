@@ -14,13 +14,13 @@ public class BufferedImageController {
 	int imgWidth;
 	int imgHeight;
 	private String[] animationPaths = {"img/cordgrass.png", "img/BlueCrab1.png", "img/oysterclump2-01.png", 
-			"img/sky.jpg", "img/sun.png", "img/gabionwater2_2-01.png", "img/gabion1.png", 
+			"img/sky.jpg", "img/sun.png", "img/gabion2_1-01.png", "img/gabion1.png", 
 			"img/gabion2.png", "img/gabion3.png", "img/gabion4.png", "img/gabion5.png",
 			"img/wave1.png", "img/wave2.png", "img/wave3.png", "img/gabionfull.png", "img/hand.png",
 			"img/cordgrass2.png", "img/cordgrass3.png", "img/BlueCrab2.png","img/BlueCrab3.png",
 			"img/concreteWall-01.png", "img/runOff.png", "img/tutorialButton.png", "img/playButton.png", 
 			"img/creditsButton.png", "img/a.png", "img/aPlus.png", "img/b.png", "img/c.png", "img/d.png",
-			"img/youWin.png"};
+			"img/youWin.png", "img/gabion2_2-01.png", "img/gabion2_3-01.png"};
 	private ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
 	private ArrayList<BufferedImage> animations = new ArrayList<BufferedImage>();
 	private ArrayList<BufferedImage> stringImages = new ArrayList<BufferedImage>();
