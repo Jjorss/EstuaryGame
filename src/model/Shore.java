@@ -3,7 +3,7 @@ package model;
 public class Shore extends Entity {
 
 	private int maxHealth = 100;
-	private int health = 0;//maxHealth;
+	private int health = maxHealth;
 	private int numberOfHorseshoeCrabs = 0;
 	private int x = 0;
 	private int y = 0;

@@ -24,8 +24,13 @@ public class Spawner {
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	private boolean increasedIntensity = false;
-	private int intensity = 10;
+	private int intensity = 1;
 	private int rowForRunOff = 2;
+	
+	private int totalNumOfWaves = 0;
+	private int totalNumOfRunoff = 0;
+	private int totalNumOfPlants = 0;
+	private int totalNumOfOyster = 0;
 	
 	public  Spawner(GameLoopController glc, Game game, Timer timer) {
 		this.glc = glc;
@@ -83,6 +88,7 @@ public class Spawner {
 			Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
 			glc.getOysters().add(new OysterController(clump, rect));
 			System.out.println("Spawned oyster");
+			this.setTotalNumOfOyster(this.getTotalNumOfOyster() + 1);
 		}
 		
 	}
@@ -105,6 +111,7 @@ public class Spawner {
 			Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
 			glc.getOysters().add(new OysterController(clump, rect));
 			System.out.println("Spawned oyster");
+			this.setTotalNumOfOyster(this.getTotalNumOfOyster() + 1);
 		}
 		
 	}
@@ -127,6 +134,7 @@ public class Spawner {
 			Rectangle2D rect = new Rectangle2D.Double(x,y,waveWidth, waveHeight );
 			glc.getWaves().add(new WaveController(w, rect));
 			glc.getNumOfWavesInRow().set(numRow, glc.getNumOfWavesInRow().get(numRow)+1);
+			this.setTotalNumOfWaves(this.getTotalNumOfWaves() + 1);
 		}
 	}
 	
@@ -154,6 +162,7 @@ public class Spawner {
 			Rectangle2D rect2 = new Rectangle2D.Double(x,y2,waveWidth, waveHeight );
 			glc.getWaves().add(new WaveController(w2, rect2));
 			glc.getNumOfWavesInRow().set(row2, glc.getNumOfWavesInRow().get(row2)+1);
+			this.setTotalNumOfWaves(this.getTotalNumOfWaves() + 1);
 		}
 	}
 	
@@ -225,7 +234,7 @@ public class Spawner {
 			Rectangle2D rect = new Rectangle2D.Double(x1,y1, plantWidth, plantHeight);
 			Plants p = new Plants(x1,y1, true);
 			glc.getPlants().add(new PlantController(p, rect));
-			
+			this.setTotalNumOfPlants(this.getTotalNumOfPlants() + 1);
 			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
 			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
 		} else if (!second) {
@@ -233,14 +242,14 @@ public class Spawner {
 			Rectangle2D rect = new Rectangle2D.Double(x2,y2, plantWidth, plantHeight);
 			Plants p = new Plants(x2,y2, true);
 			glc.getPlants().add(new PlantController(p, rect));
-			
+			this.setTotalNumOfPlants(this.getTotalNumOfPlants() + 1);
 			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
 			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
 		} else if (!third) {
 			Rectangle2D rect = new Rectangle2D.Double(x3,y3, plantWidth, plantHeight);
 			Plants p = new Plants(x3,y3, true);
 			glc.getPlants().add(new PlantController(p, rect));
-
+			this.setTotalNumOfPlants(this.getTotalNumOfPlants() + 1);
 			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
 			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
 		}
@@ -271,6 +280,7 @@ public class Spawner {
 			Rectangle2D rect = new Rectangle2D.Double(x,y,rfWidth, rfHeight );
 			glc.getRunOff().add(new RunOffController(r, rect));
 			this.runOffInRow.set(numRow, true);
+			this.setTotalNumOfRunoff(this.getTotalNumOfRunoff() + 1);
 //			System.out.println("spawning runOff");
 		}
 	}
@@ -290,6 +300,7 @@ public class Spawner {
 			Rectangle2D rect = new Rectangle2D.Double(x,y,rfWidth, rfHeight );
 			glc.getRunOff().add(new RunOffController(r, rect));
 			this.runOffInRow.set(numRow, true);
+			this.setTotalNumOfRunoff(this.getTotalNumOfRunoff() + 1);
 
 		}
 	}
@@ -334,6 +345,46 @@ public class Spawner {
 
 	public int getRowForRunOff() {
 		return rowForRunOff;
+	}
+
+
+	public int getTotalNumOfWaves() {
+		return totalNumOfWaves;
+	}
+
+
+	public void setTotalNumOfWaves(int totalNumOfWaves) {
+		this.totalNumOfWaves = totalNumOfWaves;
+	}
+
+
+	public int getTotalNumOfRunoff() {
+		return totalNumOfRunoff;
+	}
+
+
+	public void setTotalNumOfRunoff(int totalNumOfRunoff) {
+		this.totalNumOfRunoff = totalNumOfRunoff;
+	}
+
+
+	public int getTotalNumOfPlants() {
+		return totalNumOfPlants;
+	}
+
+
+	public void setTotalNumOfPlants(int totalNumOfPlants) {
+		this.totalNumOfPlants = totalNumOfPlants;
+	}
+
+
+	public int getTotalNumOfOyster() {
+		return totalNumOfOyster;
+	}
+
+
+	public void setTotalNumOfOyster(int totalNumOfOyster) {
+		this.totalNumOfOyster = totalNumOfOyster;
 	}
 	
 }

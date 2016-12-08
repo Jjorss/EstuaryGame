@@ -48,7 +48,7 @@ public class Game extends JPanel{
 	boolean init = false;
 	boolean dragging = false;
 	boolean isPaused = false;
-	boolean gameOver = false;
+	boolean gameLost = false;
 	private boolean restart = false;
 	boolean increase = true;
 	
@@ -83,7 +83,7 @@ public class Game extends JPanel{
 					System.exit(0);
 					
 				}
-				if (e.getKeyCode() == KeyEvent.VK_P && !isGameOver()) {
+				if (e.getKeyCode() == KeyEvent.VK_P && !isGameLost()) {
 					System.out.println("PauSED");
 					togglePaused();
 				}
@@ -355,7 +355,7 @@ public class Game extends JPanel{
         if (this.init && glc.getCurrentGameState()!= GameState.LOADING) {
         	
         	glc.render(g);
-        	if (this.gameOver) {
+        	if (this.gameLost) {
         		if (this.fontSize >= WIDTH * 0.1) {
         			this.increase = false;
         		} else if (this.fontSize <= WIDTH * 0.08) {
@@ -370,9 +370,9 @@ public class Game extends JPanel{
         		Font f2 = new Font("Arial", 1, this.fontSize/2);
             	g.setFont(f);
             	g.setColor(Color.WHITE);
-            	//g.drawString("GAME OVER",(scale.getWidth()/2) - f.getSize()*2 , scale.getHeight()/2);
+            	g.drawString("GAME OVER",(scale.getWidth()/2) - f.getSize()*2 , scale.getHeight()/2);
             	g.setFont(f2);
-            	//g.drawString("PRESS R TO RESTART",(scale.getWidth()/2) - f2.getSize()*2 , (scale.getHeight()/2) + f.getSize());
+            	g.drawString("PRESS R TO RESTART",(scale.getWidth()/2) - f2.getSize()*2 , (scale.getHeight()/2) + f.getSize());
         	}
         } else {
         	Font f = new Font("Arial", Font.BOLD, 50);
@@ -392,7 +392,7 @@ public class Game extends JPanel{
 		if (newInit != this.init || this.restart) {
 			this.restart = false;
 			glc = new GameLoopController(this, scale);
-			this.gameOver = false;
+			this.gameLost = false;
 			glc.init();
 			this.init = newInit;
 			System.out.println("Initialized");
@@ -423,12 +423,12 @@ public class Game extends JPanel{
 		this.isPaused = isPaused;
 	}
 
-	public boolean isGameOver() {
-		return gameOver;
+	public boolean isGameLost() {
+		return gameLost;
 	}
 
-	public void setGameOver(boolean gameOver) {
-		this.gameOver = gameOver;
+	public void setGameLost(boolean gameLost) {
+		this.gameLost = gameLost;
 	}
 
 	public boolean isRestart() {
@@ -440,7 +440,7 @@ public class Game extends JPanel{
 		if (restart) {
 			glc.setCurrentGameState(GameState.GAME);
 			glc.init();
-			this.gameOver = false;
+			this.gameLost = false;
 		}
 	}
 
