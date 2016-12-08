@@ -276,7 +276,7 @@ public class Spawner implements Serializable{
 		int y = (int) ((glc.getPlantRows().get(numRow).getCenterY()) - (rfHeight/2));
 		int x = 0 - rfWidth;
 		int speed = (int) (game.getScale().getWidth()*0.003);
-		if (glc.getRunOff().size() < this.intensity/3 && /*!this.runOffInRow.get(numRow) &&*/ time < 170) {
+		if (glc.getRunOff().size() < this.intensity/2 && /*!this.runOffInRow.get(numRow) &&*/ time < 155) {
 			RunOff r = new RunOff(speed,x,y, numRow);
 			Rectangle2D rect = new Rectangle2D.Double(x,y,rfWidth, rfHeight );
 			glc.getRunOff().add(new RunOffController(r, rect));

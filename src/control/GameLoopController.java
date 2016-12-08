@@ -363,17 +363,33 @@ public class GameLoopController implements Serializable{
 				// plantTimer.countUp(5);
 				pb.getPb().setNumberOfPlants(1);
 				// flashing gabion here
+				
+				
+//				if (this.placedFirstGabion) {
+//					this.message = "Good Job!";
+//					textTimer.countUp(2);
+//					if (textTimer.getTime() >= 2) {
+//						textTimer = new Timer();
+//						animations.clear();
+//						this.currentTutorialState = TutorialState.RUNOFF;
+//
+//					}
+//
+//				}		
+				
 				if (this.placedFirstGabion) {
-					this.message = "Good Job!";
-					textTimer.countUp(2);
-					if (textTimer.getTime() >= 2) {
-						textTimer = new Timer();
-						animations.clear();
-						this.currentTutorialState = TutorialState.RUNOFF;
-
-					}
-
+				this.message = "Good Job!";
+				textTimer.countUp(7);
+				if (textTimer.getTime() >= 2) {
+					animations.clear();
+					this.message = "Concrete walls are your last line of defense. They are weaker than gabions!";
 				}
+				if (textTimer.getTime() >= 7) {
+					textTimer = new Timer();
+					this.currentTutorialState = TutorialState.RUNOFF;
+				}
+			}
+				
 
 				break;
 			case RUNOFF:
@@ -387,7 +403,7 @@ public class GameLoopController implements Serializable{
 					this.animations.add(new AnimationController(this, bic, Animation.PLACEPLANT, null, 2));
 					this.currentTutorialState = TutorialState.PLANTS;
 				} else {
-					this.message = "Look, your Plants have grown!";
+					this.message = "Look, your Plants are growing!!";
 					// flash plant number
 
 				}
@@ -651,7 +667,7 @@ public class GameLoopController implements Serializable{
 			// UI
 			// ---------------------------
 			// Gabion builder/Plant builder
-			this.renderGameTimer(g2);
+			//this.renderGameTimer(g2);
 			// this.renderGabionBuilder(g2);
 
 			// GabionBuilder Meter
