@@ -70,4 +70,8 @@ public class Timer implements Serializable{
 	public long getTimeMili() {
 		return timeMili;
 	}
+
+	public void setStartGameTime(long startGameTime) {
+		this.startGameTime = startGameTime;
+	}
 }

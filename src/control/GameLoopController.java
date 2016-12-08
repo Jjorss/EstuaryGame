@@ -1688,4 +1688,14 @@ public class GameLoopController implements Serializable{
 		this.game = game;
 	}
 
+
+	public Timer getTimer() {
+		return timer;
+	}
+
+
+	public void setTimer(Timer timer) {
+		this.timer = timer;
+	}
+
 }

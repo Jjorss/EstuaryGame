@@ -57,6 +57,8 @@ public class Game extends JPanel implements Serializable{
 	boolean gameLost = false;
 	private boolean restart = false;
 	
+	private long savedTime = 0;
+	
 	transient MouseAdapter ma = new MouseAdapter() {
 		@Override
         public void mouseReleased(MouseEvent e) {
@@ -422,6 +424,7 @@ public class Game extends JPanel implements Serializable{
             oos.close();
             glc.save();
             glc.getBic().save();
+            this.savedTime = System.currentTimeMillis();
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
@@ -445,6 +448,8 @@ public class Game extends JPanel implements Serializable{
 	         this.glc = (GameLoopController) ois3.readObject();
 	         this.glc.getBic().loadBufferedImage();
 	         this.glc.setGame(this);
+	         //this.glc.getTimer().setTime(System.currentTimeMillis() - this.savedTime);
+	         this.glc.getTimer().setStartGameTime((System.currentTimeMillis() - this.savedTime) + glc.getTimer().getStartGameTime());
 	         System.out.println("--------------------------------------------------");
 	         System.gc();
 	         ois3.close();
