@@ -1,6 +1,8 @@
 package model;
 
-public class PlantBuilder extends Builder {
+import java.io.Serializable;
+
+public class PlantBuilder extends Builder implements Serializable{
 
 	private int numberOfPlants = 0;
 	private Timer timer;

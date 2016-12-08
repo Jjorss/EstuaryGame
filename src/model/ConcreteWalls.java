@@ -1,6 +1,8 @@
 package model;
 
-public class ConcreteWalls extends Wall {
+import java.io.Serializable;
+
+public class ConcreteWalls extends Wall implements Serializable{
 	
 	private boolean isVisible = true;
 

@@ -1,6 +1,8 @@
 package model;
 
-public class RunOff extends Entity{
+import java.io.Serializable;
+
+public class RunOff extends Entity implements Serializable{
 	/**
 	 * 
 	 * @author Jackson Jorss

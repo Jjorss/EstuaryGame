@@ -1,10 +1,11 @@
 package control;
 
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 import model.Wave;
 
-public class WaveController {
+public class WaveController implements Serializable{
 
 	private Wave wave;
 	private Rectangle2D rect;

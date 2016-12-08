@@ -1,10 +1,11 @@
 package control;
 
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 import model.ConcreteWalls;
 
-public class ConcreteWallController {
+public class ConcreteWallController implements Serializable {
 
 	private ConcreteWalls concreteWall;
 	private Rectangle2D rect;

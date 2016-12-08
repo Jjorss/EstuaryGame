@@ -1,10 +1,11 @@
 package control;
 
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 import model.GabionBuilder;
 
-public class GabionBuilderController {
+public class GabionBuilderController implements Serializable{
 
 	private GabionBuilder gb;
 	private Rectangle2D rect;

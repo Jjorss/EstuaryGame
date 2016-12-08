@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class GabionBuilder extends Builder {
+public class GabionBuilder extends Builder implements Serializable{
 
 	private int gabions = 0;
 	private int numOfOysters = 0;

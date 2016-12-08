@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 /**
  * 
@@ -12,7 +13,7 @@ import java.awt.geom.Rectangle2D;
  *
  */
 
-public class Wave extends Entity{
+public class Wave extends Entity implements Serializable{
 
 	private int speed;
 	private boolean isVisable = true;

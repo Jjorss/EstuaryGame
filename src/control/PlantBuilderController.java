@@ -2,10 +2,11 @@ package control;
 
 
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 import model.PlantBuilder;
 
-public class PlantBuilderController {
+public class PlantBuilderController implements Serializable{
 
 	private PlantBuilder pb;
 	private Rectangle2D rect;

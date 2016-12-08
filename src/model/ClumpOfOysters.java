@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class ClumpOfOysters extends Entity{
+public class ClumpOfOysters extends Entity implements Serializable{
 
 	private boolean isVisible = true;
 	private boolean collected = false;

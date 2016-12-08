@@ -1,6 +1,8 @@
 package model;
 
-public class Gabion extends Wall {
+import java.io.Serializable;
+
+public class Gabion extends Wall implements Serializable{
 	private boolean isVisible = true;
 	private int health = 3;
 	private int rowNum;

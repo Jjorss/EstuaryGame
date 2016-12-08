@@ -1,5 +1,7 @@
 package model;
 
-public enum TutorialState {
+import java.io.Serializable;
+
+public enum TutorialState implements Serializable{
 	OYSTERS, GABIONS, WAVES, PLANTS, RUNOFF, END
 }

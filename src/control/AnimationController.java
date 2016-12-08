@@ -4,10 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 import model.Animation;
 
-public class AnimationController {
+public class AnimationController implements Serializable{
 
 	private GameLoopController glc;
 	private BufferedImageController bic;

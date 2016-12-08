@@ -1,6 +1,7 @@
 package control;
 
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -12,7 +13,7 @@ import model.Timer;
 import model.Wave;
 import view.Game;
 
-public class Spawner {
+public class Spawner implements Serializable{
 
 	private GameLoopController glc;
 	private Game game;
@@ -24,7 +25,7 @@ public class Spawner {
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
 	
 	private boolean increasedIntensity = false;
-	private int intensity = 10;
+	private int intensity = 1;
 	private int rowForRunOff = 2;
 	
 	private int totalNumOfWaves = 0;

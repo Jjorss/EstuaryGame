@@ -11,6 +11,9 @@ import java.awt.font.LineMetrics;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -39,7 +42,7 @@ import view.Scale;
  *
  */
 
-public class GameLoopController {
+public class GameLoopController implements Serializable{
 	private Game game;
 	private BufferedImageController bic;
 	private Scale scale;
@@ -137,6 +140,7 @@ public class GameLoopController {
 		this.game = game;
 		this.scale = scale;
 		System.out.println(game.getBounds().getWidth());
+		this.init();
 
 	}
 
@@ -305,6 +309,8 @@ public class GameLoopController {
 		helperHorse = new HorseshoeCrabController(helperHorseCrab, helperHorseRect);
 		hsCrab.add(helperHorse);
 
+		
+		
 		bic.loadBufferedImage();
 		ac = new AnimationController(this, bic, null, null, 0);
 		this.init = true;
@@ -1515,6 +1521,16 @@ public class GameLoopController {
 		}
 	}
 	
+	public void save() {
+		try {
+			FileOutputStream fos = new FileOutputStream("saveStateGLC.ser");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this);
+            oos.close();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 	
 	
 
@@ -1650,6 +1666,26 @@ public class GameLoopController {
 
 	public void setAbleToPlacePlant(boolean ableToPlacePlant) {
 		this.ableToPlacePlant = ableToPlacePlant;
+	}
+
+
+	public BufferedImageController getBic() {
+		return bic;
+	}
+
+
+	public void setBic(BufferedImageController bic) {
+		this.bic = bic;
+	}
+
+
+	public Game getGame() {
+		return game;
+	}
+
+
+	public void setGame(Game game) {
+		this.game = game;
 	}
 
 }

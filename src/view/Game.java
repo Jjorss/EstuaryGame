@@ -10,6 +10,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JFrame;
@@ -17,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import control.BufferedImageController;
 import control.GameLoopController;
 import model.GameState;
 
@@ -38,7 +44,7 @@ import model.GameState;
  */
 
 
-public class Game extends JPanel{
+public class Game extends JPanel implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private static final int WIDTH = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
@@ -50,11 +56,45 @@ public class Game extends JPanel{
 	boolean isPaused = false;
 	boolean gameLost = false;
 	private boolean restart = false;
-	boolean increase = true;
+	
+	transient MouseAdapter ma = new MouseAdapter() {
+		@Override
+        public void mouseReleased(MouseEvent e) {
+            if (dragging && !isPaused) {
+            	if (glc.isRenderDragGabion()) {
+            		glc.handlePlaceGabion(e.getPoint());
+            		
+            	}
+            	if (glc.isRenderDragPlant()) {
+            		glc.handlePlacePlant(e.getPoint());
+            	}
+            	dragging = false;
+            } 
+            //System.out.println("DRAGGGINGGG");
+            
+        }
+		@Override
+		public void mousePressed(MouseEvent e) {
+			if (!isPaused) {
+				glc.handlePressed(e.getPoint());
+				//System.out.println("mouse pressed");
+			}
+			setMouseCords(e.getPoint());
+		}
+	
+	};
+	
+	transient MouseAdapter mad = new MouseAdapter() {
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			setMouseCords(e.getPoint());
+			//System.out.println("dragging");
+		}
+	};
 	
 	private Point mouseCords = new Point(0,0);
 	
-	private int fontSize = (int)(WIDTH*0.1);
 	private int framePerSecond = 0;
 	
 	private GameState oldState;
@@ -90,7 +130,13 @@ public class Game extends JPanel{
 				if (e.getKeyCode() == KeyEvent.VK_R && !isPaused()) {
 					setRestart(true);
 				}
-				System.out.println("IM PRESING A KEY");
+				if (e.getKeyCode() == KeyEvent.VK_S) {
+					save();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_L) {
+					load();
+				}
+				System.out.println("IM PRESsING A KEY");
 			}
 
 			@Override
@@ -107,9 +153,9 @@ public class Game extends JPanel{
         	
         });
         scale = new Scale((int)this.getBounds().getWidth(), (int)this.getBounds().getHeight(), 8);
-        
         System.out.println("started");
-        
+        this.mouseClick(this);
+		this.mouseMotion(this);
 	}
 	
 	public static void main(String[] args) throws InvocationTargetException, InterruptedException {
@@ -182,48 +228,17 @@ public class Game extends JPanel{
 //        });
 		// loop
 		
-		game.mouseClick(game);
-		game.mouseMotion(game);
 		System.out.println("called first");
 		game.start();
 		
 	}
 	
+	
 	public void mouseClick(Game game) {
-		game.addMouseListener(new MouseAdapter() {
-			@Override
-            public void mouseReleased(MouseEvent e) {
-                if (game.dragging && !game.isPaused) {
-                	if (glc.isRenderDragGabion()) {
-                		glc.handlePlaceGabion(e.getPoint());
-                	}
-                	if (glc.isRenderDragPlant()) {
-                		glc.handlePlacePlant(e.getPoint());
-                	}
-                	game.dragging = false;
-                } 
-                
-            }
-			@Override
-			public void mousePressed(MouseEvent e) {
-				if (!game.isPaused) {
-					glc.handlePressed(e.getPoint());
-					//System.out.println("mouse pressed");
-				}
-				game.setMouseCords(e.getPoint());
-			}
-		
-		});
+		game.addMouseListener(ma);
 	}
 	public void mouseMotion(Game game) {
-		game.addMouseMotionListener(new MouseAdapter() {
-					
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				game.setMouseCords(e.getPoint());
-				//System.out.println("dragging");
-			}
-		});
+		game.addMouseMotionListener(mad);
 	}
 	
 	
@@ -399,6 +414,46 @@ public class Game extends JPanel{
 		}
 	}
 
+	public void save(){
+		try {
+			FileOutputStream fos = new FileOutputStream("saveStateGame.ser");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this);
+            oos.close();
+            glc.save();
+            glc.getBic().save();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public void load() {
+		 try {
+//			 FileInputStream fis = new FileInputStream("saveStateGame.ser");
+//	         ObjectInputStream ois = new ObjectInputStream(fis);
+//	         Game lGame = (Game) ois.readObject();
+//	         ois.close();
+	         //this.glc = null;
+	         
+//	         FileInputStream fis2 = new FileInputStream("saveStateBIC.ser");
+//	         ObjectInputStream ois2 = new ObjectInputStream(fis2);
+//	         BufferedImageController Lbic = (BufferedImageController) ois2.readObject();
+//	         ois2.close();
+	         
+	         FileInputStream fis3 = new FileInputStream("saveStateGLC.ser");
+	         ObjectInputStream ois3 = new ObjectInputStream(fis3);
+	         this.glc = (GameLoopController) ois3.readObject();
+	         this.glc.getBic().loadBufferedImage();
+	         this.glc.setGame(this);
+	         System.out.println("--------------------------------------------------");
+	         System.gc();
+	         ois3.close();
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 }
+          
+	}
+	
 	public Point getMouseCords() {
 		return mouseCords;
 	}

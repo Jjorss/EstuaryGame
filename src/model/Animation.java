@@ -1,5 +1,7 @@
 package model;
 
-public enum Animation {
+import java.io.Serializable;
+
+public enum Animation implements Serializable{
 	OYSTER, PLACEGABION, PLACEPLANT
 }

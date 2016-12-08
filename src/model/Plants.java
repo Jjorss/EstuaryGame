@@ -1,6 +1,8 @@
 package model;
 
-public class Plants extends Wall{
+import java.io.Serializable;
+
+public class Plants extends Wall implements Serializable{
 
 	private int x;
 	private int y;

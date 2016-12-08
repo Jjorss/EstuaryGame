@@ -1,6 +1,8 @@
 package model;
 
-public class Timer {
+import java.io.Serializable;
+
+public class Timer implements Serializable{
 	
 	private int time=0;
 	private long timeMili = 0L;

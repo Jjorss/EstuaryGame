@@ -1,10 +1,11 @@
 package control;
 
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 import model.Shore;
 
-public class ShoreController {
+public class ShoreController implements Serializable{
 
 	private Shore shore;
 	private Rectangle2D rect;

@@ -1,10 +1,11 @@
 package control;
 
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 import model.HorseshoeCrab;
 
-public class HorseshoeCrabController {
+public class HorseshoeCrabController implements Serializable{
 
 	private HorseshoeCrab hsc;
 	private Rectangle2D rect;

@@ -1,6 +1,8 @@
 package model;
 
-public class HorseshoeCrab extends Entity {
+import java.io.Serializable;
+
+public class HorseshoeCrab extends Entity implements Serializable{
 
 	public HorseshoeCrab(int x, int y) {
 		super(x, y);

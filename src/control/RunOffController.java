@@ -1,10 +1,11 @@
 package control;
 
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 import model.RunOff;
 
-public class RunOffController {
+public class RunOffController implements Serializable{
 
 	private RunOff runOff;
 	private Rectangle2D rect;

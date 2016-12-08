@@ -1,6 +1,8 @@
 package model;
 
-public class Shore extends Entity {
+import java.io.Serializable;
+
+public class Shore extends Entity implements Serializable{
 
 	private int maxHealth = 100;
 	private int health = maxHealth;

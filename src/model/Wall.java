@@ -1,6 +1,8 @@
 package model;
 
-public abstract class Wall {
+import java.io.Serializable;
+
+public abstract class Wall implements Serializable{
 	
 	int x;
 	int y;

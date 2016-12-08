@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 
 
 /**
@@ -15,7 +16,7 @@ import java.awt.Graphics;
  */
 
 
-public class Scale {
+public class Scale implements Serializable {
 
 	private int width;
 	private int height;

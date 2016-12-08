@@ -1,10 +1,11 @@
 package control;
 
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 import model.ClumpOfOysters;
 
-public class OysterController {
+public class OysterController implements Serializable{
 
 	private ClumpOfOysters oyster;
 	private Rectangle2D rect;
