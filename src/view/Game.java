@@ -50,11 +50,11 @@ public class Game extends JPanel implements Serializable{
 	private static final int WIDTH = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 	private static final int HEIGHT = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	
-	boolean started = false;
-	boolean init = false;
-	boolean dragging = false;
-	boolean isPaused = false;
-	boolean gameLost = false;
+	private boolean started = false;
+	private boolean init = false;
+	private boolean dragging = false;
+	private boolean isPaused = false;
+	private boolean gameLost = false;
 	private boolean restart = false;
 	
 	private long savedTime = 0;
@@ -105,7 +105,7 @@ public class Game extends JPanel implements Serializable{
 	static Scale scale = new Scale(WIDTH, HEIGHT, 8);
 	GameLoopController glc = new GameLoopController(this, scale);
 	
-	
+
 	public Game() {
 		super();
 		JFrame frame = new JFrame("Game");
@@ -159,7 +159,14 @@ public class Game extends JPanel implements Serializable{
         this.mouseClick(this);
 		this.mouseMotion(this);
 	}
-	
+	/**
+	 * Standard main method.
+	 * Creates a game object and starts the game.
+	 * 
+	 * @param args
+	 * @throws InvocationTargetException
+	 * @throws InterruptedException
+	 */
 	public static void main(String[] args) throws InvocationTargetException, InterruptedException {
 		
 		Game game = new Game();
@@ -247,8 +254,8 @@ public class Game extends JPanel implements Serializable{
 	
 	
 	/**
-	 * Main game loop. Calls repaint ever tic and the game loop
-	 * controller loop function to start all of the models logic methods
+	 * Main game loop. Calls repaint every tic and the game loop
+	 * controller loop function to start all of the models logic methods.
 	 */
 	
 	public void start() {
@@ -400,11 +407,19 @@ public class Game extends JPanel implements Serializable{
         //scale.render(g);
 	}
 	
+	/**
+	 * Getter for the parameter scale.
+	 * @return
+	 */
 	@SuppressWarnings("static-access")
 	public Scale getScale() {
 		return this.scale;
 	}
-	
+	/**
+	 * Setter for the parameter init.
+	 * initializes GameLoopController on start up or when restarted.
+	 * @param newInit boolean Initializes game if true.
+	 */
 	public void setInit(boolean newInit) {
 		if (newInit != this.init || this.restart) {
 			this.restart = false;
@@ -415,7 +430,9 @@ public class Game extends JPanel implements Serializable{
 			System.out.println("Initialized");
 		}
 	}
-
+	/**
+	 * Saves game -------------------------
+	 */
 	public void save(){
 		try {
 			FileOutputStream fos = new FileOutputStream("saveStateGame.ser");
@@ -429,7 +446,9 @@ public class Game extends JPanel implements Serializable{
 			ex.printStackTrace();
 		}
 	}
-	
+	/**
+	 * Loads serialized game state.
+	 */
 	public void load() {
 		 try {
 //			 FileInputStream fis = new FileInputStream("saveStateGame.ser");
@@ -458,43 +477,73 @@ public class Game extends JPanel implements Serializable{
 		 }
           
 	}
-	
+	/**
+	 * Getter for the parameter mouseCords.
+	 * @return The value of the parameter mouseCords.
+	 */
 	public Point getMouseCords() {
 		return mouseCords;
 	}
-
+	/**
+	 * Setter for the parameter mousCords.
+	 * @param mouseCords Point Coordinates of the mouse on the JPanel.
+	 */
 	public void setMouseCords(Point mouseCords) {
 		this.mouseCords = mouseCords;
 	}
-
+	/**
+	 * Getter for the parameter dragging.
+	 * @return The value of the parameter dragging.
+	 */
 	public boolean isDragging() {
 		return dragging;
 	}
-	
+	/**
+	 * Setter for parameter dragging.
+	 * @param d boolean True if a dragging motion is occurring. False otherwise.
+	 */
 	public void setDragging(boolean d) {
 		this.dragging = d;
 	}
-
+	/**
+	 * Getter for the parameter paused.
+	 * @return The value of the parameter isPaused.
+	 */
 	public boolean isPaused() {
 		return isPaused;
 	}
-
+	/**
+	 * Setter for the parameter paused.
+	 * @param isPaused boolean True if the current game state is PAUSED. False otherwise.
+	 */
 	public void setPaused(boolean isPaused) {
 		this.isPaused = isPaused;
 	}
-
+	/**
+	 * Getter for the parameter gameLost. 
+	 * @return The value of the parameter gameLost.
+	 */
 	public boolean isGameLost() {
 		return gameLost;
 	}
-
+	/**
+	 * Setter for the parameter gameLost.
+	 * @param gameLost boolean True if the current game state is OVER.
+	 */
 	public void setGameLost(boolean gameLost) {
 		this.gameLost = gameLost;
 	}
-
+	/**
+	 * Getter for the parameter restart.
+	 * @return The value of the parameter gameLost
+	 */
 	public boolean isRestart() {
 		return restart;
 	}
-
+	/**
+	 * Setter for the parameter restart. Restarts game when true.
+	 * @param restart boolean True when the game is being restarted. False otherwise.
+	 */
 	public void setRestart(boolean restart) {
 		this.restart = restart;
 		if (restart) {
@@ -503,15 +552,23 @@ public class Game extends JPanel implements Serializable{
 			this.gameLost = false;
 		}
 	}
-
+	/**
+	 * Getter for the parameter framePerSecond.
+	 * @return the value of the parameter framePerSecond
+	 */
 	public int getFramePerSecond() {
 		return framePerSecond;
 	}
-
+	/**
+	 * Setter for the parameter framePerSecond.
+	 * @param framePerSecond int The amount of frames per second.
+	 */
 	public void setFramePerSecond(int framePerSecond) {
 		this.framePerSecond = framePerSecond;
 	}
-	
+	/**
+	 * Sets the value of the parameter isPaused to false if it was true and vice versa.
+	 */
 	public void togglePaused() {
 		if(this.isPaused) {
 			this.isPaused = false;

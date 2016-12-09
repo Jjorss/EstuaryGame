@@ -9,6 +9,10 @@ public class Timer implements Serializable{
 	public long startGameTime = System.currentTimeMillis();
 	private boolean initStartTime = true;
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getTime() {
 		return time;
 	}

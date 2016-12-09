@@ -43,22 +43,22 @@ public class Scale implements Serializable {
 	}
 
 	/**
-	 * Getter
-	 * @return the current instance width
+	 * Getter for the parameter width.
+	 * @return The current instance width.
 	 */
 	public int getWidth() {
 		return this.width;
 	}
 	/**
-	 * Getter
-	 * @return the current instance height
+	 * Getter for the parameter height.
+	 * @return The current instance height
 	 */
 	public int getHeight() {
 		return this. height;
 	}
 	/**
-	 * Getter
-	 * @return the current instance gridsize
+	 * Getter for the parameter GridSize.
+	 * @return The current instance gridSize.
 	 */
 
 	public int getGridSize() {

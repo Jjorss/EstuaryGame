@@ -32,50 +32,58 @@ public class Wave extends Entity implements Serializable{
 	}
 	
 	/**
-	 * Getter
-	 * @return the current instance speed
+	 * Getter for the parameter speed.
+	 * @return The current instance speed.
 	 */
 	public int getSpeed() {
 		return speed;
 	}
 	/**
-	 * Setter
-	 * @param speed int that sets speed
+	 * Setter for the parameter speed.
+	 * @param speed int Abstract integer that represents how fast an object moves on the JPanel.
 	 */
 	public void setSpeed(int speed) {
 		this.speed = speed;
 	}
 	/**
-	 * Getter
-	 * @return the current instance X
+	 * Getter for the parameter x.
+	 * @return The current instance x.
 	 */
 	public int getX() {
 		return x;
 	}
 	/**
-	 * Setter
-	 * @param x int that sets the x value
+	 * Setter for the parameter x.
+	 * @param x int X coordinate of a wave on the JPanel.
 	 */
 	public void setX(int x) {
 		this.x = x;
 	}
 	/**
-	 * Getter
-	 * @return the current instance Y
+	 * Getter for the parameter y.
+	 * @return The current instance y.
 	 */
 	public int getY() {
 		return y;
 	}
 	/**
-	 * Setter
-	 * @param y int that sets the y value
+	 * Setter for the parameter y.
+	 * @param y int Y coordinate of a wave on the JPanel.
 	 */
 	public void setY(int y) {
 		this.y = y;
 	}
+	/**
+	 * Getter for the parameter visible.
+	 * @return The current instance of visible.
+	 */
 	public boolean isVisable() {
 		return isVisable;
 	}
+	/**
+	 * Setter for the parameter visible.
+	 * @param isVisable True if JPanel paints the wave. False otherwise.
+	 */
 	public void setVisable(boolean isVisable) {
 		this.isVisable = isVisable;
 	}
