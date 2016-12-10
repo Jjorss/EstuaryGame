@@ -440,7 +440,7 @@ public class Game extends JPanel implements Serializable{
             oos.writeObject(this);
             oos.close();
             glc.save();
-            glc.getBic().save();
+//            glc.getBic().save();
             this.savedTime = System.currentTimeMillis();
 		} catch(Exception ex) {
 			ex.printStackTrace();

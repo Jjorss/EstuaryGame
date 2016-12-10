@@ -14,19 +14,31 @@ public class PlantController implements Serializable{
 		this.setPlant(plant);
 		this.setRect(rect);
 	}
-
+	/**
+	 * Plants plant getter.
+	 * @return Plants plant
+	 */
 	public Plants getPlant() {
 		return plant;
 	}
-
+	/**
+	 * Plants plant setter.
+	 * @param Plants plant
+	 */
 	public void setPlant(Plants plant) {
 		this.plant = plant;
 	}
-
+	/**
+	 * Rectangle2D rect getter.
+	 * @return Rectangle2D rect
+	 */
 	public Rectangle2D getRect() {
 		return rect;
 	}
-
+	/**
+	 * Rectangle2D rect setter.
+	 * @param Rectangle2D rect
+	 */
 	public void setRect(Rectangle2D rect) {
 		this.rect = rect;
 	}
