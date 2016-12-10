@@ -1,4 +1,4 @@
-package tests;
+package model;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,11 @@ import model.ConcreteWalls;
 
 
 public class ConcreteWallsTest {
+	
+	public void exceptionTest() {
+		ClumpOfOysters tester = new ClumpOfOysters(0, 0);
+	    tester.move();
+	}
 	
 	@Test(expected=UnsupportedOperationException.class)
 	public void healthTest(){

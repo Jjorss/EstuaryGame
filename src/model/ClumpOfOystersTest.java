@@ -1,4 +1,4 @@
-package tests;
+package model;
 
 import static org.junit.Assert.*;
 
@@ -48,11 +48,10 @@ public class ClumpOfOystersTest {
 		assertTrue(tester.getY() == 8);
 		
 	}
-	@Test
+	
 	public void testSetAndGetNumOfOystersInClump() {
 		ClumpOfOysters tester = new ClumpOfOysters(0,0);
-		int numO = tester.getNumOfOystersInClump();
-		assertTrue(numO == 1);
+		assertTrue(tester.getNumOfOystersInClump() == 1);
 		tester.setNumOfOystersInClump(3);
 		assertTrue(tester.getNumOfOystersInClump() == 3);
 	}

@@ -1,4 +1,4 @@
-package tests;
+package model;
 
 import static org.junit.Assert.*;
 
@@ -40,7 +40,6 @@ public class PlantsTest {
 		assertTrue(!p.isVisible());
 	}
 	
-	@Test
 	public void testMaxHealth() {
 		Plants p = new Plants(0, 0, true);
 		assertTrue(p.getMaxHealth() == 200);
