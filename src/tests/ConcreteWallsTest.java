@@ -21,4 +21,11 @@ public class ConcreteWallsTest {
 		tester.changeHealth(1);		
 	}
 	
+	@Test
+	public void testXandY() {
+		ConcreteWalls tester = new ConcreteWalls(0,0);
+		assertTrue(tester.getX() == 0);
+		assertTrue(tester.getY() == 0);
+		
+	}
 }

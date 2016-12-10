@@ -18,13 +18,6 @@ public class ConcreteWalls extends Wall implements Serializable{
 		
 	}
 
-	public boolean isVisible() {
-		return isVisible;
-	}
-
-	public void setVisible(boolean isVisible) {
-		this.isVisible = isVisible;
-	}
 	
 	public int getX(){
 		return super.x;

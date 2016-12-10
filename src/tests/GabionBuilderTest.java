@@ -26,4 +26,22 @@ public class GabionBuilderTest {
 		assertTrue(gabion.getNumberOfOysters() == 0);
 	}
 
+	@Test
+	public void testGabions() {
+		GabionBuilder gb = new GabionBuilder();
+		gb.setGabions(5);
+		assertTrue(gb.getGabions() == 5);
+	}
+	@Test
+	public void testNumberOfOyster() {
+		GabionBuilder gb = new GabionBuilder();
+		gb.setNumberOfLayers(5);
+		assertTrue(gb.getNumberOfOysters() == 5);
+	}
+	@Test
+	public void testGetCapacity() {
+		GabionBuilder gb = new GabionBuilder();
+		assertTrue(gb.getMaxGabionCapacity() == 5);
+	}
+	
 }

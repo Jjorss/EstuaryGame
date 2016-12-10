@@ -14,7 +14,6 @@ public class RunOff extends Entity implements Serializable{
 	 */
 
 	private int speed;
-	private boolean isVisable = true;
 	private int x;
 	private int y;
 	private int rowNum;

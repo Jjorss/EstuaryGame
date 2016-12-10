@@ -6,7 +6,6 @@ import java.util.Random;
 public class ClumpOfOysters extends Entity implements Serializable{
 
 	private boolean isVisible = true;
-	private boolean collected = false;
 	
 	private int numOfOystersInClump= 1;
 	
@@ -55,13 +54,5 @@ public class ClumpOfOysters extends Entity implements Serializable{
 		this.isVisible = isVisiable;
 	}
 
-	public boolean isCollected() {
-		return collected;
-	}
-
-	public void setCollected(boolean collected) {
-		this.collected = collected;
-	}
-
-	
+		
 }

@@ -6,7 +6,7 @@ public class PlantBuilder extends Builder implements Serializable{
 
 	private int numberOfPlants = 0;
 	private Timer timer;
-	private int numOfSecondsPerPlant = 6;
+	private final int numOfSecondsPerPlant = 6;
 	private boolean addPlant = false;
 
 	public PlantBuilder(Timer timer) {
@@ -20,7 +20,7 @@ public class PlantBuilder extends Builder implements Serializable{
 		} else {
 			this.addPlant = false;
 		}
-		//System.out.println(this.numberOfPlants + "\t" + timer.getTime() % this.numOfSecondsPerPlant);
+		//System.out.println(this.numberOfPlants + "\t" + timer.getTime());
 	}
 
 	public int getNumberOfPlants() {

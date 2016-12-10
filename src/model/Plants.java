@@ -6,7 +6,7 @@ public class Plants extends Wall implements Serializable{
 
 	private int x;
 	private int y;
-	private int maxHealth = 200;
+	private final int maxHealth = 200;
 	private int health = maxHealth;
 	private boolean isVisible = false;
 
@@ -27,9 +27,7 @@ public class Plants extends Wall implements Serializable{
 	public int getHealth() {
 		return health;
 	}
-	public void setHealth(int health) {
-		this.health = health;
-	}
+	
 	public int getY() {
 		return y;
 	}
@@ -55,9 +53,7 @@ public class Plants extends Wall implements Serializable{
 		return maxHealth;
 	}
 
-	public void setMaxHealth(int maxHealth) {
-		this.maxHealth = maxHealth;
-	}
+	
 	
 	
 }

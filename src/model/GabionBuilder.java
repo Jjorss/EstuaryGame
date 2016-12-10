@@ -8,7 +8,7 @@ public class GabionBuilder extends Builder implements Serializable{
 
 	private int gabions = 0;
 	private int numOfOysters = 0;
-	private int maxGabionCapacity = 5;
+	private final int maxGabionCapacity = 5;
 
 	@Override
 	public void build() {
@@ -18,15 +18,6 @@ public class GabionBuilder extends Builder implements Serializable{
 			this.gabions += 1;
 		}
 	}
-
-//	public void build(int numOfOystersCollected) {
-//		this.numOfOysters += numOfOystersCollected;
-//
-//		if (this.numOfOysters >= this.maxGabionCapacity) {
-//			this.numOfOysters -= this.maxGabionCapacity;
-//			this.gabions += 1;
-//		}
-//	}
 
 	public int getGabions() {
 		return gabions;

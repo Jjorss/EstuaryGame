@@ -34,5 +34,20 @@ public class WaveTest {
 		assertTrue(w.getY() == previousY);
 		
 	}
+	@Test
+	public void testSpeed() {
+		w.setSpeed(5);
+		assertTrue(w.getSpeed() == 5);
+	}
+	@Test
+	public void testX() {
+		w.setX(60);
+		assertTrue(w.getX() == 60);
+	}
+	@Test
+	public void testY() {
+		w.setY(70);
+		assertTrue(w.getY() == 70);
+	}
 
 }

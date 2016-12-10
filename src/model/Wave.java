@@ -16,7 +16,6 @@ import java.io.Serializable;
 public class Wave extends Entity implements Serializable{
 
 	private int speed;
-	private boolean isVisable = true;
 
 	
 	public Wave(int speed, int x, int y) {
@@ -73,20 +72,7 @@ public class Wave extends Entity implements Serializable{
 	public void setY(int y) {
 		this.y = y;
 	}
-	/**
-	 * Getter for the parameter visible.
-	 * @return The current instance of visible.
-	 */
-	public boolean isVisable() {
-		return isVisable;
-	}
-	/**
-	 * Setter for the parameter visible.
-	 * @param isVisable True if JPanel paints the wave. False otherwise.
-	 */
-	public void setVisable(boolean isVisable) {
-		this.isVisable = isVisable;
-	}
-
+	
+	
 	
 }

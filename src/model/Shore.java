@@ -4,9 +4,8 @@ import java.io.Serializable;
 
 public class Shore extends Entity implements Serializable{
 
-	private int maxHealth = 100;
+	private final int maxHealth = 100;
 	private int health = maxHealth;
-	private int numberOfHorseshoeCrabs = 0;
 	private int x = 0;
 	private int y = 0;
 
@@ -32,13 +31,6 @@ public class Shore extends Entity implements Serializable{
 		return true;
 	}
 
-	public void grow() {
-
-	}
-
-	public void spawnHorseshoeCrab() {
-
-	}
 
 	public int getHealth() {
 		return health;
@@ -48,13 +40,7 @@ public class Shore extends Entity implements Serializable{
 		this.health = health;
 	}
 
-	public int getNumberOfHorseshoeCrabs() {
-		return numberOfHorseshoeCrabs;
-	}
-
-	public void setNumberOfHorseshoeCrabs(int numberOfHorseshoeCrabs) {
-		this.numberOfHorseshoeCrabs = numberOfHorseshoeCrabs;
-	}
+	
 
 	public int getX() {
 		return x;
@@ -76,8 +62,5 @@ public class Shore extends Entity implements Serializable{
 		return maxHealth;
 	}
 
-	public void setMaxHealth(int maxHealth) {
-		this.maxHealth = maxHealth;
-	}
 
 }

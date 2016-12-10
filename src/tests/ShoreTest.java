@@ -19,52 +19,36 @@ public class ShoreTest {
 	@Test
 	public void testErrode() {
 		Shore shore = new Shore(50, 0);
-		int prevX = shore.getX();
-		int prevY = shore.getY();
 		int prevHealth = shore.getHealth();
 		// collision happened
 		// shore.errode was called
 		shore.erode();
-		// shore moved back
-		assertTrue(shore.getX() < prevX);
-		//shore didn't move vertical
-		assertTrue(shore.getY() == prevY);
-		// shore's health changed
+		// shore loses health
 		assertTrue(shore.getHealth() < prevHealth);
 	}
-	
 	@Test
-	public void testGrow() {
-		Shore shore = new Shore(50, 0);
-		int prevX = shore.getX();
-		int prevY = shore.getY();
-		int prevHealth = shore.getHealth();
-		// Enough time passed where the shore.grow method was called
-		shore.grow();
-		// show moved forwards
-		if (shore.getHealth() < 100) {
-			assertTrue(shore.getX() > prevX);
-		} else {
-			// shore doesn't move because it is at it's maximum length bc health is full
-			assertTrue(shore.getX() == prevX);
-		}
-		//shore doesn't move vertically
-		assertTrue(shore.getY() == prevY);
-		
-		//shores health grows with the length
-		assertTrue(shore.getHealth() > prevHealth);
-		// shores health cannot go pass 100
-		assertTrue(shore.getHealth() <= 100);
+	public void testHealth() {
+		Shore s = new Shore(50, 0);
+		s.setHealth(50);
+		assertTrue(s.getHealth() == 50);
 	}
 	
 	@Test
-	public void testSpawnHorseshoeCrab() {
-		Shore shore = new Shore(50, 0);
-		int prevCrabs = shore.getNumberOfHorseshoeCrabs();
-		// something 'good' happened where shore.spawnHorseShoeCrab was called
-		shore.spawnHorseshoeCrab();
-		// horseshoe crabs should increase
-		assertTrue(shore.getNumberOfHorseshoeCrabs() > prevCrabs);
+	public void testX() {
+		Shore s = new Shore(50, 0);
+		s.setX(30);
+		assertTrue(s.getX() == 30);
 	}
-
+	@Test
+	public void testY() {
+		Shore s = new Shore(50, 0);
+		s.setY(70);
+		assertTrue(s.getY() == 70);
+	}
+	
+	@Test
+	public void testMaxHealth() {
+		Shore s = new Shore(50, 0);
+		assertTrue(s.getMaxHealth() == 100);
+	}
 }
