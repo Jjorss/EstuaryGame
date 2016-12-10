@@ -144,7 +144,9 @@ public class GameLoopController implements Serializable{
 
 	}
 
-
+	/**
+	 * Initializes all objects in the game and sets up the game.
+	 */
 	public void init() {
 		bic = new BufferedImageController();
 		gb = new GabionBuilderController(new GabionBuilder(), new Rectangle2D.Double(0, 0, 0, 0));
@@ -509,11 +511,13 @@ public class GameLoopController implements Serializable{
 
 		pb.getPb().build();
 		this.removeRunoff();
-		this.determineWaterColor();
+		this.cleanWater();
 		this.removeOyster();
 		this.removeAnimations();
 	}
-	
+	/**
+	 * Gets called every tic. Iterates through instantiated waves and moves them.
+	 */
 	public void moveWaves() {
 		// if not gabions and not plants state
 		for (WaveController wave : waves) {
@@ -523,8 +527,10 @@ public class GameLoopController implements Serializable{
 			wave.setRect(newWave);
 		}
 	}
-
-	public void determineWaterColor() {
+	/**
+	 * If water is below maximum cleanliness this function gradually cleans the water.
+	 */
+	public void cleanWater() {
 		if (!this.hittingWater) {
 			cleanWaterTimer.countUp(5);
 			int newAlpha = this.dirtyWater.getAlpha();
@@ -538,7 +544,9 @@ public class GameLoopController implements Serializable{
 					newAlpha);
 		}
 	}
-	
+	/**
+	 * Removes animations that have been played.
+	 */
 	public void removeAnimations() {
 		for (AnimationController animation : animations.toArray(new AnimationController[0])) {
 			if (animation.isPlayed()) {
@@ -554,7 +562,9 @@ public class GameLoopController implements Serializable{
 //		}
 //	}
 	}
-	
+	/**
+	 * Removes oyster after being collected.
+	 */
 	public void removeOyster() {
 		for (Iterator<OysterController> it = oysters.iterator(); it.hasNext();) {
 			OysterController oyster = it.next();
@@ -563,7 +573,10 @@ public class GameLoopController implements Serializable{
 			}
 		}
 	}
-	
+	/**
+	 * Removes runoff after the runoff passes the beach. Shrinks runoff once colliding with a plant or the edge of the beach.
+	 * Makes water dirty if runoff is at the edge of the beach.
+	 */
 	public void removeRunoff() {
 		for (Iterator<RunOffController> it = runOff.iterator(); it.hasNext();) {
 			RunOffController runOff = it.next();
@@ -817,7 +830,10 @@ public class GameLoopController implements Serializable{
 		}
 
 	}
-
+	/**
+	 * Renders an overlaying rectangle representing the water and determines the color based on how dirty the water is.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderDirtyWater(Graphics2D g2) {
 		g2.setColor(this.dirtyWater);
 		double width = this.GAMEBOX.getWidth() - this.shore.getRect().getWidth();
@@ -828,7 +844,10 @@ public class GameLoopController implements Serializable{
 		g2.draw(dirtywaterRect);
 		g2.fill(dirtywaterRect);
 	}
-
+	/**
+	 * Renders the Gabions.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderGabions(Graphics2D g2) {
 		for (GabionController gabion : gabions.toArray(new GabionController[0])) {
 			
@@ -850,7 +869,10 @@ public class GameLoopController implements Serializable{
 			
 		}
 	}
-
+	/**
+	 * Renders the waves
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderWaves(Graphics2D g2) {
 		//g2.setColor(Color.cyan);
 		for (WaveController wc : waves.toArray(new WaveController[0])) {
@@ -875,7 +897,10 @@ public class GameLoopController implements Serializable{
 		}
 
 	}
-
+	/**
+	 * Renders the concrete walls.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderConcreteWalls(Graphics2D g2) {
 		for (ConcreteWallController wall : concreteWalls.toArray(new ConcreteWallController[0])) {
 			//g2.setColor(Color.LIGHT_GRAY);
@@ -886,13 +911,19 @@ public class GameLoopController implements Serializable{
 					(int)wall.getRect().getY(), (int)wall.getRect().getWidth(), (int)wall.getRect().getHeight(), null);
 		}
 	}
-
+	/**
+	 * Renders the shore.
+	 * @param g2 Graphic2D The graphics object.
+	 */
 	public void renderShore(Graphics2D g2) {
 		g2.setColor(this.ShoreColor);
 		g2.fill(shore.getRect());
 		g2.draw(shore.getRect());
 	}
-
+	/**
+	 * Renders and animates the blue crab.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderHorseshoeCrab(Graphics2D g2) {
 		// g2.setColor(Color.PINK);
 
@@ -928,14 +959,17 @@ public class GameLoopController implements Serializable{
 		}
 
 	}
-
+	// DONT USE
 	public void renderGameTimer(Graphics2D g2) {
 		g2.setFont(f1);
 		g2.setColor(Color.BLACK);
 		g2.drawString(timer.getTime() + "", (int) UIBOX.getCenterX(), (int) UIBOX.getCenterY());
 
 	}
-
+	/**
+	 * Renders the plants.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderPlants(Graphics2D g2) {
 		//g2.setColor(Color.red);
 		for (PlantController plant : plants.toArray(new PlantController[0])) {
@@ -958,13 +992,13 @@ public class GameLoopController implements Serializable{
 			}
 		}
 	}
-
+	//DONT USE
 	public void renderGabionBuilder(Graphics2D g2) {
 		g2.setColor(Color.WHITE);
 		g2.fill(gb.getRect());
 		g2.draw(gb.getRect());
 	}
-
+	//DONT USE
 	public void renderGabionMeter(Graphics2D g2) {
 		g2.setColor(Color.ORANGE);
 		double gbPercentage = (double) gb.getGb().getNumberOfOysters() / (double) gb.getGb().getMaxGabionCapacity();
@@ -977,7 +1011,10 @@ public class GameLoopController implements Serializable{
 		g2.draw(gabionMeter);
 		g2.fill(gabionMeter);
 	}
-
+	/**
+	 * Renders the gabions in the UI.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderUIGabion(Graphics2D g2) {
 		if (gb.getGb().getGabions() == 0) {
 			g2.setColor(new Color(0, 0, 0, 50));
@@ -1007,7 +1044,10 @@ public class GameLoopController implements Serializable{
 					(int) uiGabion.getWidth(), (int) uiGabion.getHeight(), null);
 		}
 	}
-
+	/**
+	 * Renders the drag gabion.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderDragGabion(Graphics2D g2) {
 		if (this.renderDragGabion) {
 			g2.draw(this.createDragGabion(game.getMouseCords()));
@@ -1018,7 +1058,10 @@ public class GameLoopController implements Serializable{
 			}
 		}
 	}
-
+	/**
+	 * Renders the oysters.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderOysters(Graphics2D g2) {
 		g2.setColor(Color.GRAY);
 		for (OysterController oyster : oysters.toArray(new OysterController[0])) {
@@ -1030,7 +1073,10 @@ public class GameLoopController implements Serializable{
 					(int) (oyster.getRect().getHeight()), null);
 		}
 	}
-
+	/**
+	 * Renders the gabion counter.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderNumberOfGabions(Graphics2D g2) {
 		g2.setFont(f1);
 		g2.setColor(Color.WHITE);
@@ -1044,7 +1090,10 @@ public class GameLoopController implements Serializable{
 					(int) uiGabion.getCenterY() + (f1.getSize() / 2));
 		}
 	}
-
+	/**
+	 * Renders the plant meter.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderPlantMeter(Graphics2D g2) {
 		double maxHeight = pb.getRect().getHeight();
 		double height = ((double) plantTimer.getTimeMili() / (pb.getPb().getNumOfSecondsPerPlant() * 1000)) * maxHeight;
@@ -1067,7 +1116,10 @@ public class GameLoopController implements Serializable{
 				(int) uiPlant.getWidth(), (int) (uiPlant.getHeight()), null);
 
 	}
-
+	/**
+	 * Renders the plant counter.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderNumberOfPlants(Graphics g2) {
 		g2.setColor(Color.WHITE);
 		g2.setFont(f1);
@@ -1075,7 +1127,10 @@ public class GameLoopController implements Serializable{
 				(int) (pb.getRect().getX() + pb.getRect().getWidth() + (f1.getSize() / 2)),
 				(int) uiGabion.getCenterY() + (f1.getSize() / 2));
 	}
-
+	/**
+	 * Renders the drag plant.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderDragPlant(Graphics2D g2) {
 
 		if (this.renderDragPlant) {
@@ -1095,7 +1150,10 @@ public class GameLoopController implements Serializable{
 			}
 		}
 	}
-
+	/**
+	 * Renders runoff.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderRunoff(Graphics2D g2) {
 		//g2.setColor(runOffColor);
 		for (RunOffController runOffs : runOff.toArray(new RunOffController[0])) {
@@ -1116,7 +1174,10 @@ public class GameLoopController implements Serializable{
 //				(int) cfMeter.getRect().getCenterY());
 //		g2.setColor(Color.YELLOW);
 //	}
-
+	/**
+	 * Renders the sun.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderSun(Graphics2D g2) {
 
 		double sunDim = game.getScale().getWidth() * 0.06;
@@ -1147,7 +1208,10 @@ public class GameLoopController implements Serializable{
 		g2.drawImage(bic.getImageAtIndex(Image.SUN.getIndex()), (int) sunX, (int) y, (int) sunDim, (int) sunDim, null);
 
 	}
-	
+	/**
+	 * Renders the OVER game state.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderOver(Graphics2D g2) {
 		g2.setColor(new Color(255,255,255,220));
 		g2.fill(gameOverBox);
@@ -1201,7 +1265,10 @@ public class GameLoopController implements Serializable{
 	}
 	
 	
-
+	/**
+	 * Renders animation
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderAnimation(Graphics2D g2) {
 		for (AnimationController ac : animations.toArray(new AnimationController[0])) {
 			switch (ac.getAnimation()) {
@@ -1220,7 +1287,10 @@ public class GameLoopController implements Serializable{
 			}
 		}
 	}
-
+	/**
+	 * Renders the menu.
+	 * @param g2 Graphics2D The graphics object.
+	 */
 	public void renderMenu(Graphics2D g2) {
 		if (!this.renderCredits) {
 			g2.setColor(Color.ORANGE);
@@ -1254,14 +1324,19 @@ public class GameLoopController implements Serializable{
 			
 		}
 	}
-
+	/**
+	 * Calls all collision methods. Main collision method that gets called every tic.
+	 */
 	public void collision() {
 		this.handleShoreCollision();
 		this.handleGabionCollision();
 		this.handleConcreteWallCollision();
 		this.handlePlantCollision();
 	}
-	
+	/**
+	 * Handles all changes to the game state after a wave hits the shore.
+	 * Erodes shore. Moves plants with shore.
+	 */
 	public void handleShoreCollision() {
 		for (Iterator<WaveController> itw = waves.iterator(); itw.hasNext();) {
 			WaveController wave = itw.next();
@@ -1292,7 +1367,9 @@ public class GameLoopController implements Serializable{
 			}
 		}
 	}
-	
+	/**
+	 * Handles gabion/wave collisions. Changes the gabion health and removes the wave.
+	 */
 	public void handleGabionCollision() {
 		for (Iterator<WaveController> itw = waves.iterator(); itw.hasNext();) {
 			WaveController wave = itw.next();
@@ -1314,7 +1391,9 @@ public class GameLoopController implements Serializable{
 			}
 		}
 	}
-	
+	/**
+	 * Handles concrete wall collisions. Removes wave and concrete wall.
+	 */
 	public void handleConcreteWallCollision() {
 		for (Iterator<WaveController> itw = waves.iterator(); itw.hasNext();) {
 			WaveController wave = itw.next();
@@ -1327,7 +1406,9 @@ public class GameLoopController implements Serializable{
 			}
 		}
 	}
-	
+	/**
+	 * Handles plant/runoff collisions. Changes plant health and removes it if it is equal to or below 0.
+	 */
 	public void handlePlantCollision() {
 		for (Iterator<RunOffController> itr = runOff.iterator(); itr.hasNext();) {
 			RunOffController runOff = itr.next();
@@ -1348,7 +1429,10 @@ public class GameLoopController implements Serializable{
 			}
 		}
 	}
-
+	/**
+	 * Handles plant placement. Ensures the placement is valid and adds the plant. Rejects placement otherwise.
+	 * @param p Point Coordinates of the mouse on the JPanel.
+	 */
 	public void handlePlacePlant(Point p) {
 		if (pb.getPb().getNumberOfPlants() != 0 && this.ableToPlacePlant) {
 			for (int i = 0; i < plantRows.size(); i++) {
@@ -1370,7 +1454,10 @@ public class GameLoopController implements Serializable{
 		}
 		this.renderDragPlant = false;
 	}
-
+	/**
+	 * Handles placing gabions. Ensures that the placement is valid and adds the gabion. Reject placement otherwise.
+	 * @param p Point Coordinates of the mouse on the JPanel.
+	 */
 	public void handlePlaceGabion(Point p) {
 		// System.out.println(p.getX() + ", " + p.getY());
 
@@ -1412,7 +1499,12 @@ public class GameLoopController implements Serializable{
 		this.renderDragGabion = false;
 
 	}
-
+	/**
+	 * Handles oyster collection. Animates the oyster after being collected, removes the oyster from the game, and builds
+	 * gabion in the gabion builder.
+	 * @param p Point Coordinates of the mouse on the JPanel.
+	 * @param i int Index of the oyster in the oysters collection.
+	 */
 	public void handleCollectOyster(Point p, int i) {
 		//int numOfClusters = 0;
 //		numOfClusters = oysters.get(i).getOyster().getNumOfOystersInClump();
@@ -1423,20 +1515,31 @@ public class GameLoopController implements Serializable{
 		oysters.get(i).getOyster().setVisible(false);
 
 	}
-
+	/**
+	 * Creates the Rectangle2D for the drag gabion.
+	 * @param p Point Coordinates of the mouse on the JPanel.
+	 * @return the Rectangle2D created.
+	 */
 	public Rectangle2D createDragGabion(Point p) {
 		Rectangle2D r = new Rectangle2D.Double(p.getX() - (uiGabion.getWidth() / 2),
 				p.getY() - (uiGabion.getWidth() / 2), uiGabion.getWidth(), uiGabion.getHeight());
 		return r;
 	}
-
+	/**
+	 * Creates the Rectangle2D for the drag plant.
+	 * @param p Point Coordinates of the mouse on the JPanel.
+	 * @return the Rectangle 2D created.
+	 */
 	public Rectangle2D createDragPlant(Point p) {
 		double width = this.getPlantRows().get(0).getWidth() * 0.2;
 		double height = this.getPlantRows().get(0).getWidth() * 0.3;
 		Rectangle2D r = new Rectangle2D.Double(p.getX() - (width / 2), p.getY() - (height / 2), width, height);
 		return r;
 	}
-
+	/**
+	 * Handles dragging. Determines if game should render plant or gabion drag.
+	 * @param p Point Coordinates of the mouse on the JPanel.
+	 */
 	public void handleDrag(Point p) {
 		if (uiGabion.contains(p)) {
 			System.out.println("uiGabion clicked");
@@ -1449,11 +1552,18 @@ public class GameLoopController implements Serializable{
 			game.setDragging(true);
 		}
 	}
-
+	/**
+	 * Getter for mousePressed.
+	 * @param p Point Coordinates of the mouse on the JPanel.
+	 * @return The current instance of p.
+	 */
 	public Point getMousePressed(Point p) {
 		return p;
 	}
-
+	/**
+	 * Performs required actions when a user clicks at a Point p.
+	 * @param Point p - the point that the user clicks
+	 */
 	public void handlePressed(Point p) {
 		if (this.currentGameState == GameState.MENU) {
 			if (this.tutorialButton.contains(p)) {
@@ -1500,7 +1610,13 @@ public class GameLoopController implements Serializable{
 		this.handleDrag(p);
 
 	}
-
+	/**
+	 * Calculates the final score based on how help the user played that specific game. It's 
+	 * based on the shoreHealth and the quality of the water.
+	 * @param int shoreHealth - an int between 25-100 with 100 being the best shore health
+	 * @param alphaWater - the alpha value of the dirty water overlay 255 the worst; 0 is the best and clean/clear water
+	 * @return
+	 */
 	public String calculateScore(int shoreHealth, int alphaWater) {
 		double score = (((double)shoreHealth/(double)shore.getShore().getMaxHealth())*0.5) + (((255.0-(double)alphaWater)/255.0)*0.5);
 		if (score == 1) {
@@ -1515,7 +1631,9 @@ public class GameLoopController implements Serializable{
 			return "D";
 		}
 	}
-	
+	/**
+	 * Saves the game state for serializable.
+	 */
 	public void save() {
 		try {
 			FileOutputStream fos = new FileOutputStream("saveStateGLC.ser");
@@ -1527,168 +1645,269 @@ public class GameLoopController implements Serializable{
 		}
 	}
 	
-	
-
+	/**
+	 * Getter for the ArrayList of WaveControllers called waves
+	 * @return waves, an arraylist of wavecontrollers
+	 */
 	public ArrayList<WaveController> getWaves() {
 		return waves;
 	}
-
+	/**	Getter for the ArrayList of Rectangle2D called waveRows
+	 * @return waveRows, an arraylist of Rectangle2D
+	 */
 	public ArrayList<Rectangle2D> getWaveRows() {
 		return waveRows;
 	}
-
+	/**
+	 * Getter for an ArrayList of OysterControllers, called oysters
+	 * @return oysters, an ArrayList of OysterControllers
+	 */
 	public ArrayList<OysterController> getOysters() {
 		return oysters;
 	}
-
+	/**
+	 * Getter for the GAMEBOX, the rectangle where the game play takes place
+	 * @return GAMEBOX
+	 */
 	public Rectangle2D getGAMEBOX() {
 		return GAMEBOX;
 	}
-
+	/**
+	 * Getter for the ArrayList of Integers, numOfGabionsInRow
+	 * @return int numOfGabionsInRow
+	 */
 	public ArrayList<Integer> getNumOfGabionsInRow() {
 		return numOfGabionsInRow;
 	}
-
+	/**
+	 * Getter for gbPadding, the padding for gabions
+	 * @return gbPadding, the padding for gabions
+	 */
 	public double getGbPadding() {
 		return gbPadding;
 	}
-
+	/**
+	 * Getter for gaboinWidth
+	 * @return int gabionWidth
+	 */
 	public double getGabionWidth() {
 		return gabionWidth;
 	}
-
+	/**
+	 * Getter for ArrayList of PlantControllers, called plants
+	 * @return plants
+	 */
 	public ArrayList<PlantController> getPlants() {
 		return plants;
 	}
-
+	/**
+	 * Getter for an ArrayList of Rectangle2Ds, plantRows
+	 * @return plantRows
+	 */
 	public ArrayList<Rectangle2D> getPlantRows() {
 		return plantRows;
 	}
-
+	/**
+	 * Getter for the PlantBuilder pb.
+	 * @return pb - a PlantBuilder
+	 */
 	public PlantBuilder getPb() {
 		return pb.getPb();
 	}
-
+	/**
+	 * Setter for the PlantBuilder pb.
+	 * @param pb
+	 */
 	public void setPb(PlantBuilder pb) {
 		this.pb.setPb(pb);
 	}
-
+	/**
+	 * Getter for the boolean renderDragGabion.
+	 * @return boolean renderDragGabion
+	 */
 	public boolean isRenderDragGabion() {
 		return renderDragGabion;
 	}
-
+	/**
+	 * Getter for the boolean renderDragPlants. To deside whether or not to render drag plants.
+	 * @return boolean renderDragPlant
+	 */
 	public boolean isRenderDragPlant() {
 		return renderDragPlant;
 	}
-
+	/**
+	 * Getter for ArrayList of RunOffController, runOff
+	 * @return runOff
+	 */
 	public ArrayList<RunOffController> getRunOff() {
 		return runOff;
 	}
-
+	/**
+	 * Getter for boolean eroded. True if the shore has eroded.
+	 * @return boolean eroded
+	 */
 	public boolean isEroded() {
 		return eroded;
 	}
-
+	/**
+	 * Setter for boolean eroded. True if the shore has eroded.
+	 * @param eroded
+	 */
 	public void setEroded(boolean eroded) {
 		this.eroded = eroded;
 	}
-
+	/**
+	 * Getter for int numOfRows
+	 * @return numOfRows
+	 */
 	public int getNumOfRows() {
 		return numOfRows;
 	}
-
+	/**
+	 * Setter for numOfRows.
+	 * @param numOfRows
+	 */
 	public void setNumOfRows(int numOfRows) {
 		this.numOfRows = numOfRows;
 	}
-
+	/**
+	 * Getter for uiGabion
+	 * @return Rectangle2D uiGabion
+	 */
 	public Rectangle2D getUiGabion() {
 		return uiGabion;
 	}
-
+	/**
+	 * Getter for numOfWavesInRow.
+	 * @return ArrayList<Integer> numOfWavesInRow.
+	 */
 	public ArrayList<Integer> getNumOfWavesInRow() {
 		return numOfWavesInRow;
 	}
-
+	/**
+	 * Getter for message.
+	 * @return String message.
+	 */
 	public String getMessage() {
 		return message;
 	}
-
+	/**
+	 * Getter for currentGameState
+	 * @return GameState currentGamestate.
+	 */
 	public GameState getCurrentGameState() {
 		return currentGameState;
 	}
-
+	/**
+	 * Setter for currentGameState.
+	 * @param gs GameState game state of the game (e.g. LOADING, MENU, OVER)
+	 */
 	public void setCurrentGameState(GameState gs) {
 		this.currentGameState = gs;
 	}
-
+	/**
+	 * Getter for uiPlant
+	 * @return Rectangle2D uiPlant.
+	 */
 	public Rectangle2D getUiPlant() {
 		return uiPlant;
 	}
-
+	/**
+	 * Getter for speaking
+	 * @return boolean speaking.
+	 */
 	public boolean isSpeaking() {
 		return speaking;
 	}
-
+	/**
+	 * Setter for speaking
+	 * @param speaking boolean True if blue crab is speaking false otherwise.
+	 */
 	public void setSpeaking(boolean speaking) {
 		this.speaking = speaking;
 	}
-
-
+	/**
+	 * Getter for gabions.
+	 * @return ArrayList<GabionController> gabions.
+	 */
 	public ArrayList<GabionController> getGabions() {
 		return gabions;
 	}
-
-
+	/**
+	 * Getter for gabionBuilder.
+	 * @return GabionBuilderController gb.
+	 */
 	public GabionBuilderController getGb() {
 		return gb;
 	}
-
-
+	/**
+	 * Getter for ableToPlaceGabion
+	 * @return ableToPlaceGabion
+	 */
 	public boolean isAbleToPlaceGabion() {
 		return ableToPlaceGabion;
 	}
-
-
+	/**
+	 * 
+	 * Setter for ableToPlaceGabion
+	 * @param ableToPlaceGabion boolean True if able to place gabion. False otherwise.
+	 */
 	public void setAbleToPlaceGabion(boolean ableToPlaceGabion) {
 		this.ableToPlaceGabion = ableToPlaceGabion;
 	}
-
-
+	/**
+	 * Getter for ableToPlacePlant.
+	 * @return ableToPlacePlant.
+	 */
 	public boolean isAbleToPlacePlant() {
 		return ableToPlacePlant;
 	}
-
-
+	/**
+	 * Setter for ableToPlacePlant.
+	 * @param ableToPlacePlant boolean True if able to place plant. False otherwise.
+	 */
 	public void setAbleToPlacePlant(boolean ableToPlacePlant) {
 		this.ableToPlacePlant = ableToPlacePlant;
 	}
-
-
+	/**
+	 * Getter for bic.
+	 * @return bic.
+	 */
 	public BufferedImageController getBic() {
 		return bic;
 	}
-
-
+	/**
+	 * Setter for bic.
+	 * @param bic BufferedImageController object that handles imaging processing.
+	 */
 	public void setBic(BufferedImageController bic) {
 		this.bic = bic;
 	}
-
-
+	/**
+	 * Getter for game.
+	 * @return game.
+	 */
 	public Game getGame() {
 		return game;
 	}
-
-
+	/**
+	 * Setter for game.
+	 * @param game Game.
+	 */
 	public void setGame(Game game) {
 		this.game = game;
 	}
-
-
+	/**
+	 * Getter for timer.
+	 * @return timer.
+	 */
 	public Timer getTimer() {
 		return timer;
 	}
-
-
+	/**
+	 * Setter for timer.
+	 * @param timer Timer.
+	 */
 	public void setTimer(Timer timer) {
 		this.timer = timer;
 	}

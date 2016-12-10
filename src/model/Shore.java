@@ -6,7 +6,6 @@ public class Shore extends Entity implements Serializable{
 
 	private int maxHealth = 100;
 	private int health = maxHealth;
-	private int numberOfHorseshoeCrabs = 0;
 	private int x = 0;
 	private int y = 0;
 	private int erodeAmount = 13;
@@ -26,7 +25,7 @@ public class Shore extends Entity implements Serializable{
 
 	}
 	/**
-	 * Decreases the parameter health by the parameter erodeAmount.
+	 * Decreases the attribute health by the attribute erodeAmount.
 	 * @return boolean Always returns true.
 	 */
 	public boolean erode() {
@@ -37,43 +36,59 @@ public class Shore extends Entity implements Serializable{
 		//this.setX(this.getX() - 10);
 		return true;
 	}
-
+	/**
+	 * Getter for the attribute health.
+	 * @return int The current instance of health.
+	 */
 	public int getHealth() {
 		return health;
 	}
-
+	/**
+	 * Setter for the attribute health.
+	 * @param health int The shores health.
+	 */
 	public void setHealth(int health) {
 		this.health = health;
 	}
-
-	public int getNumberOfHorseshoeCrabs() {
-		return numberOfHorseshoeCrabs;
-	}
-
-	public void setNumberOfHorseshoeCrabs(int numberOfHorseshoeCrabs) {
-		this.numberOfHorseshoeCrabs = numberOfHorseshoeCrabs;
-	}
-
+	/**
+	 * Getter for the attribute x.
+	 * @return the current instance of x.
+	 */
 	public int getX() {
 		return x;
 	}
-
+	/**
+	 * Setter for the attribute x.
+	 * @param x int The x coordinate of the shore on the JPanel.
+	 */
 	public void setX(int x) {
 		this.x = x;
 	}
-
+	/**
+	 * Getter for the attribute y.
+	 * @return the current instance of y
+	 */
 	public int getY() {
 		return y;
 	}
-
+	/**
+	 * Setter for the attribute y.
+	 * @param y int The y coordinate of the shore on the JPanel.
+	 */
 	public void setY(int y) {
 		this.y = y;
 	}
-
+	/**
+	 * Getter for the attribute maxHealth.
+	 * @return the current instance of maxHealth.
+	 */
 	public int getMaxHealth() {
 		return maxHealth;
 	}
-
+	/**
+	 * Setter for the attribute maxHealth.
+	 * @param maxHealth int The maximum health of the shore.
+	 */
 	public void setMaxHealth(int maxHealth) {
 		this.maxHealth = maxHealth;
 	}
