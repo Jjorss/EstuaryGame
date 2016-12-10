@@ -58,7 +58,8 @@ public void setVisable(boolean)</string>
 private int health
 private int numberOfHorseshoeCrabs
 private int x
-private int y</string>
+private int y
+private in erodeAmount</string>
      </void>
     </void>
     <void property="methods">
@@ -74,11 +75,18 @@ public void setNumberOfHorseshoeCrabs(int)
 public int getX()
 public void setX(int)
 public int getY()
+public void move()
+public boolean erode()
+public int getHealth()
+public void setHealth(int)
+public int getNumberOfHorseshoeCrabs()
+public void setNumberOfHorseshoeCrabs(int)
+public int getX()
+public void setX(int)
+public int getY()
 public void setY(int)
 public int getMaxHealth()
-public void setMaxHealth(int)
-public void spawnHorseshewCrab()
-</string>
+public void setMaxHealth(int)</string>
      </void>
     </void>
     <void property="name">
@@ -312,6 +320,8 @@ private Color dirtyWater</string>
       <string>public GameLoopController(Game, Scale)
 public void init()
 public void loop()
+puhlic void determineWaterColor()
+public void moveWaves
 public void render(Graphics)
 public void renderDirtyWater(Graphics2D)
 public void renderGabions(Graphics2D)
@@ -336,6 +346,10 @@ public void renderOver(Graphics2D)
 public void renderAnimation(Graphics2D)
 public void renderMenu(Graphics2D)
 public void collision()
+public void handleShoreCollision()
+public void handleGabionCollision()
+public void handleConcreteWallCollision()
+public void handlePlantCollision()
 public void handlePlacePlant(Point)
 public void handlePlaceGabion(Point)
 public void handleCollectOyster(Point, int)
