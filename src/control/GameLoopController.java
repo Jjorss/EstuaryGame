@@ -24,7 +24,7 @@ import model.ConcreteWalls;
 import model.Gabion;
 import model.GabionBuilder;
 import model.GameState;
-import model.HorseshoeCrab;
+import model.BlueCrab;
 import model.PlantBuilder;
 import model.Shore;
 import model.Timer;
@@ -57,7 +57,7 @@ public class GameLoopController implements Serializable{
 	private Timer crabSpeakingTimer;
 	private Timer waveAnimationTimer;
 	private PlantBuilderController pb;
-	private HorseshoeCrabController helperHorse;
+	private BlueCrabController helperHorse;
 	private AnimationController ac;
 
 	private ArrayList<Integer> numOfGabionsInRow;
@@ -70,7 +70,7 @@ public class GameLoopController implements Serializable{
 	private ArrayList<ConcreteWallController> concreteWalls;
 	private ArrayList<PlantController> plants;
 	private ArrayList<RunOffController> runOff;
-	private ArrayList<HorseshoeCrabController> hsCrab;
+	private ArrayList<BlueCrabController> hsCrab;
 	private ArrayList<AnimationController> animations;
 	// list of rectangles
 	private ArrayList<Rectangle2D> waveRows;
@@ -170,7 +170,7 @@ public class GameLoopController implements Serializable{
 		concreteWalls = new ArrayList<ConcreteWallController>();
 		plants = new ArrayList<PlantController>();
 		runOff = new ArrayList<RunOffController>();
-		hsCrab = new ArrayList<HorseshoeCrabController>();
+		hsCrab = new ArrayList<BlueCrabController>();
 		animations = new ArrayList<AnimationController>();
 
 		waveRows = new ArrayList<Rectangle2D>();
@@ -304,11 +304,11 @@ public class GameLoopController implements Serializable{
 		double cX = UIBOX.getWidth()*0.2;
 		double helperHorseWidth = width * 0.1;
 		double helperHorseHeight = height * 0.15;
-		HorseshoeCrab helperHorseCrab = new HorseshoeCrab((int) (cX + cWidth), (int) (UIBOX.getY()));
+		BlueCrab helperHorseCrab = new BlueCrab((int) (cX + cWidth), (int) (UIBOX.getY()));
 
 		Rectangle2D helperHorseRect = new Rectangle2D.Double(helperHorseCrab.getX(), helperHorseCrab.getY(),
 				helperHorseWidth, helperHorseHeight);
-		helperHorse = new HorseshoeCrabController(helperHorseCrab, helperHorseRect);
+		helperHorse = new BlueCrabController(helperHorseCrab, helperHorseRect);
 		hsCrab.add(helperHorse);
 
 		
@@ -804,7 +804,7 @@ public class GameLoopController implements Serializable{
 			// UI
 			// ---------------------------
 			// Gabion builder/Plant builder
-			this.renderGameTimer(g2);
+//			this.renderGameTimer(g2);
 			// this.renderGabionBuilder(g2);
 
 			// GabionBuilder Meter
@@ -927,7 +927,7 @@ public class GameLoopController implements Serializable{
 	public void renderHorseshoeCrab(Graphics2D g2) {
 		// g2.setColor(Color.PINK);
 
-		for (HorseshoeCrabController crab : hsCrab.toArray(new HorseshoeCrabController[0])) {
+		for (BlueCrabController crab : hsCrab.toArray(new BlueCrabController[0])) {
 			// g2.draw(hsCrab);
 			// g2.fill(hsCrab);
 			if(this.speaking) {

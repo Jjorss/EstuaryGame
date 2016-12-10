@@ -3,14 +3,14 @@ package control;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 
-import model.HorseshoeCrab;
+import model.BlueCrab;
 
-public class HorseshoeCrabController implements Serializable{
+public class BlueCrabController implements Serializable{
 
-	private HorseshoeCrab hsc;
+	private BlueCrab hsc;
 	private Rectangle2D rect;
 	
-	public HorseshoeCrabController(HorseshoeCrab hsc, Rectangle2D rect) {
+	public BlueCrabController(BlueCrab hsc, Rectangle2D rect) {
 		this.setHsc(hsc);
 		this.setRect(rect);
 	}
@@ -32,14 +32,14 @@ public class HorseshoeCrabController implements Serializable{
 	 * HorseshoeCrab hsc getter.
 	 * @return HorseshoeCrab hsc
 	 */
-	public HorseshoeCrab getHsc() {
+	public BlueCrab getHsc() {
 		return hsc;
 	}
 	/**
 	 * HorseshoeCrab hsc setter.
-	 * @param HorseshoeCrab hsc
+	 * @param BlueCrab hsc
 	 */
-	public void setHsc(HorseshoeCrab hsc) {
+	public void setHsc(BlueCrab hsc) {
 		this.hsc = hsc;
 	}
 }

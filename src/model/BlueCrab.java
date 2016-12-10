@@ -2,9 +2,9 @@ package model;
 
 import java.io.Serializable;
 
-public class HorseshoeCrab extends Entity implements Serializable{
+public class BlueCrab extends Entity implements Serializable{
 
-	public HorseshoeCrab(int x, int y) {
+	public BlueCrab(int x, int y) {
 		super(x, y);
 		
 	}
