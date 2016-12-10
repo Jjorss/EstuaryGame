@@ -9,6 +9,7 @@ public class Shore extends Entity implements Serializable{
 	private int numberOfHorseshoeCrabs = 0;
 	private int x = 0;
 	private int y = 0;
+	private int erodeAmount = 13;
 
 	public Shore(int x, int y) {
 		super(x, y);
@@ -16,28 +17,25 @@ public class Shore extends Entity implements Serializable{
 		this.y = y;
 		// TODO Auto-generated constructor stub
 	}
-
+	/**
+	 * This method should not be called.
+	 */
 	@Override
 	public void move() {
 		throw new UnsupportedOperationException();
 
 	}
-
+	/**
+	 * Decreases the parameter health by the parameter erodeAmount.
+	 * @return boolean Always returns true.
+	 */
 	public boolean erode() {
 		// amount to decrement health by
-		this.health = health - 13;
+		this.health = health - erodeAmount;
 		System.out.println("Shore Health: " + this.health);
 		// erode shore
 		//this.setX(this.getX() - 10);
 		return true;
-	}
-
-	public void grow() {
-
-	}
-
-	public void spawnHorseshoeCrab() {
-
 	}
 
 	public int getHealth() {

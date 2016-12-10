@@ -28,7 +28,7 @@ public class RunOff extends Entity implements Serializable{
 	}
 
 	/**
-	 * Decreases the x value of the object on the grid by 1 * speed
+	 * Decreases the x value of the object on the grid by the speed attribute.
 	 */
 	@Override
 	public void move() {
@@ -38,66 +38,63 @@ public class RunOff extends Entity implements Serializable{
 
 
 	/**
-	 * Getter
-	 * 
-	 * @return the current instance speed
+	 * Getter for the attribute speed.
+	 * @return the current instance of speed.
 	 */
 	public int getSpeed() {
 		return speed;
 	}
 
 	/**
-	 * Setter
-	 * 
-	 * @param speed
-	 *            int that sets speed
+	 * Setter for the attribute speed.
+	 * @param speed int Abstract integer that modifies how fast run off moves across the JPanel.
 	 */
 	public void setSpeed(int speed) {
 		this.speed = speed;
 	}
 
 	/**
-	 * Getter
-	 * 
-	 * @return the current instance X
+	 * Getter for the attribute x.
+	 * @return The current instance of x. 
 	 */
 	public int getX() {
 		return x;
 	}
 
 	/**
-	 * Setter
-	 * 
-	 * @param x
-	 *            int that sets the x value
+	 * Setter for the attribute x.
+	 * @param x int The X coordinate of the run off on the JPanel.
 	 */
 	public void setX(int x) {
 		this.x = x;
 	}
 
 	/**
-	 * Getter
-	 * 
-	 * @return the current instance Y
+	 * Getter for the attribute y.
+	 * @return the current instance y.
 	 */
 	public int getY() {
 		return y;
 	}
 
 	/**
-	 * Setter
-	 * 
-	 * @param y
-	 *            int that sets the y value
+	 * Setter for the attribute y
+	 * @param y int The y coordinate of the run off on the JPanel.
 	 */
 	public void setY(int y) {
 		this.y = y;
 	}
-
+	/**
+	 * Getter for the attribute rowNum.
+	 * @return The current instance of rowNum.
+	 */
 	public int getRowNum() {
 		return rowNum;
 	}
-
+	/**
+	 * Setter for the attribute rowNum
+	 * @param rowNum int The row number that the run off is in.
+	 */
 	public void setRowNum(int rowNum) {
 		this.rowNum = rowNum;
 	}
