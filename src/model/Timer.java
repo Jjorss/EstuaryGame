@@ -10,7 +10,7 @@ public class Timer implements Serializable{
 	private boolean initStartTime = true;
 	
 	/**
-	 * 
+	 * Getter for the parameter Time.
 	 * @return
 	 */
 	public int getTime() {

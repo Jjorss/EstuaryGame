@@ -140,7 +140,7 @@ public class GameLoopController implements Serializable{
 		this.game = game;
 		this.scale = scale;
 		System.out.println(game.getBounds().getWidth());
-		this.init();
+		//this.init();
 
 	}
 
