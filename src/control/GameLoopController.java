@@ -87,6 +87,7 @@ public class GameLoopController implements Serializable{
 	// private Rectangle2D plantBuilder;
 	private Rectangle2D uiGabion;
 	private Rectangle2D uiPlant;
+	private Rectangle2D helperHorseRect;
 
 	private Rectangle2D tutorialButton;
 	private Rectangle2D playButton;
@@ -182,6 +183,7 @@ public class GameLoopController implements Serializable{
 		creditsBox = new RoundRectangle2D.Double(0,0,0,0,0,0);
 		uiGabion = new Rectangle2D.Double(0, 0, 0, 0);
 		uiPlant = new Rectangle2D.Double(0, 0, 0, 0);
+		helperHorseRect = new Rectangle2D.Double(0, 0, 0, 0);
 
 		tutorialButton = new Rectangle2D.Double(0, 0, 0, 0);
 		playButton = new Rectangle2D.Double(0, 0, 0, 0);
@@ -325,6 +327,7 @@ public class GameLoopController implements Serializable{
 			collision();
 			switch (this.currentTutorialState) {
 			case OYSTERS:
+				this.moveWaves();
 				// System.out.println(this.waves.size());
 				this.message = "Collect Oyster Shells!";
 				spawner.tutorialSpawnOysters();
@@ -339,6 +342,7 @@ public class GameLoopController implements Serializable{
 				}
 				break;
 			case WAVES:
+				this.moveWaves();
 				this.message = "Oh no, waves!";
 				spawner.TutorialSpawnWaves();
 				textTimer.countUp(3);
@@ -391,6 +395,7 @@ public class GameLoopController implements Serializable{
 
 				break;
 			case RUNOFF:
+				this.moveWaves();
 				plantTimer.countUp(pb.getPb().getNumOfSecondsPerPlant());
 				// textTimer.countUpStop(3);
 				spawner.spawnTutorialRunOff();
@@ -427,6 +432,7 @@ public class GameLoopController implements Serializable{
 				// spawner.spawnRunOff(1, 0);
 				break;
 			case END:
+				this.moveWaves();
 				textTimer.countUpStop(5);
 				if (textTimer.getTime() >= 5) {
 					textTimer = new Timer();
@@ -441,6 +447,7 @@ public class GameLoopController implements Serializable{
 			}
 			break;
 		case GAME:
+			this.moveWaves();
 			timer.countDown();
 			spawner.spawn(this.eroded);
 			plantTimer.countUp(6);
@@ -471,6 +478,7 @@ public class GameLoopController implements Serializable{
 			}
 			timer.countDown();
 			spawner.spawnWaves(5, 0);
+			this.moveWaves();
 			break;
 		case LOADING:
 			System.out.println(this.init);
@@ -500,16 +508,63 @@ public class GameLoopController implements Serializable{
 		// stuff that always needs to be done
 
 		pb.getPb().build();
+		this.removeRunoff();
+		this.determineWaterColor();
+		this.removeOyster();
+		this.removeAnimations();
+	}
+	
+	public void moveWaves() {
+		// if not gabions and not plants state
+		for (WaveController wave : waves) {
+			wave.getWave().move();
+			Rectangle2D newWave = new Rectangle2D.Double(wave.getWave().getX(), wave.getWave().getY(),
+					wave.getRect().getWidth(), wave.getRect().getHeight());
+			wave.setRect(newWave);
+		}
+	}
 
-		if (this.currentTutorialState != TutorialState.GABIONS && this.currentTutorialState != TutorialState.PLANTS) {
-			for (WaveController wave : waves) {
-				wave.getWave().move();
-				Rectangle2D newWave = new Rectangle2D.Double(wave.getWave().getX(), wave.getWave().getY(),
-						wave.getRect().getWidth(), wave.getRect().getHeight());
-				wave.setRect(newWave);
+	public void determineWaterColor() {
+		if (!this.hittingWater) {
+			cleanWaterTimer.countUp(5);
+			int newAlpha = this.dirtyWater.getAlpha();
+			if (cleanWaterTimer.getTime() >= 5) {
+				newAlpha = this.dirtyWater.getAlpha() - 10;
+			}
+			if (newAlpha <= 0) {
+				newAlpha = 0;
+			}
+			this.dirtyWater = new Color(this.dirtyWater.getRed(), this.dirtyWater.getGreen(), this.dirtyWater.getBlue(),
+					newAlpha);
+		}
+	}
+	
+	public void removeAnimations() {
+		for (AnimationController animation : animations.toArray(new AnimationController[0])) {
+			if (animation.isPlayed()) {
+				animations.remove(animation);
+				System.out.println("removed animation");
 			}
 		}
-
+//		for (Iterator<AnimationController> it = animations.iterator(); it.hasNext();) {
+//		AnimationController a = it.next();
+//		if (a.isPlayed()) {
+//			it.remove();
+//			System.out.println("REMOVED");
+//		}
+//	}
+	}
+	
+	public void removeOyster() {
+		for (Iterator<OysterController> it = oysters.iterator(); it.hasNext();) {
+			OysterController oyster = it.next();
+			if (!oyster.getOyster().isVisible()) {
+				it.remove();
+			}
+		}
+	}
+	
+	public void removeRunoff() {
 		for (Iterator<RunOffController> it = runOff.iterator(); it.hasNext();) {
 			RunOffController runOff = it.next();
 			if (this.currentTutorialState != TutorialState.PLANTS) {
@@ -551,41 +606,13 @@ public class GameLoopController implements Serializable{
 			}
 
 		}
-
-		if (!this.hittingWater) {
-			cleanWaterTimer.countUp(5);
-			int newAlpha = this.dirtyWater.getAlpha();
-			if (cleanWaterTimer.getTime() >= 5) {
-				newAlpha = this.dirtyWater.getAlpha() - 10;
-			}
-			if (newAlpha <= 0) {
-				newAlpha = 0;
-			}
-			this.dirtyWater = new Color(this.dirtyWater.getRed(), this.dirtyWater.getGreen(), this.dirtyWater.getBlue(),
-					newAlpha);
-		}
-
-		for (Iterator<OysterController> it = oysters.iterator(); it.hasNext();) {
-			OysterController oyster = it.next();
-			if (!oyster.getOyster().isVisible()) {
-				it.remove();
-			}
-		}
-
-		for (Iterator<AnimationController> it = animations.iterator(); it.hasNext();) {
-			AnimationController a = it.next();
-			if (a.isPlayed()) {
-				it.remove();
-				System.out.println("REMOVED");
-			}
-		}
-
 	}
 
 	/**
 	 * The main method for the game were all the instantiated object's render
 	 * methods get called.
 	 */
+
 	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 
@@ -691,6 +718,7 @@ public class GameLoopController implements Serializable{
 			// System.out.println(Image.HAND.getIndex() + " " +
 			// Image.HAND.getPath() + " " + bic.getImages().get(2));
 			// GAMEBOX
+			this.renderSun(g2);
 			g2.setColor(new Color(163, 232, 255));
 			g2.draw(GAMEBOX);
 			g2.fill(GAMEBOX);
@@ -698,7 +726,7 @@ public class GameLoopController implements Serializable{
 			this.renderGabions(g2);
 			this.renderWaves(g2);
 			this.renderConcreteWalls(g2);
-			this.renderSun(g2);
+			
 			this.renderShore(g2);
 			this.renderPlants(g2);
 			this.renderMenu(g2);
@@ -1228,6 +1256,13 @@ public class GameLoopController implements Serializable{
 	}
 
 	public void collision() {
+		this.handleShoreCollision();
+		this.handleGabionCollision();
+		this.handleConcreteWallCollision();
+		this.handlePlantCollision();
+	}
+	
+	public void handleShoreCollision() {
 		for (Iterator<WaveController> itw = waves.iterator(); itw.hasNext();) {
 			WaveController wave = itw.next();
 			if (wave.getRect().intersects(shore.getRect())) {
@@ -1254,9 +1289,13 @@ public class GameLoopController implements Serializable{
 				}
 				System.out.println("Wave Hit Shore");
 				itw.remove();
-				break;
-				
 			}
+		}
+	}
+	
+	public void handleGabionCollision() {
+		for (Iterator<WaveController> itw = waves.iterator(); itw.hasNext();) {
+			WaveController wave = itw.next();
 			for (Iterator<GabionController> itg = gabions.iterator(); itg.hasNext();) {
 				GabionController gabion = itg.next();
 
@@ -1267,41 +1306,36 @@ public class GameLoopController implements Serializable{
 					
 					if (gabion.getGabion().getHealth() <= 0) {
 						itg.remove();
-						// debugging only
 						this.numOfGabionsInRow.set(gabion.getGabion().getRowNum(),
 								this.numOfGabionsInRow.get(gabion.getGabion().getRowNum()) - 1);
-//						try {
-//							
-//						} catch (IndexOutOfBoundsException e) {
-//							System.out.println(gabion.getGabion().getRowNum());
-//							System.out.println("BAD");
-//							e.printStackTrace();
-//						}
 
 					}
-					break;
 				}
 			}
-
+		}
+	}
+	
+	public void handleConcreteWallCollision() {
+		for (Iterator<WaveController> itw = waves.iterator(); itw.hasNext();) {
+			WaveController wave = itw.next();
 			for (Iterator<ConcreteWallController> itc = concreteWalls.iterator(); itc.hasNext();) {
 				ConcreteWallController concreteWall = itc.next();
 				if (concreteWall.getRect().intersects(wave.getRect())) {
 					itc.remove();
 					itw.remove();
-					break;
 				}
 			}
-
 		}
+	}
+	
+	public void handlePlantCollision() {
 		for (Iterator<RunOffController> itr = runOff.iterator(); itr.hasNext();) {
 			RunOffController runOff = itr.next();
 			for (Iterator<PlantController> itp = plants.iterator(); itp.hasNext();) {
 				PlantController plant = itp.next();
 				if (runOff.getRect().intersects(plant.getRect())) {
-					// this.setIsRunOff(true, i);
 					this.hittingPlant = true;
 					plant.getPlant().changeHealth(plant.getPlant().getHealth() - 1);
-					// System.out.println(plant.getPlant().getHealth());
 					runOff.getRect().setRect(runOff.getRect().getX(), runOff.getRect().getY(),
 							runOff.getRect().getWidth() - runOff.getRunOff().getSpeed(), runOff.getRect().getHeight());
 					if (plant.getPlant().getHealth() <= 0) {
@@ -1309,62 +1343,10 @@ public class GameLoopController implements Serializable{
 					}
 				} else {
 					this.hittingPlant = false;
-					// System.out.println("not intersecting plant");
-
 				}
 
 			}
-
 		}
-
-		// boolean intersectingRow = false;
-		// ArrayList<Integer> rowIndexes = new ArrayList<Integer>();
-		// for (Iterator<RunOffController> itr = runOff.iterator();
-		// itr.hasNext();) {
-		// RunOffController runOff = itr.next();
-		// for (int i = 0; i < plantRows.size(); i++) {
-		// Rectangle2D row = plantRows.get(i);
-		// if(row.getX() <= runOff.getRect().getX()+runOff.getRect().getWidth()
-		// &&
-		// runOff.getRect().getY() >= row.getY()
-		// && runOff.getRect().getY()+runOff.getRect().getHeight() <=
-		// row.getY()+row.getHeight()) {
-		// intersectingRow = true;
-		// rowIndexes.add(i);
-		// }
-		//
-		// }
-		// }
-		//
-		// if(intersectingRow) {
-		// for(Iterator<PlantController>itp = plants.iterator(); itp.hasNext();)
-		// {
-		// PlantController plant = itp.next();
-		// for (Integer rowIndex : rowIndexes) {
-		// if(plant.getRect().getY() >= plantRows.get(rowIndex).getY() &&
-		// plant.getPlant().getY() <= plantRows.get(rowIndex).getY() +
-		// plantRows.get(rowIndex).getHeight()) {
-		// this.hittingPlant = true;
-		// plant.getPlant().changeHealth(plant.getPlant().getHealth()-1);
-		//
-		// if (plant.getPlant().getHealth()<=0) {
-		// itp.remove();
-		// }
-		// System.out.println("itersecting");
-		//
-		// } else {
-		// System.out.println("Row: " + rowIndex );
-		// System.out.println("Row Bounds: " +
-		// plantRows.get(rowIndex).getBounds());
-		// System.out.println("Plant Bounds: " + plant.getRect().getBounds());
-		// this.hittingPlant = false;
-		// }
-		// }
-		// }
-		// System.out.println(this.hittingPlant);
-		// }
-		//
-
 	}
 
 	public void handlePlacePlant(Point p) {
