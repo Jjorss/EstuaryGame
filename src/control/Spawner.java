@@ -68,8 +68,8 @@ public class Spawner implements Serializable{
 	}
 	/**
 	 * Given the current intensity and the time in game, determines how many oysters should spawn
-	 * @param intensity
-	 * @param time
+	 * @param int intensity - current game intensity
+	 * @param int time - current time in game play
 	 */
 	public void spawnOysters(int intensity, int time) {
 		Random rand = new Random();
@@ -101,6 +101,11 @@ public class Spawner implements Serializable{
 		}
 
 	}
+	
+	/**
+	 * Spawn the proper number of oysters at the game's desired rate for the
+	 * tutorial specifically.
+	 */
 	public void tutorialSpawnOysters() {
 		Random rand = new Random();
 		int width = (int) (game.getWidth() * 0.035);
@@ -124,7 +129,12 @@ public class Spawner implements Serializable{
 		}
 
 	}
-
+	
+	/**
+	 * Determines where to spawn the waves and at what intensity.
+	 * @param int intensity - current game intensity
+	 * @param int time - current game time
+	 */
 	public void spawnWaves(int intensity, int time) {
 		Random rand = new Random();
 		int padding = 35;
@@ -146,7 +156,11 @@ public class Spawner implements Serializable{
 			this.setTotalNumOfWaves(this.getTotalNumOfWaves() + 1);
 		}
 	}
-
+	
+	/**
+	 * Spawn the proper number of oysters at the game's desired rate for the
+	 * tutorial specifically.
+	 */
 	public void TutorialSpawnWaves() {
 		Random rand = new Random();
 		int padding = 35;
@@ -175,6 +189,10 @@ public class Spawner implements Serializable{
 		}
 	}
 
+	/**
+	 * Determines the patter to spawn the plant and then places the plant there.
+	 * @param int indexOfRow - the index of the row we wish to place a plant
+	 */
 	public void spawnPlants(int indexOfRow) {
 		//		Random rand = new Random();
 		int pattern = this.getPatternInRow().get(indexOfRow);
@@ -274,6 +292,12 @@ public class Spawner implements Serializable{
 
 	}
 
+	/**
+	 * Spawn the proper number of oysters at the game's desired rate based on the games
+	 * current intensity and the current game time.
+	 * @param int intensity - current game intensity
+	 * @param int time - current game time
+	 */
 	public void spawnRunOff(int intensity, int time) {
 		Random rand = new Random();
 		double max = game.getScale().getWidth() * 0.50;
@@ -294,6 +318,10 @@ public class Spawner implements Serializable{
 		}
 	}
 
+	/**
+	 * Spawn the proper amount of runoff at the right time for the tutorial
+	 * specifically.
+	 */
 	public void spawnTutorialRunOff() {
 		Random rand = new Random();
 		double max = game.getScale().getWidth() * 0.75;
@@ -310,10 +338,13 @@ public class Spawner implements Serializable{
 			glc.getRunOff().add(new RunOffController(r, rect));
 			this.runOffInRow.set(numRow, true);
 			this.setTotalNumOfRunoff(this.getTotalNumOfRunoff() + 1);
-
 		}
 	}
 
+	/**
+	 * Calls determineIntensity() and then spawns waves, oysters, and runoff.
+	 * @param boolean eroded - true if the shore has eroded.
+	 */
 	public void spawn(boolean eroded) {
 		this.determineIntensity(this.intensity, eroded);
 		this.spawnWaves(this.intensity, 0);
@@ -322,76 +353,130 @@ public class Spawner implements Serializable{
 		//System.out.println(this.intensity);
 	}
 
+	/**
+	 * ArrayList of Integers, plantsInRow getter.
+	 * @return ArrayList of Integers, plantsInRow
+	 */
 	public ArrayList<Integer> getPlantsInRow() {
 		return plantsInRow;
 	}
 
+	/**
+	 * ArrayList of Integers, plantsInRow setter.
+	 * @param ArrayList of Integers, plantsInRow
+	 */
 	public void setPlantsInRow(ArrayList<Integer> plantsInRow) {
 		this.plantsInRow = plantsInRow;
 	}
 
+	/**
+	 * ArrayList of Integers, patternInRow getter.
+	 * @return ArrayList of Integers, patternInRow
+	 */
 	public ArrayList<Integer> getPatternInRow() {
 		return patternInRow;
 	}
 
+	/**
+	 * ArrayList of Integers, patternInRow setter.
+	 * @param ArrayList of Integers, patternInRow
+	 */
 	public void setPatternInRow(ArrayList<Integer> patternInRow) {
 		this.patternInRow = patternInRow;
 	}
 
+	/**
+	 * ArrayList of Boolean, runOffInRow getter.
+	 * @return ArrayList of Boolean, runOffInRow
+	 */
 	public ArrayList<Boolean> getRunOffInRow() {
 		return runOffInRow;
 	}
 
+	/**
+	 * ArrayList of Boolean, runOffInRow setter.
+	 * @param decired ArrayList of Boolean, runOffInRow
+	 */
 	public void setRunOffInRow(ArrayList<Boolean> runOffInRow) {
 		this.runOffInRow = runOffInRow;
 	}
 
-
+	/**
+	 * Object Timer timer setter.
+	 * @param Timer timer
+	 */
 	public void setTimer(Timer timer) {
 		this.timer = timer;
 	}
 
-
+	/**
+	 * int rowForRunOff getter
+	 * @return int rowForRunOff
+	 */
 	public int getRowForRunOff() {
 		return rowForRunOff;
 	}
 
-
+	/**
+	 * int totalNumOfWaves getter
+	 * @return int totalNumOfWaves
+	 */
 	public int getTotalNumOfWaves() {
 		return totalNumOfWaves;
 	}
 
-
+	/**
+	 * totalNumOfWaves setter.
+	 * @param int totalNumOfWaves - desired number of waves
+	 */
 	public void setTotalNumOfWaves(int totalNumOfWaves) {
 		this.totalNumOfWaves = totalNumOfWaves;
 	}
 
-
+	/**
+	 * int totalNumOfRunoff getter.
+	 * @return int totalNumOfRunoff
+	 */
 	public int getTotalNumOfRunoff() {
 		return totalNumOfRunoff;
 	}
 
-
+	/**
+	 * int totalNumOfRunoff setter.
+	 * @param int totalNumOfRunoff - desired number of runoff
+	 */
 	public void setTotalNumOfRunoff(int totalNumOfRunoff) {
 		this.totalNumOfRunoff = totalNumOfRunoff;
 	}
 
-
+	/**
+	 * int totalNumOfPlants getter.
+	 * @return int totalNumOfPlants
+	 */
 	public int getTotalNumOfPlants() {
 		return totalNumOfPlants;
 	}
 
-
+	/**
+	 * int totalNumOfPlants setter.
+	 * @param int totalNumOfPlants - desired number of plants
+	 */
 	public void setTotalNumOfPlants(int totalNumOfPlants) {
 		this.totalNumOfPlants = totalNumOfPlants;
 	}
 
-
+	/**
+	 * int totalNumOfOyster getter.
+	 * @return int totalNumOfOyster
+	 */
 	public int getTotalNumOfOyster() {
 		return totalNumOfOyster;
 	}
 
-
+	/**
+	 * int totalNumOfOyster setter.
+	 * @param int totalNumOfOyster - desired number of oysters
+	 */
 	public void setTotalNumOfOyster(int totalNumOfOyster) {
 		this.totalNumOfOyster = totalNumOfOyster;
 	}
