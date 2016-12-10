@@ -3,7 +3,6 @@ package control;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 import model.ClumpOfOysters;
@@ -19,29 +18,34 @@ public class Spawner implements Serializable{
 	private Game game;
 	private Timer timer;
 	private Timer spawnTimer = new Timer();
-	
+
 	private ArrayList<Integer>plantsInRow = new ArrayList<Integer>();
 	private ArrayList<Integer>patternInRow = new ArrayList<Integer>();
 	private ArrayList<Boolean>runOffInRow = new ArrayList<Boolean>();
-	
+
 	private boolean increasedIntensity = false;
 	private int intensity = 1;
 	private int rowForRunOff = 2;
-	
+
 	private int totalNumOfWaves = 0;
 	private int totalNumOfRunoff = 0;
 	private int totalNumOfPlants = 0;
 	private int totalNumOfOyster = 0;
-	
+
 	public  Spawner(GameLoopController glc, Game game, Timer timer) {
 		this.glc = glc;
 		this.game = game;
 		this.timer = timer;
 	}
-	
 
+	/**
+	 * Decides that the game intensity should be based on the current intensity and if
+	 * the shore has eroded.
+	 * @param int currentIntensity - the current intensity
+	 * @param boolean eroded - true of the shore has eroded
+	 */
 	public void determineIntensity(int currentIntensity, boolean eroded) {
-		
+
 		if (this.intensity < 10) {
 			if (timer.getTime() % 20 == 0 && !this.increasedIntensity && !eroded) {
 				this.increasedIntensity = true;
@@ -60,30 +64,34 @@ public class Spawner implements Serializable{
 				glc.setEroded(false);
 			}
 		}
-		
+
 	}
-	
+	/**
+	 * Given the current intensity and the time in game, determines how many oysters should spawn
+	 * @param intensity
+	 * @param time
+	 */
 	public void spawnOysters(int intensity, int time) {
 		Random rand = new Random();
 		int width = (int) (game.getWidth() * 0.035);
 		int height = (int) (game.getWidth() * 0.035);
 		int padding = 10;
 		int max = 0;
-		double spawnTime = 1000;//((11 - this.intensity)/10)*2000 + 1000;
+		double spawnTime = 1000; //((11 - this.intensity)/10)*2000 + 1000;
 		spawnTimer.countUp(spawnTime);
 		for (Integer i : glc.getNumOfGabionsInRow()) {
 			if (max < i.intValue()) {
 				max = i.intValue();
 			}
 		}
-		
+
 		double xLeftBound = glc.getWaveRows().get(0).getX() + width + padding + (max * (glc.getGabionWidth()+glc.getGbPadding()));
 		double xRightBound = glc.getGAMEBOX().getWidth() - width - padding;
 		int x = (int) (rand.nextInt((int) ((xRightBound - xLeftBound) + 1)) + xLeftBound);
 		double yTopBound = glc.getGAMEBOX().getY() + height + padding;
 		double yBottomBound = glc.getGAMEBOX().getHeight() - height - padding;
 		int y = (int) (rand.nextInt((int) ((yBottomBound - yTopBound) + 1)) + yTopBound);
-		
+
 		if (spawnTimer.getTimeMili() >= spawnTime && glc.getGb().getGb().getGabions() < 2) {
 			ClumpOfOysters clump = new ClumpOfOysters(x, y);
 			Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
@@ -91,7 +99,7 @@ public class Spawner implements Serializable{
 			System.out.println("Spawned oyster");
 			this.setTotalNumOfOyster(this.getTotalNumOfOyster() + 1);
 		}
-		
+
 	}
 	public void tutorialSpawnOysters() {
 		Random rand = new Random();
@@ -99,14 +107,14 @@ public class Spawner implements Serializable{
 		int height = (int) (game.getWidth() * 0.035);
 		int padding = 10;
 		int max = 0;
-		
+
 		double xLeftBound = glc.getWaveRows().get(0).getX() + width + padding + (max * (glc.getGabionWidth()+glc.getGbPadding()));
 		double xRightBound = glc.getGAMEBOX().getWidth() - width - padding;
 		int x = (int) (rand.nextInt((int) ((xRightBound - xLeftBound) + 1)) + xLeftBound);
 		double yTopBound = glc.getGAMEBOX().getY() + height + padding;
 		double yBottomBound = glc.getGAMEBOX().getHeight() - height - padding;
 		int y = (int) (rand.nextInt((int) ((yBottomBound - yTopBound) + 1)) + yTopBound);
-		
+
 		if (glc.getOysters().size() < 1) {
 			ClumpOfOysters clump = new ClumpOfOysters(x, y);
 			Rectangle2D rect = new Rectangle2D.Double(x, y, width, height);
@@ -114,18 +122,18 @@ public class Spawner implements Serializable{
 			System.out.println("Spawned oyster");
 			this.setTotalNumOfOyster(this.getTotalNumOfOyster() + 1);
 		}
-		
+
 	}
-	
+
 	public void spawnWaves(int intensity, int time) {
 		Random rand = new Random();
 		int padding = 35;
 		double waveHeight = (glc.getWaveRows().get(0).getHeight() - padding);
 		double waveWidth = (glc.getWaveRows().get(0).getHeight()*1.4) - padding;
-		int min = (int)(game.getScale().getWidth() * 0.0014);
 		double interval = this.intensity * 0.00032;
+		int min = (int)(game.getScale().getWidth() * 0.0014);
 		int max = (int)((min+interval)*game.getScale().getWidth());
-		
+
 		int waveSpeed = rand.nextInt(max - (max-min)) + min; 
 		int  numRow = rand.nextInt(7);
 		int y = (int) ((glc.getWaveRows().get(numRow).getCenterY()) - (waveHeight/2));
@@ -138,7 +146,7 @@ public class Spawner implements Serializable{
 			this.setTotalNumOfWaves(this.getTotalNumOfWaves() + 1);
 		}
 	}
-	
+
 	public void TutorialSpawnWaves() {
 		Random rand = new Random();
 		int padding = 35;
@@ -158,7 +166,7 @@ public class Spawner implements Serializable{
 			Rectangle2D rect = new Rectangle2D.Double(x,y1,waveWidth, waveHeight );
 			glc.getWaves().add(new WaveController(w, rect));
 			glc.getNumOfWavesInRow().set(row1, glc.getNumOfWavesInRow().get(row1)+1);
-			
+
 			Wave w2 = new Wave(waveSpeed,x,y2);
 			Rectangle2D rect2 = new Rectangle2D.Double(x,y2,waveWidth, waveHeight );
 			glc.getWaves().add(new WaveController(w2, rect2));
@@ -166,18 +174,18 @@ public class Spawner implements Serializable{
 			this.setTotalNumOfWaves(this.getTotalNumOfWaves() + 1);
 		}
 	}
-	
+
 	public void spawnPlants(int indexOfRow) {
-//		Random rand = new Random();
+		//		Random rand = new Random();
 		int pattern = this.getPatternInRow().get(indexOfRow);
 		double plantWidth = glc.getPlantRows().get(0).getWidth()  * 0.2;
 		double plantHeight = glc.getPlantRows().get(0).getHeight() * 0.45;
-		
+
 		double rowX = glc.getPlantRows().get(indexOfRow).getX();
 		double rowY =glc.getPlantRows().get(indexOfRow).getY();
 		double rowWidth = glc.getPlantRows().get(indexOfRow).getWidth();
 		double rowHeight = glc.getPlantRows().get(indexOfRow).getHeight();
-		
+
 		int x1= 0;
 		int y1 = 0;
 		int x2= 0;
@@ -186,37 +194,37 @@ public class Spawner implements Serializable{
 		int y3 = 0;
 		System.out.println("Pattern: " + "\t" + pattern);
 		//System.out.println("Plants in row: " + "\t" + this.getPlantsInRow().get(indexOfRow));
-		
+
 		if (pattern == 1) {
 			x1 = (int)(rowX + (rowWidth * 0.1));
 			y1 = (int)(rowY + (rowHeight * 0.0));
-			
+
 			x2 = (int)(rowX + (rowWidth * 0.4));
 			y2 = (int)(rowY + (rowHeight * 0.15));
-			
+
 			x3 = (int)(rowX + (rowWidth * 0.6));
 			y3 = (int)(rowY + (rowHeight * 0.4));
-			
+
 		} else if (pattern == 2) {
 			x1 = (int)(rowX + (rowWidth * 0.1));
 			y1 = (int)(rowY + (rowHeight * 0.1));
-			
+
 			x2 = (int)(rowX + (rowWidth * 0.4));
 			y2 = (int)(rowY + (rowHeight * 0.4));
-			
+
 			x3 = (int)(rowX + (rowWidth * 0.6));
 			y3 = (int)(rowY + (rowHeight * 0.1));
 		} else {
 			x1 = (int)(rowX + (rowWidth * 0.1));
 			y1 = (int)(rowY + (rowHeight * 0.3));
-			
+
 			x2 = (int)(rowX + (rowWidth * 0.4));
 			y2 = (int)(rowY + (rowHeight * 0.0));
-			
+
 			x3 = (int)(rowX + (rowWidth * 0.6));
 			y3 = (int)(rowY + (rowHeight * 0.4));
 		}
-		
+
 		boolean first = false;
 		boolean second = false;
 		boolean third = false;
@@ -239,7 +247,7 @@ public class Spawner implements Serializable{
 			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
 			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
 		} else if (!second) {
-			
+
 			Rectangle2D rect = new Rectangle2D.Double(x2,y2, plantWidth, plantHeight);
 			Plants p = new Plants(x2,y2, true);
 			glc.getPlants().add(new PlantController(p, rect));
@@ -254,18 +262,18 @@ public class Spawner implements Serializable{
 			this.getPlantsInRow().set(indexOfRow, this.getPlantsInRow().get(indexOfRow) + 1);
 			glc.getPb().setNumberOfPlants(glc.getPb().getNumberOfPlants() - 1);
 		}
-//		
-//		double upperBound = glc.getPlantRows().get(indexOfRow).getY();
-//		double lowerBound = upperBound + glc.getPlantRows().get(indexOfRow).getHeight();
-//		for (int i  = 0; i < glc.getPlantrects().size(); i++) {
-//			Rectangle2D plant = glc.getPlantrects().get(i);
-//			if (plant.getY() >= upperBound && plant.getY() <= lowerBound) {
-//				
-//			}
-//		}
-		
+		//		
+		//		double upperBound = glc.getPlantRows().get(indexOfRow).getY();
+		//		double lowerBound = upperBound + glc.getPlantRows().get(indexOfRow).getHeight();
+		//		for (int i  = 0; i < glc.getPlantrects().size(); i++) {
+		//			Rectangle2D plant = glc.getPlantrects().get(i);
+		//			if (plant.getY() >= upperBound && plant.getY() <= lowerBound) {
+		//				
+		//			}
+		//		}
+
 	}
-	
+
 	public void spawnRunOff(int intensity, int time) {
 		Random rand = new Random();
 		double max = game.getScale().getWidth() * 0.50;
@@ -282,10 +290,10 @@ public class Spawner implements Serializable{
 			glc.getRunOff().add(new RunOffController(r, rect));
 			this.runOffInRow.set(numRow, true);
 			this.setTotalNumOfRunoff(this.getTotalNumOfRunoff() + 1);
-//			System.out.println("spawning runOff");
+			//			System.out.println("spawning runOff");
 		}
 	}
-	
+
 	public void spawnTutorialRunOff() {
 		Random rand = new Random();
 		double max = game.getScale().getWidth() * 0.75;
@@ -305,7 +313,7 @@ public class Spawner implements Serializable{
 
 		}
 	}
-	
+
 	public void spawn(boolean eroded) {
 		this.determineIntensity(this.intensity, eroded);
 		this.spawnWaves(this.intensity, 0);
@@ -387,5 +395,5 @@ public class Spawner implements Serializable{
 	public void setTotalNumOfOyster(int totalNumOfOyster) {
 		this.totalNumOfOyster = totalNumOfOyster;
 	}
-	
+
 }

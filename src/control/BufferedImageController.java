@@ -12,15 +12,12 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-public class BufferedImageController implements Serializable{
-	
+public class BufferedImageController implements Serializable {
+
 	private transient ArrayList<BufferedImage> images ;//= new ArrayList<BufferedImage>();
-	//private transient ArrayList<BufferedImage> animations = new ArrayList<BufferedImage>();
-	private transient ArrayList<BufferedImage> stringImages;// = new ArrayList<BufferedImage>();
-	
+
 	public BufferedImageController() {
 		images = new ArrayList<BufferedImage>();
-		stringImages = new ArrayList<BufferedImage>();
 	}
 
 	int imgWidth;
@@ -33,9 +30,11 @@ public class BufferedImageController implements Serializable{
 			"img/concreteWall-01.png", "img/runOff.png", "img/tutorialButton.png", "img/playButton.png", 
 			"img/creditsButton.png", "img/a.png", "img/aPlus.png", "img/b.png", "img/c.png", "img/d.png",
 			"img/youWin.png", "img/gabion2_2-01.png", "img/gabion2_3-01.png", "img/youLose.png", "img/fail.png"};
-	
-	
-	
+
+
+	/**
+	 * load buffered image
+	 */
 	public void loadBufferedImage(){
 		if (images == null) {
 			images = new ArrayList<BufferedImage>();
@@ -43,13 +42,13 @@ public class BufferedImageController implements Serializable{
 		for(int i = 0; i < animationPaths.length; i++) {
 			images.add(this.createImage(animationPaths[i]));
 		}
-		//this.createAnimation(6, 2, 325, 433);
-//		System.out.println();
-//		System.out.println();
-//		System.out.println();
-//		System.out.println();
-//		System.out.println();
 	}
+
+	/**
+	 * Takes path of an image file and returns that file as a buffered image
+	 * @param string path of the file
+	 * @return buffered image of the inputed image file
+	 */
 	public BufferedImage createImage(String path){
 		BufferedImage bufferedImage;
 		try {
@@ -57,7 +56,7 @@ public class BufferedImageController implements Serializable{
 			return bufferedImage;
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("Rendering in gray skeleton");
+//			System.out.println("Rendering in gray skeleton");
 			bufferedImage = new BufferedImage(50,50,BufferedImage.TYPE_INT_RGB);
 			Color c = Color.LIGHT_GRAY;
 			for (int i = 0; i < bufferedImage.getWidth(); i++) {
@@ -67,35 +66,16 @@ public class BufferedImageController implements Serializable{
 			}
 			return bufferedImage;
 		}
-		
+
 	}
-	
-	public void save(){
-		try {
-			FileOutputStream fos = new FileOutputStream("saveStateBIC.ser");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(this);
-            oos.close();
-		} catch(Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	
-//	public void createAnimation(int index, int frameCount, int imgWidth, int imgHeight) {
-//		BufferedImage img = this.images.get(index);
-//		ArrayList<BufferedImage> animation = new ArrayList<BufferedImage>();
-//		for (int i = 0; i < frameCount; i++) {
-//			animation.add(img.getSubimage(imgWidth*i, 0, imgWidth, imgHeight));
-//		}
-//		this.images.remove(index);
-//		this.images.addAll(animation);
-//		
-//	}
-	
+
+	/**
+	 * Gets a specified image from a buffered image array
+	 * @param int i index of image to return
+	 * @return buffered image
+	 */
 	public BufferedImage getImageAtIndex(int i) {
 		return images.get(i);
 	}
-	public ArrayList<BufferedImage> getStringImages() {
-		return stringImages;
-	}
+
 }

@@ -87,7 +87,6 @@ public class GameLoopController implements Serializable{
 	// private Rectangle2D plantBuilder;
 	private Rectangle2D uiGabion;
 	private Rectangle2D uiPlant;
-	private Rectangle2D helperHorseRect;
 
 	private Rectangle2D tutorialButton;
 	private Rectangle2D playButton;
@@ -183,7 +182,6 @@ public class GameLoopController implements Serializable{
 		creditsBox = new RoundRectangle2D.Double(0,0,0,0,0,0);
 		uiGabion = new Rectangle2D.Double(0, 0, 0, 0);
 		uiPlant = new Rectangle2D.Double(0, 0, 0, 0);
-		helperHorseRect = new Rectangle2D.Double(0, 0, 0, 0);
 
 		tutorialButton = new Rectangle2D.Double(0, 0, 0, 0);
 		playButton = new Rectangle2D.Double(0, 0, 0, 0);
@@ -588,7 +586,6 @@ public class GameLoopController implements Serializable{
 	 * The main method for the game were all the instantiated object's render
 	 * methods get called.
 	 */
-
 	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 

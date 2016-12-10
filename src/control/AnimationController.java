@@ -20,7 +20,7 @@ public class AnimationController implements Serializable{
 	private int picNum = 0;
 	private int textCounter = 0;
 	private int index = 0;
-	
+
 	private double currentX = 0;
 	private double currentY = 0;
 	private double progress = 0;
@@ -30,30 +30,30 @@ public class AnimationController implements Serializable{
 	private double currentXPlant = 0;
 	private double currentYPlant = 0;
 	private double progressPlant = 0;
-	
+
 	private Point start;
 	private Point end;
 	private Point startOyster;
 	private Point endOyster;
 	private Point startPlant;
 	private Point endPlant;
-	
+
 	private long startTime = 0;
 	private long duration = 0;
 	private long startTimeOyster = 0;
 	private long durationOyster = 0;
 	private long startTimePlant = 0;
 	private long durationPlant = 0;
-	
+
 	private Rectangle2D oyster;
-	
+
 	private Animation animation;
 	private boolean played = false;
 	private Rectangle2D rect;
-	
+
 	private String message;
-	
-	
+
+
 	public AnimationController(GameLoopController glc, BufferedImageController bic, Animation animation, Rectangle2D rect, int index) {
 		this.glc = glc;
 		this.bic = bic;
@@ -61,9 +61,15 @@ public class AnimationController implements Serializable{
 		this.rect = rect;
 		this.index = index;
 	}
-	
+
+	/**
+	 * Draws hand that to move from the gabionUI to the correct play to drop the gabion.
+	 * This is used in the tutorial.
+	 * 
+	 * @param g2 The games  {@link Graphics2D} 
+	 */
 	public void playGabionPlacementAnimation(Graphics2D g2) {
-		
+
 		switch(gabionAnimationstate) {
 		case 0 :
 			start = new Point((int)glc.getUiGabion().getCenterX(), (int)glc.getUiGabion().getCenterY());
@@ -75,24 +81,25 @@ public class AnimationController implements Serializable{
 			this.gabionAnimationstate = 1;
 			break;
 		case 1:
-			
 			g2.drawImage(bic.getImageAtIndex(Image.HAND.getIndex()), (int)currentX, (int)currentY,
 					(int)(glc.getGAMEBOX().getWidth() * 0.05), (int)(glc.getGAMEBOX().getWidth() * 0.075), null);
-			//System.out.println("drew image: " + currentX + "\t" + currentY + "\t" + progress);
 			duration = System.currentTimeMillis() - startTime;
 			progress = duration / 2000.0;
 			currentX = (currentX + ((end.getX() - currentX) * progress));
 			currentY = (currentY + ((end.getY() - currentY) * progress));
-			//g2.setColor(Color.ORANGE);
-			//g2.drawRect(end.x, end.y, 50, 50);
-			//g2.drawRect((int)glc.getWaveRects().get(0).getCenterX(), (int)glc.getWaveRects().get(0).getCenterY(), 50, 50);
 			if (currentY >= end.getY() && currentX <= end.getX()) {
 				this.gabionAnimationstate = 0;
 			}			
 			break;
 		}
 	}
-	
+
+	/**
+	 * Draws hand that to move from the plantUI to the correct play to drop the plant.
+	 * This is used in the tutorial.
+	 * 
+	 * @param g2 the game's {@link Graphics2D}
+	 */
 	public void playPlantPlacementAnimation(Graphics2D g2) {
 		switch(this.plantAnimationState){
 		case 0:
@@ -115,10 +122,15 @@ public class AnimationController implements Serializable{
 			}
 			break;
 		default:
-			
+
 		}
 	}
-	
+
+	/**
+	 * This function plays the animation of a clump of oysters moving to gabionUI and
+	 * then deletes the clump.
+	 * @param g2 the game's {@link Graphics2D}
+	 */
 	public void playCollectOysterAnimation(Graphics2D g2) {
 		switch(this.oysterAnimationState) {
 		case 0:
@@ -129,10 +141,10 @@ public class AnimationController implements Serializable{
 			this.currentXOyster = (int) startOyster.getX();
 			this.currentYOyster = (int) startOyster.getY();
 			this.oysterAnimationState = 1;
-			
+
 			break;
 		case 1: 
-			 
+
 			oyster.setRect(currentXOyster, currentYOyster, oyster.getWidth(),
 					oyster.getHeight());
 			this.durationOyster = System.currentTimeMillis() - this.startTimeOyster;
@@ -143,7 +155,7 @@ public class AnimationController implements Serializable{
 			//g2.drawLine((int)this.currentXOyster, (int)this.currentYOyster, this.endOyster.x, this.endOyster.y);
 			g2.drawImage(bic.getImageAtIndex(Image.OYSTER.getIndex()), (int)oyster.getX(), (int)oyster.getY(), 
 					(int)oyster.getWidth(), (int)(oyster.getHeight()), null);
-			
+
 			if (glc.getUiGabion().intersects(oyster)) {
 				this.played = true;
 				//System.out.println("OVER");
@@ -154,7 +166,14 @@ public class AnimationController implements Serializable{
 			System.out.println("Oyster animation failed");
 		}
 	}
-	
+
+	/**
+	 * Draws text, one letter at a time
+	 * 
+	 * @param g2 the game's {@link Graphics2D}
+	 * @param x position
+	 * @param y position
+	 */
 	public void playTextAnimation(Graphics2D g2, int x, int y) {
 		String m = message;
 		switch(this.textAnimationState) {
@@ -166,8 +185,6 @@ public class AnimationController implements Serializable{
 			}
 			m = message.substring(0, this.textCounter);
 			this.textCounter++;
-			//System.out.println("string counter: " + this.textCounter + "/" + this.message.length());
-			//System.out.println("message: " + m);
 			if (this.textCounter == message.length()) {
 				this.textAnimationState = 1;
 			}
@@ -183,21 +200,33 @@ public class AnimationController implements Serializable{
 				this.message = glc.getMessage();
 			}
 			break;
-			default:
+		default:
 		}
 	}
 
+	/**
+	 * played getter
+	 * @return boolean played
+	 */
 	public boolean isPlayed() {
 		return played;
 	}
 
+	/**
+	 * animation getter
+	 * @return Animation animation
+	 */
 	public Animation getAnimation() {
 		return animation;
 	}
 
+	/**
+	 * animation setter
+	 * @param Animation animation
+	 */
 	public void setAnimation(Animation animation) {
 		this.animation = animation;
 	}
 
-	
+
 }

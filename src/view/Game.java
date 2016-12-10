@@ -59,6 +59,7 @@ public class Game extends JPanel implements Serializable{
 	
 	private long savedTime = 0;
 	
+	
 	transient MouseAdapter ma = new MouseAdapter() {
 		@Override
         public void mouseReleased(MouseEvent e) {
@@ -104,7 +105,6 @@ public class Game extends JPanel implements Serializable{
 	
 	static Scale scale = new Scale(WIDTH, HEIGHT, 8);
 	GameLoopController glc = new GameLoopController(this, scale);
-	
 	
 	public Game() {
 		super();
@@ -160,75 +160,11 @@ public class Game extends JPanel implements Serializable{
 		this.mouseMotion(this);
 	}
 	
+
 	public static void main(String[] args) throws InvocationTargetException, InterruptedException {
-		
 		Game game = new Game();
 		game.started = true;
 		System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getWidth());
-//		EventQueue.invokeAndWait(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-//                    ex.printStackTrace();
-//                }
-//                
-//                JFrame frame = new JFrame("Game");
-//                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//                frame.setSize(WIDTH, HEIGHT);
-//                frame.setFocusable(true);
-//                frame.getContentPane().add(game);
-//                frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-//                frame.setUndecorated(true);
-//                //frame.setVisible(true);
-//                frame.setVisible(true);
-//                frame.addKeyListener(new KeyListener() {
-//
-//                	@Override
-//        			public void keyPressed(KeyEvent e) {
-//        				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-//        					System.exit(0);
-//        					
-//        				}
-//        				if (e.getKeyCode() == KeyEvent.VK_P && !game.gameOver) {
-//        					System.out.println("PauSED");
-//        					
-//        					if (game.isPaused) {
-//            					game.isPaused = false;
-//            				} else {
-//            					game.isPaused = true;
-//            				}
-//        					
-//        				}
-//        				if (e.getKeyCode() == KeyEvent.VK_R && !game.isPaused) {
-//        					game.restart = true;
-//        				}
-//        				System.out.println("IM PRESING A KEY");
-//        			}
-//
-//					@Override
-//					public void keyReleased(KeyEvent arg0) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//
-//					@Override
-//					public void keyTyped(KeyEvent arg0) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//                	
-//                });
-//                scale = new Scale((int)game.getBounds().getWidth(), (int)game.getBounds().getHeight(), 8);
-//                
-//                System.out.println("started");
-//                
-//                
-//            }
-//            
-//        });
-		// loop
 		
 		System.out.println("called first");
 		game.start();

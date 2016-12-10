@@ -14,19 +14,31 @@ public class RunOffController implements Serializable{
 		this.setRunOff(runOff);
 		this.setRect(rect);
 	}
-
+	/**
+	 * RunOff runOff getter.
+	 * @return RunOff runOff
+	 */
 	public RunOff getRunOff() {
 		return runOff;
 	}
-
+	/**
+	 * RunOff runOff setter.
+	 * @param RunOff runOff
+	 */
 	public void setRunOff(RunOff runOff) {
 		this.runOff = runOff;
 	}
-
+	/**
+	 * Rectangle2D rect getter.
+	 * @return Rectangle2D rect
+	 */
 	public Rectangle2D getRect() {
 		return rect;
 	}
-
+	/**
+	 * Rectangle2D rect setter.
+	 * @param Rectangle2D rect
+	 */
 	public void setRect(Rectangle2D rect) {
 		this.rect = rect;
 	}
