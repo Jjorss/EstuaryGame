@@ -28,6 +28,7 @@ public class RunoffTest {
 	}
 	@Test
 	public void testSpeed() {
+		
 		run.setSpeed(20);
 		assertTrue(run.getSpeed() == 20);
 	}
