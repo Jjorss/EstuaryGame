@@ -12,7 +12,10 @@ public class PlantBuilder extends Builder implements Serializable{
 	public PlantBuilder(Timer timer) {
 		this.timer = timer;
 	}
-	
+	/**
+	 * Sets the attribute addPlant to true if timer is larger or equal to numOfSecondsPerPlant.
+	 * Otherwise sets the attribute addPlant to false.
+	 */
 	@Override
 	public void build() {
 		if (timer.getTime() >= numOfSecondsPerPlant) {
@@ -22,22 +25,31 @@ public class PlantBuilder extends Builder implements Serializable{
 		}
 		//System.out.println(this.numberOfPlants + "\t" + timer.getTime());
 	}
-
+	/**
+	 *Getter for the attribute numberOfPlants.
+	 * @return The current instance of numberOfPlants.
+	 */
 	public int getNumberOfPlants() {
 		return numberOfPlants;
 	}
-
+	/**
+	 * Setter of the attribute numberOfPlants.
+	 * @param numberOfPlants int The number of plants the player has to plant.
+	 */
 	public void setNumberOfPlants(int numberOfPlants) {
 		this.numberOfPlants = numberOfPlants;
 	}
-	
-	public void setAddPlant(boolean add) {
+
+	private void setAddPlant(boolean add) {
 		if (add != this.addPlant) {
 			this.numberOfPlants++;
 			this.addPlant = add;
 		}
 	}
-
+	/**
+	 * Getter for the attribute numOfSecondsPerPlant.
+	 * @return The current instance of numOfSecondsPerPlant.
+	 */
 	public int getNumOfSecondsPerPlant() {
 		return numOfSecondsPerPlant;
 	}

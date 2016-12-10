@@ -408,7 +408,7 @@ public class Game extends JPanel implements Serializable{
 	}
 	
 	/**
-	 * Getter for the parameter scale.
+	 * Getter for the attribute scale.
 	 * @return
 	 */
 	@SuppressWarnings("static-access")
@@ -416,7 +416,7 @@ public class Game extends JPanel implements Serializable{
 		return this.scale;
 	}
 	/**
-	 * Setter for the parameter init.
+	 * Setter for the attribute init.
 	 * initializes GameLoopController on start up or when restarted.
 	 * @param newInit boolean Initializes game if true.
 	 */
@@ -431,7 +431,7 @@ public class Game extends JPanel implements Serializable{
 		}
 	}
 	/**
-	 * Saves game -------------------------
+	 * Creates a serialzed version of the current game state.
 	 */
 	public void save(){
 		try {
@@ -447,7 +447,7 @@ public class Game extends JPanel implements Serializable{
 		}
 	}
 	/**
-	 * Loads serialized game state.
+	 * Loads serialized game state in memory.
 	 */
 	public void load() {
 		 try {
@@ -478,70 +478,70 @@ public class Game extends JPanel implements Serializable{
           
 	}
 	/**
-	 * Getter for the parameter mouseCords.
-	 * @return The value of the parameter mouseCords.
+	 * Getter for the attribute mouseCords.
+	 * @return The value of the attribute mouseCords.
 	 */
 	public Point getMouseCords() {
 		return mouseCords;
 	}
 	/**
-	 * Setter for the parameter mousCords.
+	 * Setter for the attribtue mousCords.
 	 * @param mouseCords Point Coordinates of the mouse on the JPanel.
 	 */
 	public void setMouseCords(Point mouseCords) {
 		this.mouseCords = mouseCords;
 	}
 	/**
-	 * Getter for the parameter dragging.
-	 * @return The value of the parameter dragging.
+	 * Getter for the attribute dragging.
+	 * @return The value of the attribute dragging.
 	 */
 	public boolean isDragging() {
 		return dragging;
 	}
 	/**
-	 * Setter for parameter dragging.
+	 * Setter for attribute dragging.
 	 * @param d boolean True if a dragging motion is occurring. False otherwise.
 	 */
 	public void setDragging(boolean d) {
 		this.dragging = d;
 	}
 	/**
-	 * Getter for the parameter paused.
-	 * @return The value of the parameter isPaused.
+	 * Getter for the attribute paused.
+	 * @return The value of the attribute isPaused.
 	 */
 	public boolean isPaused() {
 		return isPaused;
 	}
 	/**
-	 * Setter for the parameter paused.
+	 * Setter for the attribute paused.
 	 * @param isPaused boolean True if the current game state is PAUSED. False otherwise.
 	 */
 	public void setPaused(boolean isPaused) {
 		this.isPaused = isPaused;
 	}
 	/**
-	 * Getter for the parameter gameLost. 
-	 * @return The value of the parameter gameLost.
+	 * Getter for the attribute gameLost. 
+	 * @return The value of the attribute gameLost.
 	 */
 	public boolean isGameLost() {
 		return gameLost;
 	}
 	/**
-	 * Setter for the parameter gameLost.
+	 * Setter for the attribute gameLost.
 	 * @param gameLost boolean True if the current game state is OVER.
 	 */
 	public void setGameLost(boolean gameLost) {
 		this.gameLost = gameLost;
 	}
 	/**
-	 * Getter for the parameter restart.
-	 * @return The value of the parameter gameLost
+	 * Getter for the attribute restart.
+	 * @return The value of the attribute gameLost
 	 */
 	public boolean isRestart() {
 		return restart;
 	}
 	/**
-	 * Setter for the parameter restart. Restarts game when true.
+	 * Setter for the attribtue restart. Restarts game when true.
 	 * @param restart boolean True when the game is being restarted. False otherwise.
 	 */
 	public void setRestart(boolean restart) {
@@ -556,21 +556,21 @@ public class Game extends JPanel implements Serializable{
 		}
 	}
 	/**
-	 * Getter for the parameter framePerSecond.
-	 * @return the value of the parameter framePerSecond
+	 * Getter for the attribute framePerSecond.
+	 * @return the value of the attribute framePerSecond
 	 */
 	public int getFramePerSecond() {
 		return framePerSecond;
 	}
 	/**
-	 * Setter for the parameter framePerSecond.
+	 * Setter for the attribute framePerSecond.
 	 * @param framePerSecond int The amount of frames per second.
 	 */
 	public void setFramePerSecond(int framePerSecond) {
 		this.framePerSecond = framePerSecond;
 	}
 	/**
-	 * Sets the value of the parameter isPaused to false if it was true and vice versa.
+	 * Sets the value of the attribute isPaused to false if it was true and vice versa.
 	 */
 	public void togglePaused() {
 		if(this.isPaused) {

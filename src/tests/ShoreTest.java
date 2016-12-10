@@ -26,13 +26,7 @@ public class ShoreTest {
 		// shore loses health
 		assertTrue(shore.getHealth() < prevHealth);
 	}
-	@Test
-	public void testHealth() {
-		Shore s = new Shore(50, 0);
-		s.setHealth(50);
-		assertTrue(s.getHealth() == 50);
-	}
-	
+		
 	@Test
 	public void testX() {
 		Shore s = new Shore(50, 0);

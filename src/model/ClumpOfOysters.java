@@ -13,46 +13,74 @@ public class ClumpOfOysters extends Entity implements Serializable{
 		super(x, y);
 
 	}
-
+	/** 
+	 * Override function from abstract class Entity. This function shouldn't be call
+	 * and if it is will throw an UnsupportedOperationException.
+	 */
 	@Override
 	public void move() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 
-	
+	/**
+	 * int x in x,y position getter.
+	 * @return int x
+	 */
 	public int getX() {
 		return x;
 	}
-
+	/**
+	 * int x in x,y position setter
+	 * @param int y
+	 */
 	public void setX(int x) {
 		this.x = x;
 	}
 
+	/**
+	 * int y in x,y position getter.
+	 * @return int y
+	 */
 	public int getY() {
 		return y;
 	}
 
+	/**
+	 * int y in x,y position setter.
+	 * @param int y
+	 */
 	public void setY(int y) {
 		this.y = y;
 	}
-
+	/**
+	 * int numOfOystersInClump getter.
+	 * @return int numOfOystersInClump
+	 */
 	public int getNumOfOystersInClump() {
 		return numOfOystersInClump;
 	}
-
+	/**
+	 * int numOfOystersInClump setter.
+	 * @param int numOfOystersInClump - desired number of oysters in clump
+	 */
 	public void setNumOfOystersInClump(int numOfOystersInClump) {
 		this.numOfOystersInClump = numOfOystersInClump;
 	}
 
-
+	/**
+	 * boolean isVisible getter. True if ClumpOfOysters are visible.
+	 * @return boolean isVisible
+	 */
 	public boolean isVisible() {
 		return isVisible;
 	}
-
+	/**
+	 * boolean isVisible setter. True if ClumpOfOysters are visible
+	 * @param boolean isVisiable - desired visibility; true if ClumpOfOysters are visible
+	 */
 	public void setVisible(boolean isVisiable) {
 		this.isVisible = isVisiable;
 	}
 
-		
 }

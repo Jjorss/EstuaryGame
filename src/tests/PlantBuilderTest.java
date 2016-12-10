@@ -37,19 +37,7 @@ public class PlantBuilderTest {
 		pb.setNumberOfPlants(50);
 		assertTrue(pb.getNumberOfPlants() == 50);
 	}
-	@Test
-	public void testAddPlant() {
-		PlantBuilder pb = new PlantBuilder(null);
-		int prevNum = pb.getNumberOfPlants();
-		pb.setAddPlant(true);
-		assertTrue(pb.getNumberOfPlants() > prevNum);
-		prevNum = pb.getNumberOfPlants();
-		pb.setAddPlant(true);
-		assertTrue(pb.getNumberOfPlants() == prevNum);
-		pb.setAddPlant(false);
-		pb.setAddPlant(true);
-		assertTrue(pb.getNumberOfPlants() > prevNum);
-	}
+	
 	@Test
 	public void testPlantsPerSecond() {
 		PlantBuilder pb = new PlantBuilder(null);
